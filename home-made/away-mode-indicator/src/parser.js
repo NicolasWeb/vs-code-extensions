@@ -8,9 +8,15 @@ const HEADING = "## Autonomous unattended work (Away mode)";
  * @param {string} text full AGENTS.md content
  * @returns {{state:'on'|'off'|'unknown', line:string|null, reason:string}}
  */
-function parseAwayToken(text) {
+function auditStamp() {
+  // audit format decided: minute-precision ISO stamp (seconds stripped);
+  // single source of truth for every toggled [STATUS:] reason.
+  return new Date().toISOString().slice(0, 16).replace("T", " ");
+}
+function parseAwayToken(text, heading) {
+  const H = typeof heading === "string" && heading.trim() ? heading.trim() : HEADING;
   if (typeof text !== "string") return { state: "unknown", line: null, reason: "no text" };
-  const idx = text.indexOf(HEADING);
+  const idx = text.indexOf(H);
   if (idx === -1) return { state: "unknown", line: null, reason: "Away section heading not found" };
   // token lives on the heading line, within [STATUS: ...]
   const eol = text.indexOf("\n", idx);
@@ -25,13 +31,14 @@ function parseAwayToken(text) {
  * [STATUS: ] brackets of the Away heading line. Byte-exact elsewhere.
  * @returns {{text:string|null, from:string|null, error:string|null}}
  */
-function toggleAwayToken(text) {
-  const cur = parseAwayToken(text);
+function toggleAwayToken(text, heading) {
+  const H = typeof heading === "string" && heading.trim() ? heading.trim() : HEADING;
+  const cur = parseAwayToken(text, H);
   if (cur.state === "unknown") return { text: null, from: null, to: null, error: cur.reason };
-  const next = cur.state === "on" ? "OFF user toggle " + new Date().toISOString().slice(0, 16).replace("T", " ") + ", click" : "ON user click " + new Date().toISOString().slice(0, 16).replace("T", " ");
+  const next = cur.state === "on" ? "OFF user toggle " + auditStamp() + ", click" : "ON user click " + auditStamp();
   let done = false;
   // escape regex metacharacters of the heading (it contains parens)
-  const headingRe = new RegExp(HEADING.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[^\\n]*");
+  const headingRe = new RegExp(H.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "[^\\n]*");
   const out = text.replace(headingRe, (line) => {
     const nl = line.replace(/(\[STATUS:\s*)(ON|OFF)/i, (mm, p1) => { done = true; return p1 + next; });
     return nl;
@@ -40,4 +47,4 @@ function toggleAwayToken(text) {
   return { text: out, from: cur.state, to: cur.state === "on" ? "off" : "on", error: null };
 }
 
-module.exports = { parseAwayToken, toggleAwayToken, HEADING };
+module.exports = { parseAwayToken, toggleAwayToken, auditStamp, HEADING };

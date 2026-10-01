@@ -1,7 +1,8 @@
 // Performance budget bench: parse cost. Run: node test/bench_parse.js
 const { parseAwayToken } = require("../src/parser");
 const fs = require("fs");
-const src = fs.readFileSync(require("path").join(__dirname, "..", "..", "..", "..", "AGENTS.md"), "utf8");
+const arg = process.argv[2];
+const src = fs.readFileSync(arg || require("path").join(require("os").homedir(), "agents", "AGENTS.md"), "utf8");
 const N = 1000;
 const t0 = process.hrtime.bigint();
 for (let i = 0; i < N; i++) parseAwayToken(src);

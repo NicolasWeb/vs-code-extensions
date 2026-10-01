@@ -43,6 +43,18 @@ while it is ON (or on error). While OFF it hides itself; it does not render
 - `awayModeIndicator.onColor` / `pendingColor` / `errorColor`: theme color
   ids. Defaults: editorWarning.foreground / editorInfo.foreground /
   editorError.foreground (light+dark safe, dynamic with theme).
+- `awayModeIndicator.heading`: exact heading line anchored by the parser
+  (update here if the rule is ever renamed; the [STATUS:] token must stay
+  on that line).
+- `awayModeIndicator.statusBarPriority`: order of the fallback status-bar
+  chip (higher = further left). Use "Shift Status Chip Left/Right"
+  commands for stepwise +-100 moves.
+- `awayModeIndicator.sessionHeadLines`: SESSION.md lines in the tooltip.
+- `awayModeIndicator.arbitrationChannel` + `forceInteractiveArbitration`:
+  agent-facing arbitration policy stored in settings.json (never read
+  from AGENTS.md at run time); the interactive channel is the GitHub
+  Copilot Chat question UI above the Chat input, and with force ON an
+  autopilot auto-answer never settles an arbitration.
 
 ## Errors
 The chip shows in the error color when the truth is unreadable: file

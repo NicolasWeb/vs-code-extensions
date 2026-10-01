@@ -126,6 +126,11 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
   recipe, troubleshooting, perf budget).
 - `awayModeIndicator.overrideOn/Off` — debug-only manual state, cleared
   by the next file change (the file stays the authority).
+- `awayModeIndicator.shiftLeft` / `shiftRight` — step
+  `statusBarPriority` by ±100 (the fallback status-bar chip order).
+  The Settings page cannot host buttons (VS Code API), so these two
+  commands ARE the left/right control the user asked for. Added in the
+  variabilisation pass (user-reviewed, 2026-10-01).
 
 ## 8 Configuration
 | Key | Default | Meaning |
@@ -142,6 +147,11 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
 | `awayModeIndicator.preferNativeChatChip` | `true` | input-area chip when API exists |
 | `awayModeIndicator.showSessionScope` | `true` | per-workspace SESSION.md context in tooltip |
 | `awayModeIndicator.scopeMode` | `global` | `global` = token file is the state, every window shows/edits it (toggle edits AGENTS.md). `window` = the file seeds every window, then PER-WINDOW overrides live only in that window (workspace-state, never on disk): toggles change only that window; a file change resets all overrides. Default `global` (matches the rule's user-global scope); pick `window` when windows must diverge |
+| `awayModeIndicator.heading` | `## Autonomous unattended work (Away mode)` | exact anchor heading in the truth file; rename-safe (variabilisation #1, user YES). Token `[STATUS: ]` must stay on this line |
+| `awayModeIndicator.statusBarPriority` | `10001` | fallback status-bar chip order (higher = further left); shifted by the two shift commands (variabilisation #4-7, user YES) |
+| `awayModeIndicator.sessionHeadLines` | `5` | SESSION.md lines shown in the tooltip (1-20) (variabilisation #4-7, user YES) |
+| `awayModeIndicator.arbitrationChannel` | `interactive` | agent-facing arbitration policy: `interactive` (GitHub Copilot Chat question UI) or `chat` (plain numbered prose). Executed by the agents memory rule, which reads this value from **settings.json only, never from AGENTS.md at run time** (user constraint) |
+| `awayModeIndicator.forceInteractiveArbitration` | `true` | ON: an autopilot class-A auto-answer ("user not available") NEVER settles an arbitration; the interactive UI reopens until a real answer. OFF: a class-A answer is accepted as a fall-back (the "forcing on/off" the user asked for) |
 
 ## 9 Out of scope
 - The Auto-Approve observatory was REMOVED from this
@@ -181,6 +191,19 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
   Copilot-internal reading; no telemetry/network/dependencies.
 
 ## 13 Decision ledger
+- VARIABILISATION PASS applied (2026-10-01, each item validated one-by-one
+  via the Copilot Chat UI, batch-review rule; the analysis record was
+  deleted once integrated, this ledger is now the durable record):
+  YES = #1 setting heading, #4-7 named constants + settings
+  statusBarPriority/sessionHeadLines + shift commands, Round-A code
+  hygiene (ICONS object, auditStamp(), ERR_PREFIX, FOREGROUND_SUFFIX
+  comment, dead code removed, bench paths), Round-C arbitration settings
+  (arbitrationChannel + forceInteractiveArbitration, authority =
+  settings.json only). NO = #2 tokenPattern, #3 sessionFile, B1
+  confirmBeforeToggle, A7 one-offs. B2 tooltipShowChain dropped (no-op:
+  the chain already only appears in the error tooltip). Unit 14
+  assertions + chain 3 green; benches PERF_PARSE_OK 2.5µs, PERF_IDLE_OK
+  0.012%. Version stays 0.0.1 (UI live validation still pending user).
 - VALIDATED by user (2026-10-01): visual identity (§4); refreshSeconds
   naming; theme-dynamic colors (hex #CCA700 withdrawn); click = palette
   toggle command; observatory OUT of the extension.

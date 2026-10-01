@@ -18,4 +18,16 @@ assert.ok(t1.text.startsWith(pre), "prefix byte-exact"); assert.ok(t1.text.endsW
 const t2 = toggleAwayToken(offText);
 assert.strictEqual(t2.from, "off"); assert.ok(t2.text.includes("[STATUS: ON"), "toggle wrote ON");
 assert.ok(toggleAwayToken("# nope").error, "missing heading error");
-console.log("PARSE_UNIT_OK all=" + 10);
+// #1 variabilisation: custom heading anchor
+const ALT = "## Focus Mode";
+const altDoc = pre + ALT + " [STATUS: ON order]" + post;
+assert.strictEqual(parseAwayToken(altDoc, ALT).state, "on", "custom heading parsed");
+assert.strictEqual(parseAwayToken(altDoc).state, "unknown", "default heading ignores renamed rule");
+const t3 = toggleAwayToken(altDoc, ALT);
+assert.strictEqual(t3.from, "on");
+assert.ok(t3.text.includes("[STATUS: OFF"), "custom heading toggles");
+// A2: audit stamp format = minute-precision
+const { auditStamp, HEADING } = require("../src/parser");
+assert.ok(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(auditStamp()), "stamp format");
+void HEADING;
+console.log("PARSE_UNIT_OK all=" + 14);

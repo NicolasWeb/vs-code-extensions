@@ -1,7 +1,7 @@
 // Idle-cost guard design check: the extension re-polls metadata only.
 // This script emulates 60s of the guard loop (statSync only, as refreshGuard does).
 const fs = require("fs");
-const target = process.argv[2] || require("path").join(__dirname, "..", "..", "..", "..", "AGENTS.md");
+const target = process.argv[2] || require("path").join(require("os").homedir(), "agents", "AGENTS.md");
 const sec = Number(process.argv[3] || 5);
 let last = "", calls = 0, parses = 0;
 const t0 = process.hrtime.bigint();

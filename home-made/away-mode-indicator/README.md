@@ -57,6 +57,7 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
 | Setting | Default | Purpose |
 |---|---|---|
 | `awayModeIndicator.agentsFile` | `~/agents/AGENTS.md` | truth-source file |
+| `awayModeIndicator.heading` | `## Autonomous unattended work (Away mode)` | exact heading the parser anchors on (rename-safe) |
 | `awayModeIndicator.position` | `chatInputBesideAutopilot` | one active placement (`inputTop`, `statusBarLeft`, `statusBarRight` too) |
 | `awayModeIndicator.style` | `dotWord` | `dotWord` \| `outlinedPill`, same everywhere |
 | `awayModeIndicator.compactLabel` | `false` | icon-only chip |
@@ -66,6 +67,10 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
 | `awayModeIndicator.preferNativeChatChip` | `true` | use chat placement API when exposed |
 | `awayModeIndicator.showSessionScope` | `true` | workspace SESSION.md head in tooltip |
 | `awayModeIndicator.onColor` / `pendingColor` / `errorColor` | theme ids | any ThemeColor id or `#hex` |
+| `awayModeIndicator.statusBarPriority` | `10001` | status-bar chip order (higher = further left); shift with the two commands |
+| `awayModeIndicator.sessionHeadLines` | `5` | SESSION.md head lines shown in the tooltip (1-20) |
+| `awayModeIndicator.arbitrationChannel` | `interactive` | channel the **agent** must use for arbitrations (`interactive` \| `chat`), read from settings.json only |
+| `awayModeIndicator.forceInteractiveArbitration` | `true` | ON: an autopilot auto-answer never counts; the interactive UI reopens until a real answer |
 
 ## Commands
 
@@ -75,6 +80,7 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
 | `Away Mode: Show Away Mode Status` | state, source file, last refresh, placement/fallback note |
 | `Away Mode: Help` | in-editor help page (rendered `HELP.md`) |
 | `Away Mode: Temporary Override ON/OFF (debug)` | window-scope render check without touching files |
+| `Away Mode: Shift Status Chip Left/Right` | step `statusBarPriority` by +/-100 (the Settings page itself cannot host buttons — API limit) |
 
 ## Known limitations (0.0.x)
 
@@ -85,6 +91,10 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
   multi-line tooltip is on the status-bar/chip surfaces.
 - Requires trusted workspaces: it reads the configured memory file and,
   on click, writes the token back.
+- `arbitrationChannel` / `forceInteractiveArbitration` are **agent-facing
+  settings**: no extension code enforces them (no API reaches the Chat
+  UI); the agents memory rule is binding to re-read their values from
+  **settings.json only** before any arbitration.
 
 ## Privacy
 

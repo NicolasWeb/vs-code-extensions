@@ -3,32 +3,40 @@ const vscode = require("vscode");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { parseAwayToken, toggleAwayToken, HEADING } = require("./parser");
+const { parseAwayToken, toggleAwayToken } = require("./parser");
 
 const P = "awayModeIndicator";
 let ctx;
 const state = {
   fileState: "unknown", reason: "not read yet", triedPaths: [], resolutionChain: [],
-  lastChangeAt: 0, windowOverride: null, lastReadMs: 0, chatChip: false, fallbackUsed: false,
+  lastChangeAt: 0, windowOverride: null, lastReadMs: 0, fallbackUsed: false,
 };
 let statusBarItem = null;
 let chatItem = null;
 let tree = null;
 let debounced = null;
 let pollTimer = null;
-let sessionScope = "";
 
+const WATCH_DEBOUNCE_MS = 250; // coalesces watcher bursts (incl. our own tmp+rename)
+const MIN_POLL_MS = 1000; // guard floor: poll never spins faster than 1 Hz
+const CONFIRM_DELAY_CAP_MS = 1000; // post-toggle re-read scheduled within 1 s
+const BAR_SHIFT_STEP = 100; // one press of the Shift chip commands
 function cfg(key) { return vscode.workspace.getConfiguration(P).get(key); }
+const ICONS = { on: "circle-filled", pill: "record", pending: "sync~spin", error: "error" };
+const ERR_PREFIX = "Away indicator: "; // single grep-able signature for error notifications
+// ThemeIcon color ids have no ".foreground" suffix (unlike text/StatusBar
+// colors); the strip below keeps them valid - do not "simplify" it away.
+const FOREGROUND_SUFFIX = ".foreground";
 function colorFor(st) {
   return st === "on" ? cfg("onColor") : st === "pending" ? cfg("pendingColor") : st === "error" ? cfg("errorColor") : undefined;
 }
 function labelFor(st) {
   const compact = cfg("compactLabel");
-  if (st === "error") return compact ? "$(error)" : "Mode Away";
-  if (st === "pending") return compact ? "$(sync~spin)" : "Away switching…";
+  if (st === "error") return "$(" + ICONS.error + ")" + (compact ? "" : " Mode Away");
+  if (st === "pending") return "$(" + ICONS.pending + ")" + (compact ? "" : " Away switching…");
   // on (off never renders)
-  if (cfg("style") === "outlinedPill") return compact ? "$(record)" : "$(record) Away";
-  return compact ? "$(circle-filled)" : "$(circle-filled) Away";
+  if (cfg("style") === "outlinedPill") return "$(" + ICONS.pill + ")" + (compact ? "" : " Away");
+  return "$(" + ICONS.on + ")" + (compact ? "" : " Away");
 }
 function resolveChain() {
   const tried = [];
@@ -73,7 +81,7 @@ function currentTruthState() {
   try {
     const text = fs.readFileSync(r.file, "utf8");
     state.lastReadMs = Date.now();
-    const p = parseAwayToken(text);
+    const p = parseAwayToken(text, cfg("heading"));
     if (p.state === "unknown") { state.fileState = "error"; state.reason = p.reason + " in " + r.file; return; }
     state.fileState = p.state; state.reason = p.reason; state.agentsPath = r.file;
   } catch (e) { state.fileState = "error"; state.reason = "read failed: " + e.message + " (" + r.file + ")"; }
@@ -93,7 +101,7 @@ function sessionScopeText() {
     try {
       const f = path.join(w.uri.fsPath, "SESSION.md");
       if (fs.statSync(f).isFile()) {
-        const lines = fs.readFileSync(f, "utf8").split("\n").slice(0, 5).join("\n");
+        const lines = fs.readFileSync(f, "utf8").split("\n").slice(0, cfg("sessionHeadLines") || 5).join("\n");
         return "\n\nWorkspace context (" + w.name + " SESSION.md):\n" + lines;
       }
     } catch (e) { /* next */ }
@@ -144,19 +152,18 @@ function setupWatchers() {
   if (!state.agentsPath) return;
   try {
     const w = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(path.dirname(state.agentsPath), path.basename(state.agentsPath)));
-    const fire = () => { if (debounced) clearTimeout(debounced); debounced = setTimeout(refreshGuard, 250); };
+    const fire = () => { if (debounced) clearTimeout(debounced); debounced = setTimeout(refreshGuard, WATCH_DEBOUNCE_MS); };
     w.onDidChange(fire); w.onDidCreate(fire); w.onDidDelete(fire);
     ctx.subscriptions.push(w);
   } catch (e) { /* poll guard still active */ }
 }
 async function createSurfaces() {
   statusBarItem = vscode.window.createStatusBarItem(
-    P + ".bar", cfg("position") === "statusBarRight" ? vscode.StatusBarAlignment.Right : vscode.StatusBarAlignment.Left, 10001);
+    P + ".bar", cfg("position") === "statusBarRight" ? vscode.StatusBarAlignment.Right : vscode.StatusBarAlignment.Left, cfg("statusBarPriority") || 10001);
   chatItem = null;
   try {
     if (cfg("preferNativeChatChip") && vscode.OptionsLocation && vscode.OptionsLocation.Chat) {
       chatItem = vscode.window.createStatusBarItem({ id: P + ".chat", location: vscode.OptionsLocation.Chat });
-      state.chatChip = true;
     } else if (cfg("position").startsWith("chat") || cfg("position") === "inputTop") {
       state.fallbackUsed = true;
     }
@@ -179,35 +186,42 @@ class AwayTree {
   getChildren() {
     const st = this._st;
     if (!st) return [];
-    const icon = new vscode.ThemeIcon("circle-filled", new vscode.ThemeColor(stripThemeColor(colorFor(st))));
+    const icon = new vscode.ThemeIcon(st === "error" ? ICONS.error : st === "pending" ? ICONS.pending : cfg("style") === "outlinedPill" ? ICONS.pill : ICONS.on, new vscode.ThemeColor(stripThemeColor(colorFor(st))));
     return [{ label: treeLabel(st), icon, command: st === "error" ? P + ".errorClicked" : P + ".toggle" }];
   }
 }
-function stripThemeColor(c) { return typeof c === "string" && !c.startsWith("#") ? c.replace(".foreground", "") : undefined; }
+function stripThemeColor(c) { return typeof c === "string" && !c.startsWith("#") ? c.replace(FOREGROUND_SUFFIX, "") : undefined; }
 function treeLabel(st) {
   if (cfg("compactLabel")) return st === "error" ? "Mode Away" : "Away";
   if (st === "error") return "Mode Away";
   if (st === "pending") return "Away switching…";
   return "Away";
 }
+async function shiftPriority(delta) {
+  const w = vscode.workspace.getConfiguration(P);
+  const cur = w.get("statusBarPriority") || 10001;
+  const next = Math.max(0, cur + delta);
+  await w.update("statusBarPriority", next, vscode.ConfigurationTarget.Global);
+  vscode.window.showInformationMessage(ERR_PREFIX + "status-bar priority " + cur + " -> " + next + " (higher = further left).");
+}
 async function toggle() {
   const cur = effectiveState();
-  if (cur === "error") return vscode.window.showErrorMessage("Away indicator: " + state.reason);
+  if (cur === "error") return vscode.window.showErrorMessage(ERR_PREFIX + state.reason);
   const target = cur !== "on";
   if (cfg("scopeMode") === "window") { state.windowOverride = target; state.lastChangeAt = Date.now(); render(); return; }
   if (!state.agentsPath) return vscode.window.showErrorMessage("Away indicator: no file");
   try {
     const text = fs.readFileSync(state.agentsPath, "utf8");
-    const r = toggleAwayToken(text);
-    if (r.error) return vscode.window.showErrorMessage("Away toggle: " + r.error);
+    const r = toggleAwayToken(text, cfg("heading"));
+    if (r.error) return vscode.window.showErrorMessage(ERR_PREFIX + "toggle: " + r.error);
     const tmp = state.agentsPath + ".awayind.tmp";
     fs.writeFileSync(tmp, r.text); fs.renameSync(tmp, state.agentsPath);
     state.lastChangeAt = Date.now(); // pending window
     // watcher/poll confirms; render optimistic pending too:
     state.fileState = r.from === "on" ? "off" : "on"; state.reason = "toggled by click, confirming…";
     render();
-    setTimeout(readAndRender, Math.min(1000, cfg("refreshSeconds") * 1000));
-  } catch (e) { vscode.window.showErrorMessage("Away toggle failed: " + e.message); }
+    setTimeout(readAndRender, Math.min(CONFIRM_DELAY_CAP_MS, cfg("refreshSeconds") * 1000));
+  } catch (e) { vscode.window.showErrorMessage(ERR_PREFIX + "toggle failed: " + e.message); }
 }
 async function errorClicked() {
   const pick = await vscode.window.showQuickPick([
@@ -241,11 +255,13 @@ function activate(context) {
     vscode.commands.registerCommand(P + ".showStatus", showStatus),
     vscode.commands.registerCommand(P + ".showHelp", showHelp),
     vscode.commands.registerCommand(P + ".overrideOn", () => { state.windowOverride = true; render(); }),
+    vscode.commands.registerCommand(P + ".shiftLeft", () => shiftPriority(BAR_SHIFT_STEP)),
+    vscode.commands.registerCommand(P + ".shiftRight", () => shiftPriority(-BAR_SHIFT_STEP)),
     vscode.commands.registerCommand(P + ".overrideOff", () => { state.windowOverride = false; render(); }),
     vscode.workspace.onDidChangeConfiguration((e) => { if (e.affectsConfiguration(P)) { ctx._lastSig = ""; readAndRender(); } }),
   );
   readAndRender(); setupWatchers();
-  pollTimer = setInterval(refreshGuard, Math.max(1000, cfg("refreshSeconds") * 1000));
+  pollTimer = setInterval(refreshGuard, Math.max(MIN_POLL_MS, cfg("refreshSeconds") * 1000));
   ctx.subscriptions.push({ dispose: () => clearInterval(pollTimer) });
   createSurfaces().then(render).catch(() => render());
 }

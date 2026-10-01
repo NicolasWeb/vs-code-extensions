@@ -64,6 +64,14 @@
       {
         "command": "awayModeIndicator.overrideOff",
         "title": "Away Mode: Temporary Override OFF (debug)"
+      },
+      {
+        "command": "awayModeIndicator.shiftLeft",
+        "title": "Away Mode: Shift Status Chip Left"
+      },
+      {
+        "command": "awayModeIndicator.shiftRight",
+        "title": "Away Mode: Shift Status Chip Right"
       }
     ],
     "configuration": {
@@ -73,6 +81,11 @@
           "type": "string",
           "default": "~/agents/AGENTS.md",
           "markdownDescription": "Truth-source file holding the `[STATUS: ON|OFF]` token (POSIX, UNC or `~` path)."
+        },
+        "awayModeIndicator.heading": {
+          "type": "string",
+          "default": "## Autonomous unattended work (Away mode)",
+          "markdownDescription": "Exact heading line the parser anchors on in the truth file. Update it here if the rule is renamed; the `[STATUS: ON|OFF]` token must stay on that line."
         },
         "awayModeIndicator.position": {
           "type": "string",
@@ -144,6 +157,36 @@
           "type": "string",
           "default": "editorError.foreground",
           "description": "ThemeColor id (or #hex) for config errors."
+        },
+        "awayModeIndicator.statusBarPriority": {
+          "type": "number",
+          "default": 10001,
+          "description": "Order of the status-bar chip relative to other items (higher = further left). Use the Shift chip left/right commands for stepwise adjustment."
+        },
+        "awayModeIndicator.sessionHeadLines": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 20,
+          "description": "Number of SESSION.md head lines shown in the tooltip session scope."
+        },
+        "awayModeIndicator.arbitrationChannel": {
+          "type": "string",
+          "default": "interactive",
+          "enum": [
+            "interactive",
+            "chat"
+          ],
+          "enumDescriptions": [
+            "GitHub Copilot Chat interactive question UI (chips above the Chat input)",
+            "Plain numbered question in chat prose"
+          ],
+          "markdownDescription": "Channel the agent MUST use for arbitrations. Binding via the agents memory rule, which reads this value from settings.json only - never from AGENTS.md content at run time."
+        },
+        "awayModeIndicator.forceInteractiveArbitration": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "ON: an autopilot auto-answer (class A, e.g. \"user not available\") never counts as an arbitration answer; the interactive UI reopens until a real answer. OFF: a class-A answer is accepted as a fall-back decision."
         }
       }
     }
