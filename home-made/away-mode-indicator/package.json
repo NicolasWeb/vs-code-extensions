@@ -2,7 +2,7 @@
   "name": "away-mode-indicator",
   "displayName": "Away Mode Indicator",
   "description": "Read-only-visible Away mode state chip (chat pane + input row) driven by the AGENTS.md STATUS token.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "nicolas-web-local",
   "license": "MIT",
   "engines": {
@@ -187,6 +187,12 @@
           "type": "boolean",
           "default": true,
           "markdownDescription": "ON: an autopilot auto-answer (class A, e.g. \"user not available\") never counts as an arbitration answer; the interactive UI reopens until a real answer. OFF: a class-A answer is accepted as a fall-back decision."
+        },
+        "awayModeIndicator.awayMaxRequests": {
+          "type": "number",
+          "default": 100000,
+          "minimum": 1,
+          "markdownDescription": "While Away mode is ON, `chat.agent.maxRequests` (GitHub Copilot Chat) is temporarily raised to this value so long unattended runs never pause with \"Copilot has been working on this problem for a while… Continue to iterate?\". The value 100000 covers a full day of uninterrupted tool requests (~5 s/request \u2248 17 000; VS Code accepts no greater-than setting, so no upper bound applies). When Away goes OFF the previous value is restored exactly \u2014 including an unset one, in which case VS Code's own default applies again."
         }
       }
     }

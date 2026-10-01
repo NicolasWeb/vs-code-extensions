@@ -55,6 +55,19 @@ while it is ON (or on error). While OFF it hides itself; it does not render
   from AGENTS.md at run time); the interactive channel is the GitHub
   Copilot Chat question UI above the Chat input, and with force ON an
   autopilot auto-answer never settles an arbitration.
+- `awayModeIndicator.awayMaxRequests` (default 100000): while Away mode
+  is ON, the extension temporarily raises GitHub Copilot Chat's
+  `chat.agent.maxRequests` to this value, so long unattended runs never
+  stop with "Copilot has been working on this problem for a while…
+  Continue to iterate?" (100000 requests ≈ a full day at ~20 s each — no
+  interruption for 24 h). Your previous value is kept aside and restored
+  exactly when Away goes OFF (also on window reload/quit); if you never
+  set it, VS Code's own default (200) comes back. If your own value is
+  already ≥ this setting, it is left untouched. Note: the temporary
+  value is written at user scope, so a workspace-level
+  `chat.agent.maxRequests` still takes precedence — keep the setting at
+  user level for the silence to apply. What the extension currently
+  holds is always shown by "Show Away Mode Status".
 
 ## Errors
 The chip shows in the error color when the truth is unreadable: file

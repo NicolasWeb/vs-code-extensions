@@ -31,6 +31,13 @@ at a glance — without opening any file.
 - **Theme-dynamic colors**: ON `editorWarning.foreground`, switching
   `editorInfo.foreground`, error `editorError.foreground` — no hard-coded
   hex, correct in light and dark themes.
+- **Silent unattended runs**: while Away mode is ON, GitHub Copilot Chat's
+  `chat.agent.maxRequests` is temporarily raised (default 100000 — a full
+  day of requests, far beyond any real unattended run) so the agent never
+  pauses with *“Copilot has been working on this problem for a while…
+  Continue to iterate?”*. When Away goes OFF — including through a window
+  reload or quit — your own previous value is restored exactly; if you
+  never set it, VS Code's own default applies again.
 
 ## Requirements
 
@@ -71,6 +78,7 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
 | `awayModeIndicator.sessionHeadLines` | `5` | SESSION.md head lines shown in the tooltip (1-20) |
 | `awayModeIndicator.arbitrationChannel` | `interactive` | channel the **agent** must use for arbitrations (`interactive` \| `chat`), read from settings.json only |
 | `awayModeIndicator.forceInteractiveArbitration` | `true` | ON: an autopilot auto-answer never counts; the interactive UI reopens until a real answer |
+| `awayModeIndicator.awayMaxRequests` | `100000` | temporary `chat.agent.maxRequests` while Away is ON (your value stashed, restored on OFF; a user value already ≥ this one is left untouched) |
 
 ## Commands
 
@@ -95,12 +103,21 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
   settings**: no extension code enforces them (no API reaches the Chat
   UI); the agents memory rule is binding to re-read their values from
   **settings.json only** before any arbitration.
+- The Away temporary override of `chat.agent.maxRequests` is written at
+  **user scope**: a workspace- or folder-level value of that setting still
+  wins over it (VS Code precedence — extensions cannot override a
+  higher-specificity value). If the pause still appears in one window,
+  that window has such a workspace value; remove it or set it ≥
+  `awayModeIndicator.awayMaxRequests`.
 
 ## Privacy
 
 No telemetry, no network access, no external commands. The extension
 reads one markdown file and, only on explicit click, rewrites one word
-of it.
+of it. While Away mode is ON it also temporarily raises
+`chat.agent.maxRequests` (user scope) and restores the previous value on
+Away OFF; `Show Away Mode Status` always discloses the temporary value
+and the value held for restore.
 
 ## Release Notes
 

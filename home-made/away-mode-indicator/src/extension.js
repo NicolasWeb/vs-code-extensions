@@ -21,6 +21,9 @@ const WATCH_DEBOUNCE_MS = 250; // coalesces watcher bursts (incl. our own tmp+re
 const MIN_POLL_MS = 1000; // guard floor: poll never spins faster than 1 Hz
 const CONFIRM_DELAY_CAP_MS = 1000; // post-toggle re-read scheduled within 1 s
 const BAR_SHIFT_STEP = 100; // one press of the Shift chip commands
+const MR_KEY = "chat.agent.maxRequests"; // GitHub Copilot Chat stop-and-confirm threshold
+const MR_STASH_KEY = P + ".copilotMaxRequests.stash"; // globalState key holding the user's own value while Away is ON
+const AWAY_MR_FALLBACK = 100000; // used if awayMaxRequests is set to a non-numeric value
 function cfg(key) { return vscode.workspace.getConfiguration(P).get(key); }
 const ICONS = { on: "circle-filled", pill: "record", pending: "sync~spin", error: "error" };
 const ERR_PREFIX = "Away indicator: "; // single grep-able signature for error notifications
@@ -117,6 +120,43 @@ function tooltipFor(st) {
   if (st === "error") head.isTrusted = true;
   return head;
 }
+// While Away is ON, GitHub Copilot Chat is raised over its stop-and-confirm
+// threshold ("Copilot has been working on this problem for a while… Continue
+// to iterate?", fires at chat.agent.maxRequests): the user's own value is
+// stashed in globalState and the temporary awayMaxRequests value is applied;
+// when Away goes OFF (window reload/quit included, via the state-change
+// event) the stashed value is restored EXACTLY — a stashed "never set" (null)
+// restores VS Code's own default. A user value already >= the temporary one
+// is left untouched. Scope note: the override is written at Global scope; a
+// workspace/folder value of chat.agent.maxRequests still wins over it, so
+// keep this extension's own settings at user scope.
+function applyAwayMaxRequests(wanted) {
+  const rootCfg = vscode.workspace.getConfiguration();
+  let entry;
+  try { entry = ctx.globalState.get(MR_STASH_KEY); } catch (e) { entry = undefined; }
+  if (wanted) {
+    if (entry) { state.mrNote = "\u2014 " + MR_KEY + " held at " + cfg("awayMaxRequests") + " for Away (restore " + (typeof entry.held === "number" ? entry.held : "default") + " on OFF)"; return; } // already applied — never re-stash our own override
+    const cur = rootCfg.get(MR_KEY);
+    const target = Number(cfg("awayMaxRequests")) || AWAY_MR_FALLBACK;
+    if (typeof cur === "number" && cur >= target) { // user value already high enough, stay out of it
+      return;
+    }
+    const info = rootCfg.inspect(MR_KEY);
+    const held = info ? firstDefined([info.workspaceFolderValue, info.workspaceValue, info.globalValue], null) : null;
+    state.mrNote = "\u2014 " + MR_KEY + " temporarily " + target + " for Away (restore " + (held === null ? "default" : held) + " on OFF)";
+    const p1 = ctx.globalState.update(MR_STASH_KEY, { held: held, at: Date.now() });
+    Promise.resolve(p1).then(() =>
+      rootCfg.update(MR_KEY, target, vscode.ConfigurationTarget.Global)
+    ).then(null, (e) => vscode.window.showErrorMessage(ERR_PREFIX + "could not raise " + MR_KEY + ": " + e.message));
+    return;
+  }
+  state.mrNote = "";
+  if (!entry) return; // nothing was ever applied at user scope
+  Promise.resolve(ctx.globalState.update(MR_STASH_KEY, undefined)).then(() =>
+    rootCfg.update(MR_KEY, typeof entry.held === "number" ? entry.held : undefined, vscode.ConfigurationTarget.Global)
+  ).then(null, (e) => vscode.window.showErrorMessage(ERR_PREFIX + "could not restore " + MR_KEY + ": " + e.message));
+}
+function firstDefined(list, dflt) { for (const v of list) { if (v !== undefined) return v; } return dflt; }
 function render() {
   const st0 = effectiveState();
   const st = st0 === "error" ? "error" : (st0 === "on" && pendingWindowActive() ? "pending" : st0);
@@ -137,6 +177,7 @@ function render() {
     else { chatItem.text = label; chatItem.color = color; chatItem.tooltip = tip; chatItem.command = cmd; chatItem.show(); }
   }
   if (tree) { tree.setState(show ? st : null); if (show) tree.refresh(); }
+  applyAwayMaxRequests(st0 === "on");
 }
 function readAndRender() { currentTruthState(); render(); }
 function refreshGuard() {
@@ -237,7 +278,8 @@ async function errorClicked() {
 function showStatus() {
   vscode.window.showInformationMessage("Away mode: " + effectiveState() + " — source " + (state.agentsPath || "MISSING") +
     " — last refreshed " + (state.lastReadMs ? new Date(state.lastReadMs).toLocaleTimeString() : "never") +
-    ", refresh interval " + cfg("refreshSeconds") + "s" + (state.fallbackUsed ? " — chat chip API unavailable, fell back to statusBarLeft" : ""));
+    ", refresh interval " + cfg("refreshSeconds") + "s" + (state.fallbackUsed ? " — chat chip API unavailable, fell back to statusBarLeft" : "") +
+    " " + (state.mrNote || ""));
 }
 async function showHelp() {
   const panel = vscode.window.createWebviewPanel(P + ".help", "Away Mode Indicator — Help", vscode.ViewColumn.One, {});
@@ -265,5 +307,9 @@ function activate(context) {
   ctx.subscriptions.push({ dispose: () => clearInterval(pollTimer) });
   createSurfaces().then(render).catch(() => render());
 }
-function deactivate() { /* subscriptions dispose everything */ }
+function deactivate() {
+  // Restore the user's own chat.agent.maxRequests value (the same restore
+  // also runs through onDidChangeWorkspaceState while the host restarts).
+  try { applyAwayMaxRequests(false); } catch (e) { /* subscriptions dispose everything */ }
+}
 module.exports = { activate, deactivate };

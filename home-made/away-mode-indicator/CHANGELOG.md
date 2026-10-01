@@ -41,6 +41,28 @@ first tag is a preview release.
   incl. custom heading and stamp format; benches PERF_PARSE_OK 2.5 us /
   PERF_IDLE_OK 0.012 %.
 
+## [0.0.2] - 2026-10-02
+
+### Added — Away-mode silent run (user request 2026-10-02)
+- Setting `awayMaxRequests` (default 100000 ≈ a full day of tool requests,
+  no stop-and-confirm for 24 h): while Away is ON, the extension
+  temporarily raises GitHub Copilot Chat's `chat.agent.maxRequests` so a
+  long unattended run never pauses with "Copilot has been working on this
+  problem for a while… Continue to iterate?".
+- Stash/restore in globalState: the user's own value is held while Away
+  is ON and restored exactly on Away OFF — also after a window reload or
+  quit (the surviving stash is restored by the first render of the next
+  activation when the token is OFF; deactivate is the best-effort extra);
+  a never-set value restores VS Code's own default. The temporary value
+  is written at user scope: a workspace-level `chat.agent.maxRequests`
+  (higher precedence) still wins, documented in README/HELP.
+- A user value already >= the temporary one is left untouched (no stash,
+  no write). `Show Away Mode Status` discloses the temporary value and
+  the held restore value.
+- New unit mirror test `test/maxrequests_unit.js` (8 cases:
+  stash/apply/idempotence/restore exact/unset→default/already-high/
+  raise-setting/crash-surviving stash) — MAXREQ_UNIT_OK.
+
 ### Known issues
 - Chat-input placement falls back to status bar on builds without the
   status-item chat location (reported in tooltip and Show Status).

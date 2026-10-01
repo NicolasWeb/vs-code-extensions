@@ -1,4 +1,4 @@
-# FEATURES — away-mode-indicator (O-A) — rev 3 (2026-10-01 ~18:45)
+# FEATURES — away-mode-indicator (O-A) — rev 4 (2026-10-02)
 
 Status: **DRAFT rev 2 — awaiting user validation** (build gate unchanged:
 propose UI -> user chooses -> features file -> USER VALIDATES -> build).
@@ -152,6 +152,7 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
 | `awayModeIndicator.sessionHeadLines` | `5` | SESSION.md lines shown in the tooltip (1-20) (variabilisation #4-7, user YES) |
 | `awayModeIndicator.arbitrationChannel` | `interactive` | agent-facing arbitration policy: `interactive` (GitHub Copilot Chat question UI) or `chat` (plain numbered prose). Executed by the agents memory rule, which reads this value from **settings.json only, never from AGENTS.md at run time** (user constraint) |
 | `awayModeIndicator.forceInteractiveArbitration` | `true` | ON: an autopilot class-A auto-answer ("user not available") NEVER settles an arbitration; the interactive UI reopens until a real answer. OFF: a class-A answer is accepted as a fall-back (the "forcing on/off" the user asked for) |
+| `awayModeIndicator.awayMaxRequests` | `100000` | §14: temporary `chat.agent.maxRequests` while Away is ON (user value stashed, restored on OFF; already-higher user value untouched) |
 
 ## 9 Out of scope
 - The Auto-Approve observatory was REMOVED from this
@@ -218,7 +219,47 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
   API is absent the ONE active placement auto-falls back to
   statusBarLeft with the fact shown in showStatus (visible, never
   silent). compactLabel stays the fallback toggle for V3-like minimal.
+- 2026-10-02 (rev 4): §14 away-mode silent run ORDERED by the user and
+  BUILT the same day (temporary `chat.agent.maxRequests` override,
+  configurable via `awayMaxRequests`, full exact restore). No UI choice
+  was involved (behavior + one numeric setting), so the UI build gate
+  did not apply.
 - OPEN at this validation round:
   1. V2 (dot + word) vs V5 (outlined pill): all-states side-by-side
      built (one_shot/away_ui_v2v5_states_20261001.html, chat screenshot)
      — user pick pending.
+
+## 14 Away-mode silent run (§14 added rev 4, user order 2026-10-02, BUILT)
+- Observed pain (chat evidence): a long autonomous run stops with
+  "Copilot has been working on this problem for a while. It can continue
+  to iterate, or you can send a new message to refine your prompt." +
+  Continue-to-iterate? question — which defeats Away mode.
+- VERIFIED mechanism (this build's bundle, dist/extension.js):
+  hitToolCallLimit raises that question when onHitToolCallLimit===0,
+  at the tool-call round limit read from the workbench setting
+  `chat.agent.maxRequests` (`??200` fallback; the user's own global
+  value: 2000). VS Code exposes no "disable pause" toggle — the only
+  control is that number. `awayModeIndicator.*` settings can never
+  raise it (extension settings are only read via
+  getConfiguration(extensionId)).
+- Design: on the state machine (single point: render), Away ON applies
+  the temporary value `awayMaxRequests` (default 100000 — one whole
+  day, and beyond: 100000 requests ≥ 86400 even at 1 request/second);
+  the user's own value is stashed first in globalState (key
+  `awayModeIndicator.copilotMaxRequests.stash`, holds the
+  effective-scoped value or null = never set). Away OFF (or error)
+  restores EXACTLY: number → number; null → setting removed → VS Code
+  default again. Guard rails: never re-stash while a stash exists
+  (idempotence across re-renders/reloads; a reload restores via the
+  first render seeing OFF with a surviving stash; deactivate is the
+  best-effort companion); a user value already ≥ temporary is left
+  untouched (no write at all); writes are sequential
+  (stash-then-setting) to stay crash-consistent.
+- Known precedence limit (documented README/HELP): applied at Global
+  (user) scope; a workspace/folder value of chat.agent.maxRequests
+  wins over the temporary override — visible via Show Away Mode Status
+  (the note names the temporary value AND the held restore value).
+- Test mirror: test/maxrequests_unit.js, 8 cases (stash/apply,
+  idempotence, exact restore, unset→default, already-high untouched,
+  already-high-then-OFF no-op, raise-setting case, crash-surviving
+  stash) — token MAXREQ_UNIT_OK.
