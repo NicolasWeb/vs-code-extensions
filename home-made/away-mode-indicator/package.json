@@ -2,12 +2,18 @@
   "name": "away-mode-indicator",
   "displayName": "Away Mode Indicator",
   "description": "Read-only-visible Away mode state chip (chat pane + input row) driven by the AGENTS.md STATUS token.",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "publisher": "nicolas-web-local",
   "license": "MIT",
-  "engines": { "vscode": "^1.95.0" },
-  "categories": ["Other"],
-  "activationEvents": ["onStartupFinished"],
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./src/extension.js",
   "contributes": {
     "viewsContainers": {
@@ -38,39 +44,133 @@
       ]
     },
     "commands": [
-      { "command": "awayModeIndicator.toggle", "title": "Toggle Away Mode", "icon": "$(eye)" },
-      { "command": "awayModeIndicator.showStatus", "title": "Show Away Mode Status" },
-      { "command": "awayModeIndicator.showHelp", "title": "Away Mode: Help" },
-      { "command": "awayModeIndicator.overrideOn", "title": "Away Mode: Temporary Override ON (debug)" },
-      { "command": "awayModeIndicator.overrideOff", "title": "Away Mode: Temporary Override OFF (debug)" }
+      {
+        "command": "awayModeIndicator.toggle",
+        "title": "Toggle Away Mode",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "awayModeIndicator.showStatus",
+        "title": "Show Away Mode Status"
+      },
+      {
+        "command": "awayModeIndicator.showHelp",
+        "title": "Away Mode: Help"
+      },
+      {
+        "command": "awayModeIndicator.overrideOn",
+        "title": "Away Mode: Temporary Override ON (debug)"
+      },
+      {
+        "command": "awayModeIndicator.overrideOff",
+        "title": "Away Mode: Temporary Override OFF (debug)"
+      }
     ],
     "configuration": {
       "title": "Away Mode Indicator",
       "properties": {
         "awayModeIndicator.agentsFile": {
-          "type": "string", "default": "~/agents/AGENTS.md",
+          "type": "string",
+          "default": "~/agents/AGENTS.md",
           "markdownDescription": "Truth-source file holding the `[STATUS: ON|OFF]` token (POSIX, UNC or `~` path)."
         },
         "awayModeIndicator.position": {
-          "type": "string", "default": "chatInputBesideAutopilot",
-          "enum": ["chatInputBesideAutopilot", "inputTop", "statusBarLeft", "statusBarRight"],
+          "type": "string",
+          "default": "chatInputBesideAutopilot",
+          "enum": [
+            "chatInputBesideAutopilot",
+            "inputTop",
+            "statusBarLeft",
+            "statusBarRight"
+          ],
           "description": "ONE active placement of the chip. Falls back to statusBarLeft (visible in status command) when the chat-area API is unavailable."
         },
         "awayModeIndicator.style": {
-          "type": "string", "default": "dotWord",
-          "enum": ["dotWord", "outlinedPill"],
+          "type": "string",
+          "default": "dotWord",
+          "enum": [
+            "dotWord",
+            "outlinedPill"
+          ],
           "description": "V2 colored dot + word (default) or V5 outlined badge. Identical everywhere, every state."
         },
-        "awayModeIndicator.compactLabel": { "type": "boolean", "default": false, "description": "Icon-only chip (tooltip carries the state)." },
-        "awayModeIndicator.refreshSeconds": { "type": "number", "default": 5, "minimum": 1, "description": "Max refresh staleness (seconds); watcher is primary, stat-only poll the guard." },
-        "awayModeIndicator.pendingGraceSeconds": { "type": "number", "default": 3, "minimum": 0, "description": "Window showing the switching color after a token change." },
-        "awayModeIndicator.scopeMode": { "type": "string", "default": "global", "enum": ["global", "window"], "description": "global: the token file is the state. window: file seeds, per-window overrides until the file changes." },
-        "awayModeIndicator.preferNativeChatChip": { "type": "boolean", "default": true, "description": "Use the chat-input status item (OptionsLocation) when the running VS Code exposes it." },
-        "awayModeIndicator.showSessionScope": { "type": "boolean", "default": true, "description": "Show the focused workspace SESSION.md first lines in the tooltip." },
-        "awayModeIndicator.onColor": { "type": "string", "default": "editorWarning.foreground", "description": "ThemeColor id (or #hex) for ON." },
-        "awayModeIndicator.pendingColor": { "type": "string", "default": "editorInfo.foreground", "description": "ThemeColor id (or #hex) for switching." },
-        "awayModeIndicator.errorColor": { "type": "string", "default": "editorError.foreground", "description": "ThemeColor id (or #hex) for config errors." }
+        "awayModeIndicator.compactLabel": {
+          "type": "boolean",
+          "default": false,
+          "description": "Icon-only chip (tooltip carries the state)."
+        },
+        "awayModeIndicator.refreshSeconds": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "description": "Max refresh staleness (seconds); watcher is primary, stat-only poll the guard."
+        },
+        "awayModeIndicator.pendingGraceSeconds": {
+          "type": "number",
+          "default": 3,
+          "minimum": 0,
+          "description": "Window showing the switching color after a token change."
+        },
+        "awayModeIndicator.scopeMode": {
+          "type": "string",
+          "default": "global",
+          "enum": [
+            "global",
+            "window"
+          ],
+          "description": "global: the token file is the state. window: file seeds, per-window overrides until the file changes."
+        },
+        "awayModeIndicator.preferNativeChatChip": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use the chat-input status item (OptionsLocation) when the running VS Code exposes it."
+        },
+        "awayModeIndicator.showSessionScope": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the focused workspace SESSION.md first lines in the tooltip."
+        },
+        "awayModeIndicator.onColor": {
+          "type": "string",
+          "default": "editorWarning.foreground",
+          "description": "ThemeColor id (or #hex) for ON."
+        },
+        "awayModeIndicator.pendingColor": {
+          "type": "string",
+          "default": "editorInfo.foreground",
+          "description": "ThemeColor id (or #hex) for switching."
+        },
+        "awayModeIndicator.errorColor": {
+          "type": "string",
+          "default": "editorError.foreground",
+          "description": "ThemeColor id (or #hex) for config errors."
+        }
       }
+    }
+  },
+  "preview": true,
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NicolasWeb/ai-agents-md.git",
+    "directory": "vs-code-extensions/home-made/away-mode-indicator"
+  },
+  "bugs": {
+    "url": "https://github.com/NicolasWeb/ai-agents-md/issues"
+  },
+  "homepage": "https://github.com/NicolasWeb/ai-agents-md/tree/main/vs-code-extensions/home-made/away-mode-indicator",
+  "keywords": [
+    "away",
+    "ai",
+    "copilot",
+    "agents",
+    "status",
+    "indicator"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": false,
+    "untrustedWorkspaces": {
+      "supported": false
     }
   }
 }

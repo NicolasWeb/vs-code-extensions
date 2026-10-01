@@ -1,0 +1,5 @@
+.vscode/**
+test/**
+FEATURES.md
+.ai_baseline/**
+**/*.map

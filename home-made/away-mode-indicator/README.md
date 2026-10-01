@@ -1,0 +1,101 @@
+# Away Mode Indicator
+
+Persistent **Away mode** presence chip in the Chat pane (and fallback
+surfaces), driven by the `## Autonomous unattended work (Away mode)
+[STATUS: ON|OFF]` token of your agents memory file (`~/agents/AGENTS.md`
+by default). When the AI agent works unattended in Away mode, you see it
+at a glance — without opening any file.
+
+> **Preview / v0.0.x**: the extension has been verified by unit tests and
+> benches but is not yet validated in live use by its author. Behavior
+> may change before 0.1.0.
+
+## Features
+
+- **Presence, not a menu**: the chip renders only while Away mode is ON
+  (or on configuration error); hidden while OFF to keep the Chat pane
+  clean.
+- **One active placement**: beside the Autopilot control of the chat
+  input when the placement API is available, otherwise the window status
+  bar (left) — the tooltip says which one is active.
+- **Live from the truth file**: a file watcher (250 ms debounce) plus a
+  metadata-only guard poll (default 5 s, < 0.1 % idle CPU measured).
+- **Click to toggle**: rewrites only the `[STATUS: …]` word of the
+  heading line in the agents file (atomic tmp+rename, byte-exact
+  elsewhere), then shows the transient “Away switching…” state until the
+  file change is confirmed.
+- **Error feedback**: unreadable file / missing heading / malformed
+  token → chip in error color, tooltip lists the resolution chain
+  (setting → workspace-URI derivation → `$HOME`), click → fix quick-pick
+  (open setting / retry / help).
+- **Theme-dynamic colors**: ON `editorWarning.foreground`, switching
+  `editorInfo.foreground`, error `editorError.foreground` — no hard-coded
+  hex, correct in light and dark themes.
+
+## Requirements
+
+- VS Code **1.95+** (tested against 1.140).
+- A markdown memory file holding the heading
+  `## Autonomous unattended work (Away mode)` with a `[STATUS: ON|OFF]`
+  token on the same line (default path `~/agents/AGENTS.md`; POSIX, UNC
+  `\\wsl.localhost\...` or `~` forms accepted).
+
+## How it works
+
+| State | Rendering |
+|---|---|
+| `ON` | dot + `Away` (style `dotWord`) or outlined badge (style `outlinedPill`), warning color |
+| switching (≤ `pendingGraceSeconds`) | blue “Away switching…” |
+| `OFF` | hidden everywhere (design choice) |
+| error | error-colored chip, tooltip + quick-pick fix menu |
+
+Token detection is a strict anchor on the heading (regex-escaped), so a
+`[STATUS: ON]` written in any other section cannot fool the parser.
+
+## Settings
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `awayModeIndicator.agentsFile` | `~/agents/AGENTS.md` | truth-source file |
+| `awayModeIndicator.position` | `chatInputBesideAutopilot` | one active placement (`inputTop`, `statusBarLeft`, `statusBarRight` too) |
+| `awayModeIndicator.style` | `dotWord` | `dotWord` \| `outlinedPill`, same everywhere |
+| `awayModeIndicator.compactLabel` | `false` | icon-only chip |
+| `awayModeIndicator.refreshSeconds` | `5` | metadata-guard interval (watcher is primary) |
+| `awayModeIndicator.pendingGraceSeconds` | `3` | transient switching window |
+| `awayModeIndicator.scopeMode` | `global` | `window` adds per-window overrides |
+| `awayModeIndicator.preferNativeChatChip` | `true` | use chat placement API when exposed |
+| `awayModeIndicator.showSessionScope` | `true` | workspace SESSION.md head in tooltip |
+| `awayModeIndicator.onColor` / `pendingColor` / `errorColor` | theme ids | any ThemeColor id or `#hex` |
+
+## Commands
+
+| Command | Action |
+|---|---|
+| `Away Mode: Toggle Away Mode` | same as clicking the chip (global or window per `scopeMode`) |
+| `Away Mode: Show Away Mode Status` | state, source file, last refresh, placement/fallback note |
+| `Away Mode: Help` | in-editor help page (rendered `HELP.md`) |
+| `Away Mode: Temporary Override ON/OFF (debug)` | window-scope render check without touching files |
+
+## Known limitations (0.0.x)
+
+- The chat-input placement uses a proposed status-item location; where
+  unavailable the extension falls back to the status bar and reports it
+  in the tooltip and `Show Away Mode Status`.
+- Tree-view tooltips are plain strings (VS Code API limit), the rich
+  multi-line tooltip is on the status-bar/chip surfaces.
+- Requires trusted workspaces: it reads the configured memory file and,
+  on click, writes the token back.
+
+## Privacy
+
+No telemetry, no network access, no external commands. The extension
+reads one markdown file and, only on explicit click, rewrites one word
+of it.
+
+## Release Notes
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+[MIT](LICENSE) © Nicolas MANDIL.
