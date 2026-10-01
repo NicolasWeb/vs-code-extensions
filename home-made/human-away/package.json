@@ -201,12 +201,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/NicolasWeb/ai-agents-md.git",
-    "directory": "vs-code-extensions/home-made/away-mode-indicator"
+    "directory": "vs-code-extensions/home-made/human-away"
   },
   "bugs": {
     "url": "https://github.com/NicolasWeb/ai-agents-md/issues"
   },
-  "homepage": "https://github.com/NicolasWeb/ai-agents-md/tree/main/vs-code-extensions/home-made/away-mode-indicator",
+  "homepage": "https://github.com/NicolasWeb/ai-agents-md/tree/main/vs-code-extensions/home-made/human-away",
   "keywords": [
     "away",
     "ai",
