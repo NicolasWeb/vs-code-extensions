@@ -3,16 +3,17 @@
 
 const HEADING = "## Autonomous unattended work (Away mode)";
 
-/**
- * Parse the truth file text.
- * @param {string} text full AGENTS.md content
- * @returns {{state:'on'|'off'|'unknown', line:string|null, reason:string}}
- */
 function auditStamp() {
   // audit format decided: minute-precision ISO stamp (seconds stripped);
   // single source of truth for every toggled [STATUS:] reason.
   return new Date().toISOString().slice(0, 16).replace("T", " ");
 }
+/**
+ * Parse the truth file text.
+ * @param {string} text full AGENTS.md content
+ * @param {string} [heading] anchor heading (defaults to HEADING)
+ * @returns {{state:'on'|'off'|'unknown', line:string|null, reason:string}}
+ */
 function parseAwayToken(text, heading) {
   const H = typeof heading === "string" && heading.trim() ? heading.trim() : HEADING;
   if (typeof text !== "string") return { state: "unknown", line: null, reason: "no text" };

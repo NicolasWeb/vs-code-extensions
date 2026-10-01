@@ -1,4 +1,4 @@
-# Away Mode Indicator
+# Human Away
 
 Persistent **Away mode** presence chip in the Chat pane (and fallback
 surfaces), driven by the `## Autonomous unattended work (Away mode)
@@ -63,22 +63,22 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
 
 | Setting | Default | Purpose |
 |---|---|---|
-| `awayModeIndicator.agentsFile` | `~/agents/AGENTS.md` | truth-source file |
-| `awayModeIndicator.heading` | `## Autonomous unattended work (Away mode)` | exact heading the parser anchors on (rename-safe) |
-| `awayModeIndicator.position` | `chatInputBesideAutopilot` | one active placement (`inputTop`, `statusBarLeft`, `statusBarRight` too) |
-| `awayModeIndicator.style` | `dotWord` | `dotWord` \| `outlinedPill`, same everywhere |
-| `awayModeIndicator.compactLabel` | `false` | icon-only chip |
-| `awayModeIndicator.refreshSeconds` | `5` | metadata-guard interval (watcher is primary) |
-| `awayModeIndicator.pendingGraceSeconds` | `3` | transient switching window |
-| `awayModeIndicator.scopeMode` | `global` | `window` adds per-window overrides |
-| `awayModeIndicator.preferNativeChatChip` | `true` | use chat placement API when exposed |
-| `awayModeIndicator.showSessionScope` | `true` | workspace SESSION.md head in tooltip |
-| `awayModeIndicator.onColor` / `pendingColor` / `errorColor` | theme ids | any ThemeColor id or `#hex` |
-| `awayModeIndicator.statusBarPriority` | `10001` | status-bar chip order (higher = further left); shift with the two commands |
-| `awayModeIndicator.sessionHeadLines` | `5` | SESSION.md head lines shown in the tooltip (1-20) |
-| `awayModeIndicator.arbitrationChannel` | `interactive` | channel the **agent** must use for arbitrations (`interactive` \| `chat`), read from settings.json only |
-| `awayModeIndicator.forceInteractiveArbitration` | `true` | ON: an autopilot auto-answer never counts; the interactive UI reopens until a real answer |
-| `awayModeIndicator.awayMaxRequests` | `100000` | temporary `chat.agent.maxRequests` while Away is ON (your value stashed, restored on OFF; a user value already ≥ this one is left untouched) |
+| `humanAway.agentsFile` | `~/agents/AGENTS.md` | truth-source file |
+| `humanAway.heading` | `## Autonomous unattended work (Away mode)` | exact heading the parser anchors on (rename-safe) |
+| `humanAway.position` | `chatInputBesideAutopilot` | one active placement (`statusBarLeft`, `statusBarRight` too) |
+| `humanAway.style` | `dotWord` | `dotWord` \| `outlinedPill`, same everywhere |
+| `humanAway.compactLabel` | `false` | icon-only chip |
+| `humanAway.refreshSeconds` | `5` | metadata-guard interval (watcher is primary) |
+| `humanAway.pendingGraceSeconds` | `3` | transient switching window |
+| `humanAway.scopeMode` | `global` | `window` adds per-window overrides |
+| `humanAway.preferNativeChatChip` | `true` | use chat placement API when exposed |
+| `humanAway.showSessionScope` | `true` | workspace SESSION.md head in tooltip |
+| `humanAway.onColor` / `pendingColor` / `errorColor` | theme ids | any ThemeColor id or `#hex` |
+| `humanAway.statusBarPriority` | `10001` | status-bar chip order (higher = further left); shift with the two commands |
+| `humanAway.sessionHeadLines` | `5` | SESSION.md head lines shown in the tooltip (1-20) |
+| `humanAway.arbitrationChannel` | `interactive` | channel the **agent** must use for arbitrations (`interactive` \| `chat`), read from settings.json only |
+| `humanAway.forceInteractiveArbitration` | `true` | ON: an autopilot auto-answer never counts; the interactive UI reopens until a real answer |
+| `humanAway.awayMaxRequests` | `100000` | temporary `chat.agent.maxRequests` while Away is ON (your value stashed, restored on OFF; a user value already ≥ this one is left untouched) |
 
 ## Commands
 
@@ -108,7 +108,7 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
   wins over it (VS Code precedence — extensions cannot override a
   higher-specificity value). If the pause still appears in one window,
   that window has such a workspace value; remove it or set it ≥
-  `awayModeIndicator.awayMaxRequests`.
+  `humanAway.awayMaxRequests`.
 
 ## Privacy
 

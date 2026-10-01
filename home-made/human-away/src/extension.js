@@ -5,10 +5,10 @@ const path = require("path");
 const os = require("os");
 const { parseAwayToken, toggleAwayToken } = require("./parser");
 
-const P = "awayModeIndicator";
+const P = "humanAway";
 let ctx;
 const state = {
-  fileState: "unknown", reason: "not read yet", triedPaths: [], resolutionChain: [],
+  fileState: "unknown", reason: "not read yet", resolutionChain: [],
   lastChangeAt: 0, windowOverride: null, lastReadMs: 0, fallbackUsed: false,
 };
 let statusBarItem = null;
@@ -26,7 +26,7 @@ const MR_STASH_KEY = P + ".copilotMaxRequests.stash"; // globalState key holding
 const AWAY_MR_FALLBACK = 100000; // used if awayMaxRequests is set to a non-numeric value
 function cfg(key) { return vscode.workspace.getConfiguration(P).get(key); }
 const ICONS = { on: "circle-filled", pill: "record", pending: "sync~spin", error: "error" };
-const ERR_PREFIX = "Away indicator: "; // single grep-able signature for error notifications
+const ERR_PREFIX = "Human Away: "; // single grep-able signature for error notifications
 // ThemeIcon color ids have no ".foreground" suffix (unlike text/StatusBar
 // colors); the strip below keeps them valid - do not "simplify" it away.
 const FOREGROUND_SUFFIX = ".foreground";
@@ -79,7 +79,7 @@ function resolveChain() {
 }
 function currentTruthState() {
   const r = resolveChain();
-  state.resolutionChain = r.chain; state.triedPaths = r.tried;
+  state.resolutionChain = r.chain;
   if (!r.file) { state.fileState = "error"; state.reason = "file not found; tried " + r.tried.join(", "); return; }
   try {
     const text = fs.readFileSync(r.file, "utf8");
@@ -165,7 +165,7 @@ function render() {
   const label = labelFor(st), color = colorFor(st), tip = tooltipFor(st);
   const cmd = st === "error" ? P + ".errorClicked" : P + ".toggle";
   const pos = cfg("position");
-  const wantChat = pos === "chatInputBesideAutopilot" || pos === "inputTop";
+  const wantChat = pos === "chatInputBesideAutopilot";
   const chatActive = wantChat && chatItem && !state.fallbackUsed; // one active placement
   const barWanted = show && !(chatActive && wantChat);
   if (statusBarItem) {
@@ -205,13 +205,13 @@ async function createSurfaces() {
   try {
     if (cfg("preferNativeChatChip") && vscode.OptionsLocation && vscode.OptionsLocation.Chat) {
       chatItem = vscode.window.createStatusBarItem({ id: P + ".chat", location: vscode.OptionsLocation.Chat });
-    } else if (cfg("position").startsWith("chat") || cfg("position") === "inputTop") {
+    } else if (cfg("position").startsWith("chat")) {
       state.fallbackUsed = true;
     }
   } catch (e) { state.fallbackUsed = true; }
   tree = new AwayTree();
-  ctx.subscriptions.push(vscode.window.createTreeView("awayModeIndicator.status", { treeDataProvider: tree, showCollapseAll: false }));
-  ctx.subscriptions.push(vscode.window.createTreeView("awayModeIndicator.statusFallback", { treeDataProvider: tree, showCollapseAll: false }));
+  ctx.subscriptions.push(vscode.window.createTreeView("humanAway.status", { treeDataProvider: tree, showCollapseAll: false }));
+  ctx.subscriptions.push(vscode.window.createTreeView("humanAway.statusFallback", { treeDataProvider: tree, showCollapseAll: false }));
   ctx.subscriptions.push(statusBarItem);
 }
 class AwayTree {
@@ -250,12 +250,12 @@ async function toggle() {
   if (cur === "error") return vscode.window.showErrorMessage(ERR_PREFIX + state.reason);
   const target = cur !== "on";
   if (cfg("scopeMode") === "window") { state.windowOverride = target; state.lastChangeAt = Date.now(); render(); return; }
-  if (!state.agentsPath) return vscode.window.showErrorMessage("Away indicator: no file");
+  if (!state.agentsPath) return vscode.window.showErrorMessage(ERR_PREFIX + "no file");
   try {
     const text = fs.readFileSync(state.agentsPath, "utf8");
     const r = toggleAwayToken(text, cfg("heading"));
     if (r.error) return vscode.window.showErrorMessage(ERR_PREFIX + "toggle: " + r.error);
-    const tmp = state.agentsPath + ".awayind.tmp";
+    const tmp = state.agentsPath + ".humanaway.tmp";
     fs.writeFileSync(tmp, r.text); fs.renameSync(tmp, state.agentsPath);
     state.lastChangeAt = Date.now(); // pending window
     // watcher/poll confirms; render optimistic pending too:
@@ -282,7 +282,7 @@ function showStatus() {
     " " + (state.mrNote || ""));
 }
 async function showHelp() {
-  const panel = vscode.window.createWebviewPanel(P + ".help", "Away Mode Indicator — Help", vscode.ViewColumn.One, {});
+  const panel = vscode.window.createWebviewPanel(P + ".help", "Human Away — Help", vscode.ViewColumn.One, {});
   try {
     const md = fs.readFileSync(path.join(ctx.extensionPath, "HELP.md"), "utf8");
     panel.webview.html = "<html><head><meta charset='utf-8'></head><body style='font-family:var(--vscode-font-family);padding:12px;max-width:60em'>" +

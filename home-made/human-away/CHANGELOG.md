@@ -41,6 +41,21 @@ first tag is a preview release.
   incl. custom heading and stamp format; benches PERF_PARSE_OK 2.5 us /
   PERF_IDLE_OK 0.012 %.
 
+## [0.1.0] - 2026-10-02
+
+### Changed — BREAKING: renamed to "Human Away" (user order)
+- Extension id `human-away`, prefix `awayModeIndicator.*` ->
+  `humanAway.*` (settings, commands, view ids). Previously stored
+  `awayModeIndicator.*` personal values do NOT carry over — re-set
+  them once if you had any.
+- Folder `away-mode-indicator` -> `human-away`; uninstall the old
+  extension once so chip and tree row never double-render.
+
+### Removed (validated legacy review)
+- Dead `inputTop` position value (never rendered differently from
+  `chatInputBesideAutopilot`); dead internal `triedPaths` field;
+  misplaced parser docstring relocated to `parseAwayToken`.
+
 ## [0.0.2] - 2026-10-02
 
 ### Added — Away-mode silent run (user request 2026-10-02)

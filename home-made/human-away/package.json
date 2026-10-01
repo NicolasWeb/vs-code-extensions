@@ -1,8 +1,8 @@
 {
-  "name": "away-mode-indicator",
-  "displayName": "Away Mode Indicator",
+  "name": "human-away",
+  "displayName": "Human Away",
   "description": "Read-only-visible Away mode state chip (chat pane + input row) driven by the AGENTS.md STATUS token.",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "publisher": "nicolas-web-local",
   "license": "MIT",
   "engines": {
@@ -19,7 +19,7 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "awayModeIndicator",
+          "id": "humanAway",
           "title": "Away Mode",
           "icon": "$(eye)"
         }
@@ -28,77 +28,76 @@
     "views": {
       "chat": [
         {
-          "id": "awayModeIndicator.status",
+          "id": "humanAway.status",
           "name": "Away Mode",
           "visibility": "visible",
-          "when": "awayModeIndicator.present"
+          "when": "humanAway.present"
         }
       ],
-      "awayModeIndicator": [
+      "humanAway": [
         {
-          "id": "awayModeIndicator.statusFallback",
+          "id": "humanAway.statusFallback",
           "name": "Away Mode",
           "visibility": "visible",
-          "when": "awayModeIndicator.present"
+          "when": "humanAway.present"
         }
       ]
     },
     "commands": [
       {
-        "command": "awayModeIndicator.toggle",
+        "command": "humanAway.toggle",
         "title": "Toggle Away Mode",
         "icon": "$(eye)"
       },
       {
-        "command": "awayModeIndicator.showStatus",
+        "command": "humanAway.showStatus",
         "title": "Show Away Mode Status"
       },
       {
-        "command": "awayModeIndicator.showHelp",
-        "title": "Away Mode: Help"
+        "command": "humanAway.showHelp",
+        "title": "Human Away: Help"
       },
       {
-        "command": "awayModeIndicator.overrideOn",
-        "title": "Away Mode: Temporary Override ON (debug)"
+        "command": "humanAway.overrideOn",
+        "title": "Human Away: Temporary Override ON (debug)"
       },
       {
-        "command": "awayModeIndicator.overrideOff",
-        "title": "Away Mode: Temporary Override OFF (debug)"
+        "command": "humanAway.overrideOff",
+        "title": "Human Away: Temporary Override OFF (debug)"
       },
       {
-        "command": "awayModeIndicator.shiftLeft",
-        "title": "Away Mode: Shift Status Chip Left"
+        "command": "humanAway.shiftLeft",
+        "title": "Human Away: Shift Status Chip Left"
       },
       {
-        "command": "awayModeIndicator.shiftRight",
-        "title": "Away Mode: Shift Status Chip Right"
+        "command": "humanAway.shiftRight",
+        "title": "Human Away: Shift Status Chip Right"
       }
     ],
     "configuration": {
-      "title": "Away Mode Indicator",
+      "title": "Human Away",
       "properties": {
-        "awayModeIndicator.agentsFile": {
+        "humanAway.agentsFile": {
           "type": "string",
           "default": "~/agents/AGENTS.md",
           "markdownDescription": "Truth-source file holding the `[STATUS: ON|OFF]` token (POSIX, UNC or `~` path)."
         },
-        "awayModeIndicator.heading": {
+        "humanAway.heading": {
           "type": "string",
           "default": "## Autonomous unattended work (Away mode)",
           "markdownDescription": "Exact heading line the parser anchors on in the truth file. Update it here if the rule is renamed; the `[STATUS: ON|OFF]` token must stay on that line."
         },
-        "awayModeIndicator.position": {
+        "humanAway.position": {
           "type": "string",
           "default": "chatInputBesideAutopilot",
           "enum": [
             "chatInputBesideAutopilot",
-            "inputTop",
             "statusBarLeft",
             "statusBarRight"
           ],
           "description": "ONE active placement of the chip. Falls back to statusBarLeft (visible in status command) when the chat-area API is unavailable."
         },
-        "awayModeIndicator.style": {
+        "humanAway.style": {
           "type": "string",
           "default": "dotWord",
           "enum": [
@@ -107,24 +106,24 @@
           ],
           "description": "V2 colored dot + word (default) or V5 outlined badge. Identical everywhere, every state."
         },
-        "awayModeIndicator.compactLabel": {
+        "humanAway.compactLabel": {
           "type": "boolean",
           "default": false,
           "description": "Icon-only chip (tooltip carries the state)."
         },
-        "awayModeIndicator.refreshSeconds": {
+        "humanAway.refreshSeconds": {
           "type": "number",
           "default": 5,
           "minimum": 1,
           "description": "Max refresh staleness (seconds); watcher is primary, stat-only poll the guard."
         },
-        "awayModeIndicator.pendingGraceSeconds": {
+        "humanAway.pendingGraceSeconds": {
           "type": "number",
           "default": 3,
           "minimum": 0,
           "description": "Window showing the switching color after a token change."
         },
-        "awayModeIndicator.scopeMode": {
+        "humanAway.scopeMode": {
           "type": "string",
           "default": "global",
           "enum": [
@@ -133,44 +132,44 @@
           ],
           "description": "global: the token file is the state. window: file seeds, per-window overrides until the file changes."
         },
-        "awayModeIndicator.preferNativeChatChip": {
+        "humanAway.preferNativeChatChip": {
           "type": "boolean",
           "default": true,
           "description": "Use the chat-input status item (OptionsLocation) when the running VS Code exposes it."
         },
-        "awayModeIndicator.showSessionScope": {
+        "humanAway.showSessionScope": {
           "type": "boolean",
           "default": true,
           "description": "Show the focused workspace SESSION.md first lines in the tooltip."
         },
-        "awayModeIndicator.onColor": {
+        "humanAway.onColor": {
           "type": "string",
           "default": "editorWarning.foreground",
           "description": "ThemeColor id (or #hex) for ON."
         },
-        "awayModeIndicator.pendingColor": {
+        "humanAway.pendingColor": {
           "type": "string",
           "default": "editorInfo.foreground",
           "description": "ThemeColor id (or #hex) for switching."
         },
-        "awayModeIndicator.errorColor": {
+        "humanAway.errorColor": {
           "type": "string",
           "default": "editorError.foreground",
           "description": "ThemeColor id (or #hex) for config errors."
         },
-        "awayModeIndicator.statusBarPriority": {
+        "humanAway.statusBarPriority": {
           "type": "number",
           "default": 10001,
           "description": "Order of the status-bar chip relative to other items (higher = further left). Use the Shift chip left/right commands for stepwise adjustment."
         },
-        "awayModeIndicator.sessionHeadLines": {
+        "humanAway.sessionHeadLines": {
           "type": "number",
           "default": 5,
           "minimum": 1,
           "maximum": 20,
           "description": "Number of SESSION.md head lines shown in the tooltip session scope."
         },
-        "awayModeIndicator.arbitrationChannel": {
+        "humanAway.arbitrationChannel": {
           "type": "string",
           "default": "interactive",
           "enum": [
@@ -183,12 +182,12 @@
           ],
           "markdownDescription": "Channel the agent MUST use for arbitrations. Binding via the agents memory rule, which reads this value from settings.json only - never from AGENTS.md content at run time."
         },
-        "awayModeIndicator.forceInteractiveArbitration": {
+        "humanAway.forceInteractiveArbitration": {
           "type": "boolean",
           "default": true,
           "markdownDescription": "ON: an autopilot auto-answer (class A, e.g. \"user not available\") never counts as an arbitration answer; the interactive UI reopens until a real answer. OFF: a class-A answer is accepted as a fall-back decision."
         },
-        "awayModeIndicator.awayMaxRequests": {
+        "humanAway.awayMaxRequests": {
           "type": "number",
           "default": 100000,
           "minimum": 1,

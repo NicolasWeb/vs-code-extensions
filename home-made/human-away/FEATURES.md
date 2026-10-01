@@ -1,6 +1,9 @@
-# FEATURES — away-mode-indicator (O-A) — rev 4 (2026-10-02)
+# FEATURES — human-away (ex away-mode-indicator) (O-A) — rev 5 (2026-10-02)
 
-Status: **DRAFT rev 2 — awaiting user validation** (build gate unchanged:
+Status: **historical design record** — shipped (rev 4 build); rev 5 =
+user-ordered rename to **Human Away** (0.1.0). README.md + HELP.md are the
+live docs. Superseded build-gate wording (was: propose UI -> user
+chooses -> features file -> USER VALIDATES -> build):
 propose UI -> user chooses -> features file -> USER VALIDATES -> build).
 Rev 2 folded the user's ~17:2x list; rev 3 folds the user's
 ~18:4x list (observatory out, theme-dynamic colors, click=palette command,
@@ -13,7 +16,8 @@ ai-agents-md repo.
 Show, permanently and identically at two places, that the Away mode is
 ON, with colors consistent with the VS Code design system in BOTH light
 and dark themes, so the user sees the state while typing, before sending.
-Sister feature (same extension, §9): an Auto-Approve observatory.
+(A sister Auto-Approve observatory was once sketched here — REJECTED,
+see §9; that tuning lives in its own standalone plan.)
 
 ## 2 Source of truth and state (single, global)
 - Truth source: the MASTER token line
@@ -37,7 +41,7 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
   infers state from anything but the token line.
 
 ## 3 Path resolution (WSL distro/version agnostic)
-- Config `awayModeIndicator.agentsFile` accepts: POSIX path
+- Config `humanAway.agentsFile` accepts: POSIX path
   (`/home/nicolas/agents/AGENTS.md`), UNC path
   (`\\wsl.localhost\FedoraLinux-44\home\nicolas\agents\AGENTS.md`), or
   `~/agents/AGENTS.md`. Both spellings resolve to the same file — the
@@ -63,15 +67,15 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
 - Surfaces: (a) the chip near the chat input — native chat-input status
   item (`OptionsLocation.Chat`) when the API exists (capability probe, no
   launch flag, silent fallback otherwise); and (b) the Chat-pane tree
-  row (`awayModeIndicator.status`, first row, pinned top).
+  row (`humanAway.status`, first row, pinned top).
 - IDENTICAL presentation rule: same codicon + same label + same color +
   same tooltip at both. Recommendation kept: LABEL the state —
   `$(circle-filled) Away mode ON` (icon alone = ambiguous vs the yellow
   Autopilot chip; text is accessible and self-explaining at a glance).
-  Config `awayModeIndicator.compactLabel` (default false) = icon-only +
+  Config `humanAway.compactLabel` (default false) = icon-only +
   `name` for accessibility, if the user prefers minimal.
 - CLICK (both surfaces) runs the ONE command
-  `awayModeIndicator.toggle` — identical to what ctrl+shift+P -> same
+  `humanAway.toggle` — identical to what ctrl+shift+P -> same
   command does manually; the click never bypasses the command. The
   command rewrites ONLY the token word ON<->OFF inside `[STATUS: ]` of
   the Away section (anchored, byte-exact elsewhere, atomic tmp+rename)
@@ -113,20 +117,20 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
   must navigate to settings himself.
 - E2 (recommended) — tooltip E1 PLUS: clicking the error chip opens a
   quick-pick with the same info as actionable rows: `Open
-  awayModeIndicator.agentsFile setting`, `Retry now`, `Show help`;
+  humanAway.agentsFile setting`, `Retry now`, `Show help`;
   fixing becomes one click instead of a hunt. Same surfaces, same
   colors, only the click target changes in error state.
 
 ## 7 Commands
-- `awayModeIndicator.toggle` — flip the token (writable path required).
-- `awayModeIndicator.showStatus` — state, file resolved, last read age,
+- `humanAway.toggle` — flip the token (writable path required).
+- `humanAway.showStatus` — state, file resolved, last read age,
   resolution chain used.
-- `awayModeIndicator.showHelp` — HELP.md rendered as markdown webview
+- `humanAway.showHelp` — HELP.md rendered as markdown webview
   (purpose, surfaces, click behavior, path settings, distro-change
   recipe, troubleshooting, perf budget).
-- `awayModeIndicator.overrideOn/Off` — debug-only manual state, cleared
+- `humanAway.overrideOn/Off` — debug-only manual state, cleared
   by the next file change (the file stays the authority).
-- `awayModeIndicator.shiftLeft` / `shiftRight` — step
+- `humanAway.shiftLeft` / `shiftRight` — step
   `statusBarPriority` by ±100 (the fallback status-bar chip order).
   The Settings page cannot host buttons (VS Code API), so these two
   commands ARE the left/right control the user asked for. Added in the
@@ -135,24 +139,24 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
 ## 8 Configuration
 | Key | Default | Meaning |
 |---|---|---|
-| `awayModeIndicator.agentsFile` | `~/agents/AGENTS.md` | truth source (POSIX/UNC/`~`) |
-| `awayModeIndicator.refreshSeconds` | `5` | max staleness: stat-only poll ceiling (watcher is primary) |
-| `awayModeIndicator.pendingGraceSeconds` | `3` | window showing the switching color |
-| `awayModeIndicator.compactLabel` | `false` | icon-only labels |
-| `awayModeIndicator.style` | `dotWord` | appearance everywhere and identically: `dotWord` = V2 (colored dot + word, default) \| `outlinedPill` = V5 (dot+word in an outlined badge); applies to all states incl. switching/error |
-| `awayModeIndicator.onColor` | `editorWarning.foreground` | ThemeColor id or #hex |
-| `awayModeIndicator.pendingColor` | `editorInfo.foreground` | switching state |
-| `awayModeIndicator.errorColor` | `editorError.foreground` | config error state |
-| `awayModeIndicator.position` | `chatInputBesideAutopilot` | ONE active placement: chatInputBesideAutopilot (default, the chip under the input beside Autopilot) \| inputTop \| statusBarLeft \| statusBarRight; when the chat-area API is absent the active placement falls back to statusBarLeft, fact surfaced in showStatus |
-| `awayModeIndicator.preferNativeChatChip` | `true` | input-area chip when API exists |
-| `awayModeIndicator.showSessionScope` | `true` | per-workspace SESSION.md context in tooltip |
-| `awayModeIndicator.scopeMode` | `global` | `global` = token file is the state, every window shows/edits it (toggle edits AGENTS.md). `window` = the file seeds every window, then PER-WINDOW overrides live only in that window (workspace-state, never on disk): toggles change only that window; a file change resets all overrides. Default `global` (matches the rule's user-global scope); pick `window` when windows must diverge |
-| `awayModeIndicator.heading` | `## Autonomous unattended work (Away mode)` | exact anchor heading in the truth file; rename-safe (variabilisation #1, user YES). Token `[STATUS: ]` must stay on this line |
-| `awayModeIndicator.statusBarPriority` | `10001` | fallback status-bar chip order (higher = further left); shifted by the two shift commands (variabilisation #4-7, user YES) |
-| `awayModeIndicator.sessionHeadLines` | `5` | SESSION.md lines shown in the tooltip (1-20) (variabilisation #4-7, user YES) |
-| `awayModeIndicator.arbitrationChannel` | `interactive` | agent-facing arbitration policy: `interactive` (GitHub Copilot Chat question UI) or `chat` (plain numbered prose). Executed by the agents memory rule, which reads this value from **settings.json only, never from AGENTS.md at run time** (user constraint) |
-| `awayModeIndicator.forceInteractiveArbitration` | `true` | ON: an autopilot class-A auto-answer ("user not available") NEVER settles an arbitration; the interactive UI reopens until a real answer. OFF: a class-A answer is accepted as a fall-back (the "forcing on/off" the user asked for) |
-| `awayModeIndicator.awayMaxRequests` | `100000` | §14: temporary `chat.agent.maxRequests` while Away is ON (user value stashed, restored on OFF; already-higher user value untouched) |
+| `humanAway.agentsFile` | `~/agents/AGENTS.md` | truth source (POSIX/UNC/`~`) |
+| `humanAway.refreshSeconds` | `5` | max staleness: stat-only poll ceiling (watcher is primary) |
+| `humanAway.pendingGraceSeconds` | `3` | window showing the switching color |
+| `humanAway.compactLabel` | `false` | icon-only labels |
+| `humanAway.style` | `dotWord` | appearance everywhere and identically: `dotWord` = V2 (colored dot + word, default) \| `outlinedPill` = V5 (dot+word in an outlined badge); applies to all states incl. switching/error |
+| `humanAway.onColor` | `editorWarning.foreground` | ThemeColor id or #hex |
+| `humanAway.pendingColor` | `editorInfo.foreground` | switching state |
+| `humanAway.errorColor` | `editorError.foreground` | config error state |
+| `humanAway.position` | `chatInputBesideAutopilot` | ONE active placement: chatInputBesideAutopilot (default, the chip under the input beside Autopilot) \| inputTop \| statusBarLeft \| statusBarRight; when the chat-area API is absent the active placement falls back to statusBarLeft, fact surfaced in showStatus |
+| `humanAway.preferNativeChatChip` | `true` | input-area chip when API exists |
+| `humanAway.showSessionScope` | `true` | per-workspace SESSION.md context in tooltip |
+| `humanAway.scopeMode` | `global` | `global` = token file is the state, every window shows/edits it (toggle edits AGENTS.md). `window` = the file seeds every window, then PER-WINDOW overrides live only in that window (workspace-state, never on disk): toggles change only that window; a file change resets all overrides. Default `global` (matches the rule's user-global scope); pick `window` when windows must diverge |
+| `humanAway.heading` | `## Autonomous unattended work (Away mode)` | exact anchor heading in the truth file; rename-safe (variabilisation #1, user YES). Token `[STATUS: ]` must stay on this line |
+| `humanAway.statusBarPriority` | `10001` | fallback status-bar chip order (higher = further left); shifted by the two shift commands (variabilisation #4-7, user YES) |
+| `humanAway.sessionHeadLines` | `5` | SESSION.md lines shown in the tooltip (1-20) (variabilisation #4-7, user YES) |
+| `humanAway.arbitrationChannel` | `interactive` | agent-facing arbitration policy: `interactive` (GitHub Copilot Chat question UI) or `chat` (plain numbered prose). Executed by the agents memory rule, which reads this value from **settings.json only, never from AGENTS.md at run time** (user constraint) |
+| `humanAway.forceInteractiveArbitration` | `true` | ON: an autopilot class-A auto-answer ("user not available") NEVER settles an arbitration; the interactive UI reopens until a real answer. OFF: a class-A answer is accepted as a fall-back (the "forcing on/off" the user asked for) |
+| `humanAway.awayMaxRequests` | `100000` | §14: temporary `chat.agent.maxRequests` while Away is ON (user value stashed, restored on OFF; already-higher user value untouched) |
 
 ## 9 Out of scope
 - The Auto-Approve observatory was REMOVED from this
@@ -239,14 +243,14 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
   at the tool-call round limit read from the workbench setting
   `chat.agent.maxRequests` (`??200` fallback; the user's own global
   value: 2000). VS Code exposes no "disable pause" toggle — the only
-  control is that number. `awayModeIndicator.*` settings can never
+  control is that number. `humanAway.*` settings can never
   raise it (extension settings are only read via
   getConfiguration(extensionId)).
 - Design: on the state machine (single point: render), Away ON applies
   the temporary value `awayMaxRequests` (default 100000 — one whole
   day, and beyond: 100000 requests ≥ 86400 even at 1 request/second);
   the user's own value is stashed first in globalState (key
-  `awayModeIndicator.copilotMaxRequests.stash`, holds the
+  `humanAway.copilotMaxRequests.stash`, holds the
   effective-scoped value or null = never set). Away OFF (or error)
   restores EXACTLY: number → number; null → setting removed → VS Code
   default again. Guard rails: never re-stash while a stash exists
@@ -263,3 +267,12 @@ Sister feature (same extension, §9): an Auto-Approve observatory.
   idempotence, exact restore, unset→default, already-high untouched,
   already-high-then-OFF no-op, raise-setting case, crash-surviving
   stash) — token MAXREQ_UNIT_OK.
+
+## 15 Rename to Human Away (rev 5, user order 2026-10-02)
+- Folder `human-away`, prefix `humanAway` everywhere (id,
+  settings, commands, view ids) = 0.1.0: the settings-prefix
+  change is data-breaking; the user settings were migrated in
+  the same pass. Dropped the dead `triedPaths` field and the
+  dead `inputTop` enum value (rendered exactly like
+  `chatInputBesideAutopilot`) + relocated the parser docstring
+  (validated legacy review 2026-10-02).
