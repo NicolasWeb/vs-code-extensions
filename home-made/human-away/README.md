@@ -79,6 +79,9 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
 | `humanAway.arbitrationChannel` | `interactive` | channel the **agent** must use for arbitrations (`interactive` \| `chat`), read from settings.json only |
 | `humanAway.forceInteractiveArbitration` | `true` | ON: an autopilot auto-answer never counts; the interactive UI reopens until a real answer |
 | `humanAway.awayMaxRequests` | `100000` | temporary `chat.agent.maxRequests` while Away is ON (your value stashed, restored on OFF; a user value already ≥ this one is left untouched) |
+| `humanAway.observeAutoApprove` | `true` | Auto-Approve observatory: watches the public `chat.tools.terminal.autoApprove` setting; events live in globalState only (never leaves the machine) |
+| `humanAway.observeTargetEvents` | `50` | decision events needed before the report verdict flips from `COLLECTING` to `COLLECT_TARGET_REACHED` |
+| `humanAway.observeWindowDays` | `7` | collection window (days) stated in the report header |
 
 ## Commands
 
@@ -89,6 +92,7 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
 | `Away Mode: Help` | in-editor help page (rendered `HELP.md`) |
 | `Away Mode: Temporary Override ON/OFF (debug)` | window-scope render check without touching files |
 | `Away Mode: Shift Status Chip Left/Right` | step `statusBarPriority` by +/-100 (the Settings page itself cannot host buttons — API limit) |
+| `Human Away: Auto-Approve Tiering Report (observatory)` | webview showing per-tier approval tallies vs the tier table, NEVER-tier violations, the live approved-map, and the collection verdict |
 
 ## Known limitations (0.0.x)
 
@@ -117,7 +121,12 @@ reads one markdown file and, only on explicit click, rewrites one word
 of it. While Away mode is ON it also temporarily raises
 `chat.agent.maxRequests` (user scope) and restores the previous value on
 Away OFF; `Show Away Mode Status` always discloses the temporary value
-and the value held for restore.
+and the value held for restore. The Auto-Approve observatory watches the
+public `chat.tools.terminal.autoApprove` setting only (a settings
+change is what VS Code itself persists when you answer an "always
+approve" prompt); it never edits that map and never reads Copilot-internal
+state. The ledger lives in local globalState and never leaves the
+machine.
 
 ## Release Notes
 

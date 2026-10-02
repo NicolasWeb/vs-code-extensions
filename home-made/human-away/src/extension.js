@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { parseAwayToken, toggleAwayToken } = require("./parser");
+const COL = require("./collector");
 
 const P = "humanAway";
 let ctx;
@@ -281,6 +282,71 @@ function showStatus() {
     ", refresh interval " + cfg("refreshSeconds") + "s" + (state.fallbackUsed ? " — chat chip API unavailable, fell back to statusBarLeft" : "") +
     " " + (state.mrNote || ""));
 }
+// ---- Auto-Approve observatory (PLAN_AUTOAPPROVE_TUNING step 1) ----------
+// Public local signal only: chat.tools.terminal.autoApprove changes =
+// persisted approvals/revocations. Nothing is read from Copilot internals,
+// nothing leaves the machine (globalState ledger, local reports).
+const LEDGER_KEY = P + ".autoApproveLedger";
+const LEDGER_CAP = 5000; // FIFO bound on the session ledger (globalState)
+let ledger = [];           // in-memory mirror of the persisted events
+let lastAutoApprove = null; // last snapshot of the settings map
+
+function currentAutoApprove() {
+  const v = vscode.workspace.getConfiguration().get(COL.AUTO_APPROVE_KEY);
+  return v && typeof v === "object" ? v : {};
+}
+function persistLedger() {
+  if (ledger.length > LEDGER_CAP) ledger = ledger.slice(ledger.length - LEDGER_CAP);
+  ctx.globalState.update(LEDGER_KEY, ledger).then(null, () => { /* best effort */ });
+}
+function pushLedger(events) {
+  if (!events.length) return;
+  ledger = ledger.concat(events);
+  persistLedger();
+}
+function sampleAutoApprove() {
+  if (!cfg("observeAutoApprove")) return;
+  const snap = currentAutoApprove();
+  const ts = Date.now();
+  if (lastAutoApprove === null) {
+    lastAutoApprove = snap;
+    // first activation ever: seed the pre-existing matchers as baselines
+    const saved = ctx.globalState.get(LEDGER_KEY);
+    if (Array.isArray(saved)) { ledger = saved; return; } // already seeded
+    const seeded = COL.buildLedgerEvent(ts, state.fileState, { added: [], removed: [], changed: [] }, Object.keys(snap));
+    pushLedger(seeded.seeds);
+    return;
+  }
+  const diff = COL.diffAutoApprove(lastAutoApprove, snap);
+  lastAutoApprove = snap;
+  pushLedger(COL.buildLedgerEvent(ts, state.fileState, diff, null).events);
+}
+function buildTieringText() {
+  // fold in the live settings map so baselines never vanish on re-install
+  const agg = COL.aggregateReport(ledger);
+  const first = ledger.length ? new Date(ledger[0].ts).toISOString().slice(0, 10) : "-";
+  const last = ledger.length ? new Date(ledger[ledger.length - 1].ts).toISOString().slice(0, 10) : "-";
+  const lines = [COL.renderReport(agg, {
+    events: agg.total.approves + agg.total.revokes,
+    window: first + ".." + last,
+    away: state.fileState === "on",
+    target: cfg("observeTargetEvents"),
+    windowDays: cfg("observeWindowDays"),
+  })];
+  if (!cfg("observeAutoApprove")) lines.push("NOTE: humanAway.observeAutoApprove is OFF - collection paused (ledger kept).");
+  const live = Object.keys(currentAutoApprove()).sort();
+  lines.push("");
+  lines.push("live " + COL.AUTO_APPROVE_KEY + " now: " + (live.length ? live.join(", ") : "(empty map)"));
+  lines.push("ledger events: " + ledger.length + " (persisted in globalState, cap " + LEDGER_CAP + ", local only)");
+  return lines.join("\n");
+}
+async function showTieringReport() {
+  sampleAutoApprove(); // fold in any change the watcher missed
+  const panel = vscode.window.createWebviewPanel(P + ".tiering", "Human Away — Auto-Approve Tiering Report", vscode.ViewColumn.One, {});
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  panel.webview.html = "<html><head><meta charset='utf-8'></head><body style='font-family:var(--vscode-editor-font-family);padding:12px;max-width:70em'><pre style='white-space:pre-wrap;margin:0'>" + esc(buildTieringText()) + "</pre></body></html>";
+}
+
 async function showHelp() {
   const panel = vscode.window.createWebviewPanel(P + ".help", "Human Away — Help", vscode.ViewColumn.One, {});
   try {
@@ -300,9 +366,13 @@ function activate(context) {
     vscode.commands.registerCommand(P + ".shiftLeft", () => shiftPriority(BAR_SHIFT_STEP)),
     vscode.commands.registerCommand(P + ".shiftRight", () => shiftPriority(-BAR_SHIFT_STEP)),
     vscode.commands.registerCommand(P + ".overrideOff", () => { state.windowOverride = false; render(); }),
-    vscode.workspace.onDidChangeConfiguration((e) => { if (e.affectsConfiguration(P)) { ctx._lastSig = ""; readAndRender(); } }),
+    vscode.commands.registerCommand(P + ".showTieringReport", showTieringReport),
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration(P)) { ctx._lastSig = ""; readAndRender(); }
+      if (e.affectsConfiguration(COL.AUTO_APPROVE_KEY)) sampleAutoApprove();
+    }),
   );
-  readAndRender(); setupWatchers();
+  readAndRender(); setupWatchers(); sampleAutoApprove(); // seed the ledger
   pollTimer = setInterval(refreshGuard, Math.max(MIN_POLL_MS, cfg("refreshSeconds") * 1000));
   ctx.subscriptions.push({ dispose: () => clearInterval(pollTimer) });
   createSurfaces().then(render).catch(() => render());

@@ -1,8 +1,9 @@
-# FEATURES — human-away (ex away-mode-indicator) (O-A) — rev 5 (2026-10-02)
+# FEATURES — human-away (ex away-mode-indicator) (O-A) — rev 6 (2026-10-02)
 
 Status: **historical design record** — shipped (rev 4 build); rev 5 =
-user-ordered rename to **Human Away** (0.1.0). README.md + HELP.md are the
-live docs. Superseded build-gate wording (was: propose UI -> user
+user-ordered rename to **Human Away** (0.1.0); rev 6 = Auto-Approve
+observatory admitted (§9 re-admits it, §16 build) for 0.2.0.
+README.md + HELP.md are the live docs. Superseded build-gate wording (was: propose UI -> user
 chooses -> features file -> USER VALIDATES -> build):
 propose UI -> user chooses -> features file -> USER VALIDATES -> build).
 Rev 2 folded the user's ~17:2x list; rev 3 folds the user's
@@ -135,6 +136,9 @@ see §9; that tuning lives in its own standalone plan.)
   The Settings page cannot host buttons (VS Code API), so these two
   commands ARE the left/right control the user asked for. Added in the
   variabilisation pass (user-reviewed, 2026-10-01).
+- `humanAway.showTieringReport` — Auto-Approve observatory report
+  (§16, 0.2.0): per-tier approve tallies vs the plan tier table,
+  NEVER-tier violations, collection verdict tokens.
 
 ## 8 Configuration
 | Key | Default | Meaning |
@@ -157,12 +161,19 @@ see §9; that tuning lives in its own standalone plan.)
 | `humanAway.arbitrationChannel` | `interactive` | agent-facing arbitration policy: `interactive` (GitHub Copilot Chat question UI) or `chat` (plain numbered prose). Executed by the agents memory rule, which reads this value from **settings.json only, never from AGENTS.md at run time** (user constraint) |
 | `humanAway.forceInteractiveArbitration` | `true` | ON: an autopilot class-A auto-answer ("user not available") NEVER settles an arbitration; the interactive UI reopens until a real answer. OFF: a class-A answer is accepted as a fall-back (the "forcing on/off" the user asked for) |
 | `humanAway.awayMaxRequests` | `100000` | §14: temporary `chat.agent.maxRequests` while Away is ON (user value stashed, restored on OFF; already-higher user value untouched) |
+| `humanAway.observeAutoApprove` | `true` | §16: observatory on/off — watches the public `chat.tools.terminal.autoApprove` setting only (ledger kept while paused) |
+| `humanAway.observeTargetEvents` | `50` | §16: decision events needed before the report flips to COLLECT_TARGET_REACHED |
+| `humanAway.observeWindowDays` | `7` | §16: collection window stated in the report header |
 
-## 9 Out of scope
-- The Auto-Approve observatory was REMOVED from this
-  extension (user order 2026-10-01 ~18:4x). It lives on as the independent
-  manual plan PLAN_AUTOAPPROVE_TUNING_20261001.md (analysis by the agent
-  from plans/settings/session evidence, no extension code).
+## 9 Scope history — Auto-Approve observatory
+- REMOVED 2026-10-01 (user order ~18:4x): it lived on as the independent
+  manual plan PLAN_AUTOAPPROVE_TUNING (analysis from plans/settings
+  evidence, no extension code).
+- RE-ADMITTED 2026-10-02 (explicit user GO on the plan step-1 gate,
+  confirmed again by "Développe le collecteur"): built in 0.2.0 as the
+  collector of §16. It observes the PUBLIC local settings signal only,
+  so the §12 non-goals stay respected (no Copilot-internal reading,
+  no network, no dependencies).
 
 ## 10 Performance (budget + how it is met + measured)
 - Budget: idle CPU < 0.1 % median, < 5 MB RSS, work per refresh < 1 ms.
@@ -189,11 +200,18 @@ see §9; that tuning lives in its own standalone plan.)
   chip + tooltip path; theme switch light<->dark recolors with no
   settings change (ThemeColor ids).
 - Perf: the §10 benches, tokens asserted.
+- Observatory: `test/collector_unit.js` — 21 assertions (tiering of
+  observed command families, NEVER-lists, snapshot diff, ledger
+  away-context, aggregation rates, report verdict tokens).
+  Token: `TIER_UNIT_OK`.
 
 ## 12 Non-goals
 - No auto-activation from chat text; no per-workspace rule state
-  (§2 analysis, §13.1 open); no writes beyond the one-token toggle; no
-  Copilot-internal reading; no telemetry/network/dependencies.
+  (§2 analysis, §13.1 open); no writes beyond the one-token toggle;
+  no Copilot-internal reading; no telemetry/network/dependencies.
+  The §16 observatory respects all of these: it reads ONE public
+  settings key and never edits `chat.tools.terminal.autoApprove`
+  itself (the step-4 settings diff stays a user-gated proposal).
 
 ## 13 Decision ledger
 - VARIABILISATION PASS applied (2026-10-01, each item validated one-by-one
@@ -276,3 +294,32 @@ see §9; that tuning lives in its own standalone plan.)
   dead `inputTop` enum value (rendered exactly like
   `chatInputBesideAutopilot`) + relocated the parser docstring
   (validated legacy review 2026-10-02).
+
+## 16 Auto-Approve observatory collector (rev 6, 0.2.0, PLAN_AUTOAPPROVE_TUNING step 1, BUILT)
+- Signal (measured 2026-10-02, the ONLY public one): an "always
+  approve" answer persists a matcher into
+  `chat.tools.terminal.autoApprove`; chat session transcripts hold
+  no tool-approval state, so the settings map is the whole public
+  channel. `onDidChangeConfiguration` + snapshot diffs observe it.
+- Ledger: one event per added/removed/toggled matcher — ts, type
+  (approve/revoke), pattern, tier, away-context; pre-existing
+  matchers seeded as `baseline` on first activation only. Persisted
+  in globalState (survives reloads), FIFO-capped at 5000, local
+  only. Tiering = first-match regex table T5→T0 mirroring the plan
+  §1 families (T0 read-only inspection incl. the already-approved
+  `code --diff`, T1 local execution incl. in-place `sed -i`,
+  T2 commits, T3 push/gh, T4 shared hardware, T5 destructive,
+  UNTIERED = keep prompting).
+- Report (`humanAway.showTieringReport`, webview): per-tier
+  approves/revokes/baselines/distinct patterns + approve-rate +
+  away-approves, NEVER-tier violations flagged loudly (any T4/T5
+  approve), the live map, and the verdict token `COLLECTING` /
+  `COLLECT_TARGET_REACHED` vs `observeTargetEvents` (50) /
+  `observeWindowDays` (7) — the step-2 collection window opens when
+  0.2.0 is installed; step 3 (analysis) and step 4 (settings-diff
+  proposal) remain user-gated at window end.
+- Pause semantics: `observeAutoApprove=false` stops sampling but
+  keeps the ledger; re-activation re-baselines silently.
+- Pure logic in `src/collector.js` (no vscode import) so the unit
+  test runs in plain node; wiring in extension.js is thin
+  (watcher, ledger IO, report render).

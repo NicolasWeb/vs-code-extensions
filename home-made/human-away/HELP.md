@@ -68,6 +68,17 @@ while it is ON (or on error). While OFF it hides itself; it does not render
   `chat.agent.maxRequests` still takes precedence — keep the setting at
   user level for the silence to apply. What the extension currently
   holds is always shown by "Show Away Mode Status".
+- `humanAway.observeAutoApprove` (default true): a small passive
+  observatory that watches the public
+  `chat.tools.terminal.autoApprove` setting (the one VS Code writes
+  when you answer an "always approve" terminal prompt). Each change is
+  stored in a local session ledger (globalState, never uploaded) and
+  folded into a tiered report (T0 read-only → T5 destructive, NEVER
+  tiers flagged if they ever see an approval). It never edits the map
+  itself. Use "Human Away: Auto-Approve Tiering Report" to see the
+  tallies and whether the target (~50 events) is reached. Settings:
+  `humanAway.observeTargetEvents` (default 50) and
+  `humanAway.observeWindowDays` (default 7) shape the verdict line.
 
 ## Errors
 The chip shows in the error color when the truth is unreadable: file

@@ -2,7 +2,7 @@
   "name": "human-away",
   "displayName": "Human Away",
   "description": "Read-only-visible Away mode state chip (chat pane + input row) driven by the AGENTS.md STATUS token.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "nicolas-web-local",
   "license": "MIT",
   "engines": {
@@ -72,6 +72,10 @@
       {
         "command": "humanAway.shiftRight",
         "title": "Human Away: Shift Status Chip Right"
+      },
+      {
+        "command": "humanAway.showTieringReport",
+        "title": "Human Away: Auto-Approve Tiering Report (observatory)"
       }
     ],
     "configuration": {
@@ -192,6 +196,23 @@
           "default": 100000,
           "minimum": 1,
           "markdownDescription": "While Away mode is ON, `chat.agent.maxRequests` (GitHub Copilot Chat) is temporarily raised to this value so long unattended runs never pause with \"Copilot has been working on this problem for a while… Continue to iterate?\". The value 100000 covers a full day of uninterrupted tool requests (~5 s/request \u2248 17 000; VS Code accepts no greater-than setting, so no upper bound applies). When Away goes OFF the previous value is restored exactly \u2014 including an unset one, in which case VS Code's own default applies again."
+        },
+        "humanAway.observeAutoApprove": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Auto-Approve observatory (PLAN_AUTOAPPROVE_TUNING): watch the public `chat.tools.terminal.autoApprove` setting and append each approval/revocation to a LOCAL session ledger (persisted in globalState, never leaves the machine). Use the `Human Away: Auto-Approve Tiering Report` command to see per-tier tallies against the planned tier table. Read-only observation of a public setting only - the extension never reads Copilot internals and never auto-edits the map."
+        },
+        "humanAway.observeTargetEvents": {
+          "type": "number",
+          "default": 50,
+          "minimum": 1,
+          "description": "Target number of collected approval events before the tiering report flips to COLLECT_TARGET_REACHED (analysis gate)."
+        },
+        "humanAway.observeWindowDays": {
+          "type": "number",
+          "default": 7,
+          "minimum": 1,
+          "description": "Collection window (days) stated in the tiering report header for context."
         }
       }
     }
