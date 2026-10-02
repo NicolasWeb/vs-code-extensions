@@ -3,7 +3,9 @@
 Status: **historical design record** — shipped (rev 4 build); rev 5 =
 user-ordered rename to **Human Away** (0.1.0); rev 6 = Auto-Approve
 observatory admitted (§9 re-admits it, §16 build) for 0.2.0.
-README.md + HELP.md are the live docs. Superseded build-gate wording (was: propose UI -> user
+README.md + HELP.md are the live docs; the LIVE plan (by-feature,
+decisions + pending arbitrations + status log) is kevina
+OpenBRSM/.ai_baseline/plans/feature_plans/PLAN_HUMAN_AWAY.md. Superseded build-gate wording (was: propose UI -> user
 chooses -> features file -> USER VALIDATES -> build):
 propose UI -> user chooses -> features file -> USER VALIDATES -> build).
 Rev 2 folded the user's ~17:2x list; rev 3 folds the user's
