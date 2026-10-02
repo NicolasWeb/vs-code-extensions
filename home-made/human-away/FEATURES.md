@@ -10,8 +10,9 @@ Rev 2 folded the user's ~17:2x list; rev 3 folds the user's
 ~18:4x list (observatory out, theme-dynamic colors, click=palette command,
 error-feedback options, refresh wording, scopeMode option).
 
-Repo location: `vs-code-extensions/home-made/away-mode-indicator/` in the
-ai-agents-md repo.
+Repo location: `vs-code-extensions/home-made/human-away/` in the
+ai-agents-md repo (folder renamed by git mv in the 2026-10-02 rename pass;
+old spelling `away-mode-indicator/` lives only in historical lines below).
 
 ## 1 Purpose
 Show, permanently and identically at two places, that the Away mode is

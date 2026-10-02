@@ -8,7 +8,7 @@ while it is ON (or on error). While OFF it hides itself; it does not render
 - Default: a chip beside the Autopilot control in the Chat view.
 - If that placement API is unavailable in this VS Code build, the extension
   falls back to the window **status bar (left)** and says so in its tooltip;
-  a minimal row also appears in the "Away Mode Indicator" explorer view.
+  a minimal row also appears in the "Away Mode" explorer view.
 - Choose another placement in `humanAway.position`.
 
 ## Click behaviour
