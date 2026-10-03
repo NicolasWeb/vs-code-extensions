@@ -150,7 +150,7 @@ see §9; that tuning lives in its own standalone plan.)
 | `humanAway.refreshSeconds` | `5` | max staleness: stat-only poll ceiling (watcher is primary) |
 | `humanAway.pendingGraceSeconds` | `3` | window showing the switching color |
 | `humanAway.compactLabel` | `false` | icon-only labels |
-| `humanAway.style` | `dotWord` | appearance everywhere and identically: `dotWord` = V2 (colored dot + word, default) \| `outlinedPill` = V5 (dot+word in an outlined badge); applies to all states incl. switching/error |
+| `humanAway.style` | `outlinedPill` | appearance everywhere and identically: `outlinedPill` = V5 (dot+word in an outlined badge, default) \| `dotWord` = V2 (colored dot + word); applies to all states incl. switching/error |
 | `humanAway.onColor` | `editorWarning.foreground` | ThemeColor id or #hex |
 | `humanAway.pendingColor` | `editorInfo.foreground` | switching state |
 | `humanAway.errorColor` | `editorError.foreground` | config error state |

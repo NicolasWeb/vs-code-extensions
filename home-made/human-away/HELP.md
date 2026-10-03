@@ -29,7 +29,7 @@ while it is ON (or on error). While OFF it hides itself; it does not render
   STATUS token. Accepts POSIX, UNC or `~` forms. Default `~/agents/AGENTS.md`.
 - `humanAway.position`: `chatInputBesideAutopilot` (default),
   `statusBarLeft`, `statusBarRight`.
-- `humanAway.style`: `dotWord` (default) or `outlinedPill`.
+- `humanAway.style`: `outlinedPill` (default, V5) or `dotWord` (V2).
 - `humanAway.compactLabel`: icon-only rendering.
 - `humanAway.scopeMode`: `global` (default, file is truth) or
   `window` (per-window session override).

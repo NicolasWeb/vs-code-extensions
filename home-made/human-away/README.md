@@ -66,7 +66,7 @@ Token detection is a strict anchor on the heading (regex-escaped), so a
 | `humanAway.agentsFile` | `~/agents/AGENTS.md` | truth-source file |
 | `humanAway.heading` | `## Autonomous unattended work (Away mode)` | exact heading the parser anchors on (rename-safe) |
 | `humanAway.position` | `chatInputBesideAutopilot` | one active placement (`statusBarLeft`, `statusBarRight` too) |
-| `humanAway.style` | `dotWord` | `dotWord` \| `outlinedPill`, same everywhere |
+| `humanAway.style` | `outlinedPill` | `outlinedPill` (V5) \| `dotWord` (V2), same everywhere |
 | `humanAway.compactLabel` | `false` | icon-only chip |
 | `humanAway.refreshSeconds` | `5` | metadata-guard interval (watcher is primary) |
 | `humanAway.pendingGraceSeconds` | `3` | transient switching window |

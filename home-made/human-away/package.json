@@ -103,12 +103,12 @@
         },
         "humanAway.style": {
           "type": "string",
-          "default": "dotWord",
+          "default": "outlinedPill",
           "enum": [
             "dotWord",
             "outlinedPill"
           ],
-          "description": "V2 colored dot + word (default) or V5 outlined badge. Identical everywhere, every state."
+          "description": "V5 outlined badge (default) or V2 colored dot + word. Identical everywhere, every state."
         },
         "humanAway.compactLabel": {
           "type": "boolean",
