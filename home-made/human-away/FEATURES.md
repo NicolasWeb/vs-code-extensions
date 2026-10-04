@@ -326,3 +326,13 @@ see §9; that tuning lives in its own standalone plan.)
 - Pure logic in `src/collector.js` (no vscode import) so the unit
   test runs in plain node; wiring in extension.js is thin
   (watcher, ledger IO, report render).
+
+## 17 Temporary icon and V5-default release (0.2.1)
+
+- User selected F (Do Not Disturb badge) as the temporary extension icon
+  on 2026-10-04; packaged as a 512x512 RGBA PNG.
+- The existing V5 `outlinedPill` default ships in this release. Explicit
+  workspace/user style overrides remain respected; no new settings or commands.
+- Installed user-wide on Windows and WSL, CLI and registry verified at 0.2.1.
+  Existing windows require reload to activate the update; live rendering
+  remains user-verified, not implied by package installation.

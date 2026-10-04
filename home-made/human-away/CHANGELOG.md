@@ -4,11 +4,12 @@ All notable changes to the Human Away extension (ex Away Mode Indicator,
 renamed 2026-10-02 at 0.1.0) are documented here. Format follows Keep a
 Changelog; versions are SEMVER-ready but the first tag is a preview release.
 
-## [Unreleased]
+## [0.2.1] - 2026-10-04
 
 ### Changed
 - Make the V5 outlined badge the default `humanAway.style`; explicit user
   settings continue to override the default.
+- Use the user-selected temporary F (Do Not Disturb badge) icon at 512x512.
 
 ## [0.2.0] - 2026-10-02
 

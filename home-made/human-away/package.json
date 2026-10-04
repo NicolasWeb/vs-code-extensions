@@ -2,7 +2,7 @@
   "name": "human-away",
   "displayName": "Human Away",
   "description": "Read-only-visible Away mode state chip (chat pane + input row) driven by the AGENTS.md STATUS token.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "nicolas-web-local",
   "license": "MIT",
   "engines": {
