@@ -24,12 +24,12 @@ and dark themes, so the user sees the state while typing, before sending.
 see §9; that tuning lives in its own standalone plan.)
 
 ## 2 Source of truth and state (single, global)
-- Truth source: the MASTER token line
+- Truth source: the MASTER AGENTS rule-state line
   `## Autonomous unattended work (Away mode) [STATUS: ON|OFF ...]` inside
   the configured AGENTS file (§3).
-- ONE state per user, NOT per workspace (analysis: the MASTER token is
-  unique; SESSION.md is per-project PROGRESS, not rule state — it narrows
-  what the run does, never whether Away is on). SESSION.md context is
+- ONE state per user, NOT per workspace (analysis: the MASTER AGENTS
+  rule-state line is unique; SESSION.md is per-project PROGRESS, not rule state
+  — it narrows what the run does, never whether Away is on). SESSION.md context is
   SURFACED per workspace in the tooltip (focused workspace's SESSION.md
   first 'State'/'Away' lines) instead of duplicating state. Open point
   for validation (§13.1) — user veto honored if he wants per-workspace.
