@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgD" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#223354"/><stop offset="1" stop-color="#151f39"/>
+    </linearGradient>
+    <linearGradient id="botD" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E2E8F0"/><stop offset="1" stop-color="#9AACBE"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bgD)"/>
+  <!-- moon -->
+  <circle cx="372" cy="128" r="58" fill="#F5D76E"/>
+  <circle cx="352" cy="112" r="13" fill="#d9b64a" opacity="0.45"/>
+  <circle cx="392" cy="150" r="8" fill="#d9b64a" opacity="0.45"/>
+  <circle cx="376" cy="96" r="9" fill="#d9b64a" opacity="0.45"/>
+  <!-- stars -->
+  <g fill="#EAF2FF">
+    <path d="M92 96 l7 15 15 7 -15 7 -7 15 -7 -15 -15 -7 15 -7 z"/>
+    <path d="M164 60 l5 11 11 5 -11 5 -5 11 -5 -11 -11 -5 11 -5 z"/>
+    <circle cx="446" cy="250" r="5"/>
+    <circle cx="60" cy="230" r="5"/>
+  </g>
+  <!-- hill -->
+  <path d="M0 462 Q256 386 512 462 L512 512 L0 512 Z" fill="#24345a"/>
+  <!-- lantern glow -->
+  <circle cx="168" cy="320" r="46" fill="#FFB454" opacity="0.32"/>
+  <!-- night-shift bot -->
+  <line x1="256" y1="196" x2="256" y2="164" stroke="#B8C4D0" stroke-width="10"/>
+  <circle cx="256" cy="158" r="10" fill="#7EA6FF"/>
+  <polygon points="208,206 256,138 304,206" fill="#7EA6FF"/>
+  <circle cx="256" cy="132" r="13" fill="#EAF2FF"/>
+  <rect x="200" y="200" width="112" height="16" rx="8" fill="#EAF2FF"/>
+  <rect x="186" y="212" width="140" height="102" rx="30" fill="url(#botD)"/>
+  <path d="M222 262 q11 9 22 0 M268 262 q11 9 22 0" stroke="#26324b" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <circle cx="212" cy="286" r="9" fill="#FFB454" opacity="0.6"/>
+  <circle cx="300" cy="286" r="9" fill="#FFB454" opacity="0.6"/>
+  <rect x="226" y="308" width="60" height="80" rx="16" fill="#B8C4D0"/>
+  <!-- left arm + lantern -->
+  <path d="M228 330 L 188 312" stroke="#B8C4D0" stroke-width="15" stroke-linecap="round"/>
+  <line x1="176" y1="300" x2="168" y2="308" stroke="#C2D0E6" stroke-width="6" stroke-linecap="round"/>
+  <rect x="146" y="308" width="36" height="42" rx="7" fill="#FFB454" stroke="#FFD9A0" stroke-width="4"/>
+  <line x1="150" y1="322" x2="178" y2="322" stroke="#FFD9A0" stroke-width="3"/>
+  <!-- right arm + steaming mug -->
+  <path d="M284 330 L 322 316" stroke="#B8C4D0" stroke-width="15" stroke-linecap="round"/>
+  <rect x="322" y="300" width="28" height="30" rx="5" fill="#E2E8F0"/>
+  <path d="M330 292 q4 -9 -2 -16" stroke="#8fa3b8" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.85"/>
+</svg>

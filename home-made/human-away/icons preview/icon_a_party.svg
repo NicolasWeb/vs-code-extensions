@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#223354"/><stop offset="1" stop-color="#151f39"/>
+    </linearGradient>
+    <linearGradient id="botA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E2E8F0"/><stop offset="1" stop-color="#9AACBE"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bgA)"/>
+  <!-- party hat -->
+  <g transform="rotate(-12 250 120)">
+    <polygon points="186,172 250,38 314,172" fill="#FF7EB6"/>
+    <path d="M214 118 q36 20 72 0" stroke="#6EE7F0" stroke-width="12" fill="none"/>
+    <circle cx="250" cy="36" r="16" fill="#FFB454"/>
+  </g>
+  <!-- head -->
+  <rect x="136" y="152" width="240" height="168" rx="40" fill="url(#botA)"/>
+  <!-- happy eyes + mouth -->
+  <path d="M182 236 q22 -26 46 0" stroke="#26324b" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <path d="M286 236 q22 -26 46 0" stroke="#26324b" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <path d="M216 270 q40 46 80 0 z" fill="#26324b"/>
+  <circle cx="256" cy="296" r="10" fill="#FF7EB6"/>
+  <circle cx="170" cy="266" r="12" fill="#FFB454" opacity="0.65"/>
+  <circle cx="342" cy="266" r="12" fill="#FFB454" opacity="0.65"/>
+  <!-- body + waving arm -->
+  <path d="M206 342 L 142 288" stroke="#B8C4D0" stroke-width="18" stroke-linecap="round"/>
+  <rect x="206" y="318" width="100" height="92" rx="26" fill="#B8C4D0"/>
+  <!-- confetti -->
+  <rect x="82" y="118" width="14" height="9" rx="2" fill="#6EE7F0" transform="rotate(24 89 122)"/>
+  <rect x="410" y="96" width="14" height="9" rx="2" fill="#FF7EB6" transform="rotate(-30 417 100)"/>
+  <rect x="398" y="210" width="13" height="9" rx="2" fill="#86E49A" transform="rotate(40 404 214)"/>
+  <rect x="96" y="240" width="13" height="9" rx="2" fill="#FFB454" transform="rotate(-18 102 244)"/>
+  <circle cx="120" cy="82" r="6" fill="#FFB454"/>
+  <circle cx="386" cy="64" r="6" fill="#86E49A"/>
+  <circle cx="444" cy="300" r="6" fill="#6EE7F0"/>
+  <circle cx="66" cy="320" r="6" fill="#FF7EB6"/>
+  <path d="M96 170 q12 -8 24 0 q12 8 24 0" stroke="#FFB454" stroke-width="6" fill="none"/>
+  <path d="M368 160 q12 -8 24 0 q12 8 24 0" stroke="#6EE7F0" stroke-width="6" fill="none"/>
+</svg>

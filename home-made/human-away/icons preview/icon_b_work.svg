@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#223354"/><stop offset="1" stop-color="#151f39"/>
+    </linearGradient>
+    <linearGradient id="botB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E2E8F0"/><stop offset="1" stop-color="#9AACBE"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bgB)"/>
+  <!-- gear behind -->
+  <g opacity="0.5">
+    <circle cx="410" cy="392" r="42" fill="none" stroke="#35507e" stroke-width="12"/>
+    <g fill="#35507e">
+      <rect x="402" y="338" width="16" height="16" rx="4"/>
+      <rect x="402" y="430" width="16" height="16" rx="4"/>
+      <rect x="356" y="384" width="16" height="16" rx="4"/>
+      <rect x="448" y="384" width="16" height="16" rx="4"/>
+    </g>
+  </g>
+  <!-- head with visor -->
+  <rect x="136" y="140" width="240" height="160" rx="40" fill="url(#botB)"/>
+  <rect x="160" y="172" width="192" height="84" rx="26" fill="#26324b"/>
+  <circle cx="206" cy="214" r="12" fill="#6EE7F0"/>
+  <circle cx="306" cy="214" r="12" fill="#6EE7F0"/>
+  <circle cx="210" cy="210" r="4" fill="#EAF2FF"/>
+  <circle cx="310" cy="210" r="4" fill="#EAF2FF"/>
+  <!-- antenna -->
+  <line x1="256" y1="140" x2="256" y2="100" stroke="#B8C4D0" stroke-width="12"/>
+  <circle cx="256" cy="94" r="12" fill="#FFB454"/>
+  <!-- body + tie -->
+  <rect x="200" y="296" width="112" height="104" rx="28" fill="#B8C4D0"/>
+  <polygon points="256,304 240,318 256,366 272,318" fill="#FF7EB6"/>
+  <rect x="248" y="298" width="16" height="12" rx="4" fill="#FFB454"/>
+  <!-- arm + wrench -->
+  <path d="M328 330 L 382 262" stroke="#B8C4D0" stroke-width="18" stroke-linecap="round"/>
+  <g transform="translate(386 238) rotate(45)">
+    <rect x="-7" y="0" width="14" height="34" rx="4" fill="#C2D0E6"/>
+    <path d="M-16 34 h32 v10 a16 16 0 0 1 -32 0 z" fill="#C2D0E6"/>
+    <rect x="-5" y="40" width="10" height="12" fill="#151f39"/>
+  </g>
+  <!-- sparks -->
+  <path d="M420 210 v26 M407 223 h26" stroke="#FFB454" stroke-width="6" stroke-linecap="round"/>
+  <path d="M392 176 l0 16 M384 184 h16" stroke="#FF7EB6" stroke-width="5" stroke-linecap="round"/>
+  <!-- coffee -->
+  <rect x="112" y="356" width="50" height="54" rx="8" fill="#E2E8F0"/>
+  <path d="M162 368 q22 0 22 18 q0 18 -22 18" stroke="#E2E8F0" stroke-width="9" fill="none"/>
+  <path d="M126 342 q5 -12 -2 -22 M146 342 q5 -12 -2 -22" stroke="#8fa3b8" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <!-- sweat drop -->
+  <path d="M352 128 q9 -18 18 0 q-9 16 -18 0 Z" fill="#6EE7F0"/>
+</svg>

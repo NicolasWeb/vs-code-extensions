@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="beam" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" stop-color="#ffcf7d" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#ffcf7d" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="beamR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffcf7d" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#ffcf7d" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="tower"><path d="M204 180 L308 180 L340 432 L172 432 Z"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#0c2231"/>
+  <!-- night sky: moon + stars -->
+  <circle cx="86" cy="92" r="30" fill="#f4e3ad"/>
+  <circle cx="98" cy="84" r="26" fill="#0c2231"/>
+  <g fill="#e8f1fa" opacity="0.85">
+    <circle cx="420" cy="80" r="4"/><circle cx="458" cy="150" r="3"/>
+    <circle cx="390" cy="204" r="3"/><circle cx="60" cy="210" r="4"/>
+    <circle cx="132" cy="150" r="2.5"/>
+  </g>
+  <!-- light beams (presence beacon) -->
+  <polygon points="232,140 26,74 46,188" fill="url(#beam)"/>
+  <polygon points="280,140 486,74 466,188" fill="url(#beamR)"/>
+  <!-- lighthouse body, robot-painted stripes -->
+  <path d="M204 180 L308 180 L340 432 L172 432 Z" fill="#e8edf5"/>
+  <g clip-path="url(#tower)">
+    <rect x="160" y="212" width="200" height="42" fill="#e0605e"/>
+    <rect x="160" y="300" width="200" height="42" fill="#e0605e"/>
+    <rect x="160" y="388" width="200" height="50" fill="#e0605e"/>
+  </g>
+  <rect x="184" y="172" width="144" height="18" rx="7" fill="#55627a"/>
+  <!-- lantern room = the watch face -->
+  <rect x="196" y="94" width="120" height="88" rx="18" fill="#8e9ab0"/>
+  <rect x="206" y="104" width="100" height="68" rx="14" fill="#10182a"/>
+  <circle cx="232" cy="134" r="9" fill="#ffb454"/>
+  <circle cx="280" cy="134" r="9" fill="#ffb454"/>
+  <path d="M238 152 q18 12 36 0" fill="none" stroke="#ffb454" stroke-width="5" stroke-linecap="round"/>
+  <!-- dome + glowing finial -->
+  <path d="M192 98 Q256 34 320 98 Z" fill="#8e9ab0"/>
+  <circle cx="256" cy="52" r="16" fill="#ffd28a" opacity="0.5"/>
+  <circle cx="256" cy="52" r="9" fill="#ffb454"/>
+  <!-- waves -->
+  <rect x="8" y="424" width="496" height="76" rx="30" fill="#14324d"/>
+  <rect x="36" y="444" width="440" height="72" rx="30" fill="#1d4a6b"/>
+  <path d="M84 464 q22 -10 44 0 M212 470 q22 -10 44 0 M340 464 q22 -10 44 0" fill="none" stroke="#7fb4d8" stroke-width="5" opacity="0.6"/>
+</svg>
