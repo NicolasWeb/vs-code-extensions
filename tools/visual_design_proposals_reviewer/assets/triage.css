@@ -1,0 +1,80 @@
+    section.batch { margin:38px 0 0; padding:0; }
+    section.batch > h2 { font-size:23px; margin:0 0 4px; }
+    section.batch > p.batchnote { color:var(--muted); font-size:14px; margin:0 0 18px; }
+    section.batch fieldset { margin:24px 0 0; }
+    section.batch fieldset legend { font-size:18px; }
+    /* A sub-section legend carries "<tiles on screen> / <tiles in the theme, eliminated
+       included>", recomputed by the script every time a tile moves. */
+    legend .tcount { font-variant-numeric:tabular-nums; color:var(--accent); }
+    .grid:empty::after { content:"{EMPTY_GRID_LABEL}"; color:var(--muted);
+      font-size:14px; }
+    .card { position:relative; }
+    .adapt { font-size:13px; color:var(--muted); border-left:2px solid var(--accent); padding-left:9px;
+      margin:0 0 14px; }
+    /* Header blocks: the lots are a bulleted list, one lot per line; the review guide is a
+       title and one explanation per line. */
+    header .lotslabel { margin:16px 0 0; font-weight:700; font-size:15px; }
+    header .lots { margin:6px 0 0; padding-left:24px; }
+    header .lots li { margin:5px 0; font-size:15px; }
+    header .notes { margin:12px 0 0; font-size:15px; }
+    header .guide-title { margin:18px 0 0; font-weight:700; font-size:15px; }
+    header .guide { margin:6px 0 0; padding-left:24px; }
+    header .guide li { margin:5px 0; font-size:15px; }
+    #summary { display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin:18px 0 0; padding:12px 16px;
+      border:1px solid var(--line); border-radius:12px; background:var(--card); font-size:14px; }
+    #summary b { color:var(--accent); }
+    #summary button { border:1px solid var(--line); border-radius:8px; background:var(--page);
+      color:var(--text); padding:6px 12px; font:inherit; font-size:13px; cursor:pointer; }
+    #summary button:hover { border-color:var(--accent); color:var(--accent); }
+    #summary .scope { color:var(--muted); font-size:12px; }
+    /* Control column: radio, then the close cross to its right, then the version badge under
+       both. The column width is one variable, so the badge's left edge and the radio's left
+       edge are the same line by construction. */
+    .candidate { --bw:104px; }
+    .candidate input[type="radio"] { top:22px; right:var(--bw); }
+    .candidate .heading, .candidate .description, .candidate .adapt { padding-right:152px; }
+    /* The close cross is drawn along the two diagonals of the box, so it is an x and its ink
+       is centred whatever font the browser picks. The glyph text stays for the script and the
+       accessible name, at zero size. */
+    .eliminate { position:absolute; top:18px; right:calc(var(--bw) - 32px); width:26px; height:26px;
+      padding:0; box-sizing:border-box; border:1px solid var(--line); border-radius:8px;
+      cursor:pointer; z-index:2; background-color:var(--page); color:var(--muted);
+      font-size:0; line-height:0; background-repeat:no-repeat;
+      background-image:
+        linear-gradient(45deg, transparent calc(50% - 1px), currentColor calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+        linear-gradient(-45deg, transparent calc(50% - 1px), currentColor calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)); }
+    .eliminate:hover, .eliminate:focus-visible { color:#ffd9d9; border-color:#ff8f8f; outline:none; }
+    .candidate.eliminated .eliminate { background-color:#b4232a; border-color:#b4232a; color:#ffffff; }
+    .candidate.eliminated .card { opacity:.42; filter:grayscale(.85); }
+    .candidate.eliminated .card::after { content:"{ELIMINATED_LABEL}"; position:absolute; top:22px; left:20px;
+      padding:3px 9px; border-radius:8px; background:#b4232a; color:#fff; font:700 12px/1.4 system-ui; }
+    /* The version badge: blue for a work version, green for a final one, left aligned on the
+       radio and always under the cross and the radio. */
+    .ver-badge { position:absolute; top:52px; right:20px; z-index:3; box-sizing:border-box;
+      width:var(--bw); padding:3px 8px; text-align:left;
+      border:1px solid #4f7fc4; border-radius:999px; background:#17324f; color:#a8d1ff;
+      font:700 10px/1.25 system-ui,sans-serif; cursor:pointer; box-shadow:0 2px 8px rgba(6,12,24,.42); }
+    .ver-badge.work { border-color:#4f7fc4; background:#17324f; color:#a8d1ff; }
+    .ver-badge.final { border-color:#2f9e63; background:#123627; color:#9ff0c4; }
+    .ver-badge:hover, .ver-badge:focus-visible { outline:none; box-shadow:0 0 0 2px rgba(79,127,196,.55); }
+    /* Reusable-element tiles: an illustration, the tiles it was taken from and reused in, and
+       the reader's own reason for keeping it. They carry no radio, cross or badge. */
+    .icard { padding:20px; border:2px solid var(--line); border-radius:18px; background:var(--card); }
+    .icard .heading { margin-top:14px; }
+    .icard .origins { font-size:13px; color:var(--muted); margin:10px 0 0; }
+    .icard .origins b { color:var(--accent); font-weight:700; }
+    .icard code, .icard .file { font-family:ui-monospace,monospace; }
+    footer #icons-folder { font-family:ui-monospace,monospace; font-size:13px; word-break:break-all; }
+    /* Sticky bar: the grouping toggle stays reachable at the bottom while scrolling. */
+    #triage-bar { position:fixed; left:0; right:0; bottom:0; z-index:30; display:flex; gap:12px;
+      align-items:center; flex-wrap:wrap; padding:10px 16px; background:var(--card);
+      border-top:1px solid var(--line); box-shadow:0 -8px 24px rgba(0,0,0,.3); font-size:14px; }
+    #triage-bar .barlabel { font-weight:700; color:var(--muted); }
+    #triage-bar .hint { color:var(--muted); font-size:13px; }
+    #triage-bar button { border:1px solid var(--line); border-radius:9px; background:var(--page);
+      color:var(--text); padding:8px 14px; font:inherit; font-size:14px; cursor:pointer; }
+    #triage-bar button:hover { border-color:var(--accent); color:var(--accent); }
+    main { padding-bottom:120px; }
+    @media (max-width:480px) { .candidate { --bw:98px; } .candidate .heading,
+      .candidate .description, .candidate .adapt { padding-right:142px; } #triage-bar { font-size:13px; } }
+    @media print { #triage-bar { display:none; } main { padding-bottom:60px; } }

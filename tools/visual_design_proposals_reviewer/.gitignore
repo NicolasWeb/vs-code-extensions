@@ -1,0 +1,6 @@
+# Build products of the tool's own runs.
+output/
+
+# Python byte-code caches.
+__pycache__/
+*.py[cod]
