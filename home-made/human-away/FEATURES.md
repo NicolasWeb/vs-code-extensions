@@ -15,7 +15,7 @@ conf file also records the override itself (`mrOwner`, `prevMaxRequests`,
 the private `globalState` stash (§14 rev 8).
 README.md + HELP.md are the live docs; the LIVE plan (by-feature,
 decisions + pending arbitrations + status log) is the shared-layer plan
-ai-automation-tools/plans/PLAN_HUMAN_AWAY_FEATURE.md (ex kevina
+ai-automation-tools/plans/PLAN_HUMAN_AWAY_FEATURE.md (ex legacy_repo
 OpenBRSM/.ai_baseline/plans/feature_plans/PLAN_HUMAN_AWAY.md, superseded 2026-10-07).
 Superseded build-gate wording (was: propose UI -> user
 chooses -> features file -> USER VALIDATES -> build):
