@@ -18,7 +18,7 @@ function derive(pathStr, authority, platform) {
   return candidates;
 }
 // Case 1: workspace opened via UNC from Windows (this user's real case)
-let c = derive("/FedoraLinux-44/home/nicolas/repositories/local/kevina", "wsl.localhost", "win32");
+let c = derive("/FedoraLinux-44/home/nicolas/repositories/bull/validation/buru", "wsl.localhost", "win32");
 assert.strictEqual(c.length, 2, "POSIX + UNC candidates");
 assert.strictEqual(c[0], "/home/nicolas/agents/human_away_mode");
 assert.strictEqual(c[1], "\\\\wsl.localhost\\FedoraLinux-44\\home\\nicolas\\agents\\human_away_mode");
