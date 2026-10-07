@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="botX" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6ecf5"/><stop offset="1" stop-color="#9fb0c6"/>
+    </linearGradient>
+    <linearGradient id="goldX" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbeec3"/><stop offset="0.55" stop-color="#d9b25c"/><stop offset="1" stop-color="#8b6a2a"/>
+    </linearGradient>
+    <linearGradient id="steelX" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f2f5f9"/><stop offset="0.5" stop-color="#b9c4d2"/><stop offset="1" stop-color="#7f8ca0"/>
+    </linearGradient>
+  </defs>
+  <defs><linearGradient id="skyBB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ed8f2"/><stop offset="1" stop-color="#f7dfa8"/></linearGradient></defs>
+  <rect width="512" height="512" rx="96" fill="url(#skyBB)"/>
+  <circle cx="440" cy="92" r="46" fill="#ffd166"/>
+  <rect x="0" y="346" width="512" height="60" fill="#3fa9c9"/>
+  <path d="M0 404 q128 -22 256 0 t256 0 v108 h-512z" fill="#eccf8a"/>
+  <g transform="translate(64.0 452.0) scale(0.98)">
+    <path d="M-9 0 q-8 -92 6 -164 l16 3 q-12 70 -5 161 z" fill="#7a5230"/>
+    <path d="M-4 -30 q10 -80 4 -130" fill="none" stroke="#7a4a22" stroke-width="5" opacity="0.6"/>
+    <path d="M0 -170 C-34 -206 -86 -208 -116 -184 C-80 -190 -36 -180 -4 -160 z" fill="#43b073"/>
+    <path d="M0 -170 C34 -208 88 -206 118 -180 C82 -188 38 -178 4 -158 z" fill="#2f8f5b"/>
+    <path d="M0 -174 C-26 -226 -66 -252 -96 -250 C-66 -234 -32 -206 -6 -168 z" fill="#43b073"/>
+    <path d="M0 -174 C26 -228 68 -250 100 -244 C70 -230 34 -204 6 -166 z" fill="#2f8f5b"/>
+    <path d="M0 -176 C-10 -232 -6 -268 12 -286 C6 -254 4 -214 6 -170 z" fill="#43b073"/>
+    <path d="M0 -172 C-40 -188 -74 -172 -84 -146 C-56 -160 -26 -160 -4 -158 z" fill="#2f8f5b"/>
+    <circle cx="-12" cy="-164" r="11" fill="#6b4a24"/>
+    <circle cx="9" cy="-158" r="10" fill="#6b4a24"/>
+  </g>
+  <g transform="translate(120 476)">
+    <rect x="-84" y="-118" width="168" height="118" rx="20" fill="#b4232a" stroke="#7d1f18" stroke-width="6"/>
+    <path d="M-32 -118 v-20 a32 32 0 0 1 64 0 v20" fill="none" stroke="#7d1f18" stroke-width="12"/>
+    <rect x="-84" y="-66" width="168" height="16" fill="#f6d14a" opacity="0.9"/>
+  </g>
+  <g transform="translate(272 308.0) rotate(8) scale(0.7788461538461539) translate(-256 -272)">
+    <path d="M256 64 a84 84 0 0 1 84 84 V454 a26 26 0 0 1 -26 26 H198 a26 26 0 0 1 -26 -26 V148 a84 84 0 0 1 84 -84 z" fill="#f7f1e3" stroke="#cbbf9c" stroke-width="5"/>
+    <path d="M244 76h24v56h-24z" fill="#f7f1e3"/>
+    <g transform="translate(272.4 304.9) rotate(-8.0) scale(0.809) translate(-256 -268)">
+    <rect x="172" y="216" width="168" height="106" rx="34" fill="url(#botX)" stroke="#7f8ca0" stroke-width="4"/>
+    <path d="M202 262 q24 -26 48 0" stroke="#101623" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M262 262 q24 -26 48 0" stroke="#101623" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M224 288 h64 a32 32 0 0 1 -64 0 z" fill="#101623"/>
+    <path d="M236 296 h40" stroke="#ff8f9c" stroke-width="8" stroke-linecap="round"/>
+    </g>
+    <rect x="184.0" y="326" width="144.0" height="84.0" rx="16.0" fill="#1f7a8c"/>
+    <text x="256" y="359.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="30.0" font-weight="700" letter-spacing="1" fill="#ffffff">OFF</text>
+    <text x="256" y="393.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="30.0" font-weight="700" letter-spacing="1" fill="#ffffff">DUTY</text>
+    <circle cx="256" cy="196" r="26" fill="#8ed8f2" stroke="#cbbf9c" stroke-width="5"/>
+  </g>
+  <g transform="translate(408 490) rotate(0) scale(0.52)">
+    <rect x="-7" y="-190" width="14" height="28" rx="7" fill="#8892a4"/>
+    <circle cx="0" cy="-198" r="12" fill="#ffb454"/>
+    <path d="M-84 0 Q0 -172 84 0 Z" fill="url(#botX)"/>
+    <rect x="-56" y="-96" width="112" height="62" rx="22" fill="#101623"/>
+    <rect x="-40" y="-82" width="34" height="20" rx="10" fill="#4fd8eb"/>
+    <rect x="6" y="-82" width="34" height="20" rx="10" fill="#4fd8eb"/>
+    <path d="M56 -46 L-190 -232" stroke="#b8c4d0" stroke-width="20" stroke-linecap="round"/>
+    <ellipse cx="-180" cy="-236" rx="28" ry="20" fill="#cfd6e2"/>
+  </g>
+  <g transform="translate(256.0 54.0) rotate(0.0)">
+    <rect x="-161.2" y="-48.0" width="322.5" height="96.0" rx="48.0" fill="#ffb454" stroke="#a86a12" stroke-width="4.7"/>
+    <circle cx="-115.5" cy="0" r="14.2" fill="#ffd166"/>
+    <text x="25.5" y="26.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="75.0" font-weight="700" letter-spacing="3" fill="#161d2c">AWAY</text>
+  </g>
+</svg>

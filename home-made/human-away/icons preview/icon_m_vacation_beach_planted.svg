@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="botM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d7dde8"/><stop offset="1" stop-color="#9aa7bb"/>
+    </linearGradient>
+    <linearGradient id="goldM" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbeec3"/><stop offset="0.55" stop-color="#d9b25c"/><stop offset="1" stop-color="#8b6a2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#22315a"/>
+  <circle cx="52" cy="62" r="26" fill="#ffb454"/>
+  <circle cx="52" cy="62" r="38" fill="#ffb454" opacity="0.16"/>
+  <path d="M0 330 Q128 312 256 330 T512 330 L512 512 L0 512 Z" fill="#1f4d78"/>
+  <path d="M320 356 q30 -12 60 0 t60 0" stroke="#4f86b4" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M0 402 Q256 366 512 402 L512 512 L0 512 Z" fill="#dcbb80"/>
+  <g transform="translate(104.0 448.0) scale(0.9)">
+    <path d="M-9 0 q-8 -92 6 -164 l16 3 q-12 70 -5 161 z" fill="#7a5230"/>
+    <path d="M-4 -30 q10 -80 4 -130" fill="none" stroke="#7a4a22" stroke-width="5" opacity="0.6"/>
+    <path d="M0 -170 C-34 -206 -86 -208 -116 -184 C-80 -190 -36 -180 -4 -160 z" fill="#43b073"/>
+    <path d="M0 -170 C34 -208 88 -206 118 -180 C82 -188 38 -178 4 -158 z" fill="#2f8f5b"/>
+    <path d="M0 -174 C-26 -226 -66 -252 -96 -250 C-66 -234 -32 -206 -6 -168 z" fill="#43b073"/>
+    <path d="M0 -174 C26 -228 68 -250 100 -244 C70 -230 34 -204 6 -166 z" fill="#2f8f5b"/>
+    <path d="M0 -176 C-10 -232 -6 -268 12 -286 C6 -254 4 -214 6 -170 z" fill="#43b073"/>
+    <path d="M0 -172 C-40 -188 -74 -172 -84 -146 C-56 -160 -26 -160 -4 -158 z" fill="#2f8f5b"/>
+    <circle cx="-12" cy="-164" r="11" fill="#6b4a24"/>
+    <circle cx="9" cy="-158" r="10" fill="#6b4a24"/>
+  </g>
+  <g transform="translate(316 300) rotate(-7) scale(0.86) translate(-256 -272)">
+    <path d="M256 64a84 84 0 0 1 84 84v306a26 26 0 0 1-26 26h-116a26 26 0 0 1-26-26v-306a84 84 0 0 1 84-84z" fill="#f6f0e1" stroke="#cbbf9c" stroke-width="5"/>
+    <path d="M244 76h24v56h-24z" fill="#f6f0e1"/>
+    <circle cx="256" cy="196" r="26" fill="#c7a869" stroke="#cbbf9c" stroke-width="4"/>
+    <rect x="176" y="222" width="160" height="96" rx="30" fill="url(#botM)"/>
+    <g fill="#101623"><rect x="190" y="238" width="58" height="42" rx="15"/><rect x="264" y="238" width="58" height="42" rx="15"/></g>
+    <path d="M248 254h16M176 250l-14 -8M336 250l14 -8" stroke="#101623" stroke-width="8" stroke-linecap="round"/>
+    <path d="M198 246 l16 10M272 246 l16 10" stroke="#eef3fb" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+    <path d="M226 296 q30 22 60 0" stroke="#26324b" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <rect x="184.0" y="334" width="144.0" height="74.0" rx="12.0" fill="#b4232a"/>
+    <text x="256" y="363.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="28" font-weight="700" letter-spacing="1" fill="#ffffff">BACK</text>
+    <text x="256" y="395.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="28" font-weight="700" letter-spacing="1" fill="#ffffff">LATER</text>
+  </g>
+  <g transform="translate(256.0 60.0) rotate(0.0)">
+    <rect x="-161.2" y="-48.0" width="322.5" height="96.0" rx="48.0" fill="#ffb454" stroke="#8a5a12" stroke-width="4.7"/>
+    <circle cx="-115.5" cy="0" r="14.2" fill="#ffd166"/>
+    <text x="25.5" y="26.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="75.0" font-weight="700" letter-spacing="3" fill="#2a1c05">AWAY</text>
+  </g>
+</svg>

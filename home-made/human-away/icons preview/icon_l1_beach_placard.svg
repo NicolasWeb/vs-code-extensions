@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="botL1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d7dde8"/><stop offset="1" stop-color="#9aa7bb"/>
+    </linearGradient>
+    <linearGradient id="goldL1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbeec3"/><stop offset="0.55" stop-color="#d9b25c"/><stop offset="1" stop-color="#8b6a2a"/>
+    </linearGradient>
+  </defs>
+  <defs><linearGradient id="seaL1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fd0ea"/><stop offset="1" stop-color="#2f8fb8"/></linearGradient></defs>
+  <rect width="512" height="512" rx="96" fill="#8ed8f2"/>
+  <circle cx="466" cy="62" r="30" fill="#ffd166"/>
+  <circle cx="466" cy="62" r="44" fill="#ffd166" opacity="0.22"/>
+  <path d="M0 380 Q128 360 256 380 T512 380 L512 512 L0 512 Z" fill="url(#seaL1)"/>
+  <path d="M24 396 q30 -11 60 0 t60 0" stroke="#cdf0fb" stroke-width="6" fill="none" opacity="0.8"/>
+  <path d="M0 396 Q256 372 512 396 L512 512 L0 512 Z" fill="#e7c98c"/>
+  <path d="M0 424 Q256 404 512 424 L512 512 L0 512 Z" fill="#f0d79c"/>
+  <g stroke="#bb9450" stroke-width="4" opacity="0.45"><path d="M40 476 l16 -12"/><path d="M84 490 l16 -12"/></g>
+  <g transform="translate(60 430) scale(0.56)">
+    <path d="M-9 0 q-8 -92 6 -164 l16 3 q-12 70 -5 161 z" fill="#7a5230"/>
+    <path d="M-4 -30 q10 -80 4 -130" fill="none" stroke="#7a4a22" stroke-width="5" opacity="0.6"/>
+    <path d="M0 -170 C-34 -206 -86 -208 -116 -184 C-80 -190 -36 -180 -4 -160 z" fill="#43b073"/>
+    <path d="M0 -170 C34 -208 88 -206 118 -180 C82 -188 38 -178 4 -158 z" fill="#2f8f5b"/>
+    <path d="M0 -174 C-26 -226 -66 -252 -96 -250 C-66 -234 -32 -206 -6 -168 z" fill="#43b073"/>
+    <path d="M0 -174 C26 -228 68 -250 100 -244 C70 -230 34 -204 6 -166 z" fill="#2f8f5b"/>
+    <path d="M0 -176 C-10 -232 -6 -268 12 -286 C6 -254 4 -214 6 -170 z" fill="#43b073"/>
+    <path d="M0 -172 C-40 -188 -74 -172 -84 -146 C-56 -160 -26 -160 -4 -158 z" fill="#2f8f5b"/>
+    <circle cx="-12" cy="-164" r="11" fill="#6b4a24"/>
+    <circle cx="9" cy="-158" r="10" fill="#6b4a24"/>
+  </g>
+  <g transform="translate(256.0 215.5) rotate(-6.0) scale(0.7091346153846154) translate(-256 -272)">
+    <path d="M256 64 a122 122 0 0 1 122 122 V454 a26 26 0 0 1 -26 26 H160 a26 26 0 0 1 -26 -26 V186 a122 122 0 0 1 122 -122 z" fill="#f7f1e3" stroke="#cbbf9c" stroke-width="5"/>
+    <path d="M244 76h24v56h-24z" fill="#f7f1e3"/>
+    <g transform="translate(255.7 212.7) rotate(6.0) scale(1.213) translate(-256 -268)">
+    <rect x="172" y="216" width="168" height="106" rx="34" fill="url(#botL1)" stroke="#7f8ca0" stroke-width="4"/>
+    <path d="M202 262 q24 -26 48 0" stroke="#101623" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M262 262 q24 -26 48 0" stroke="#101623" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M224 288 h64 a32 32 0 0 1 -64 0 z" fill="#101623"/>
+    <path d="M236 296 h40" stroke="#ff8f9c" stroke-width="8" stroke-linecap="round"/>
+    </g>
+    <rect x="146.0" y="370.0" width="220.0" height="96.0" rx="16.0" fill="#cf2f2f"/>
+    <text x="256" y="408.4" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="30.0" font-weight="700" letter-spacing="1" fill="#ffffff">DO NOT</text>
+    <text x="256" y="442.4" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="30.0" font-weight="700" letter-spacing="1" fill="#ffffff">DISTURB</text>
+    <circle cx="256" cy="98" r="26" fill="#8ed8f2" stroke="#cbbf9c" stroke-width="5"/>
+  </g>
+  <g transform="translate(256.0 450.0) rotate(0.0)">
+    <rect x="-161.2" y="-48.0" width="322.5" height="96.0" rx="48.0" fill="#1b2438" stroke="#46587e" stroke-width="4.7"/>
+    <circle cx="-115.5" cy="0" r="14.2" fill="#ffd166"/>
+    <text x="25.5" y="26.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="75.0" font-weight="700" letter-spacing="3" fill="#f2f6fc">AWAY</text>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="botO2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d7dde8"/><stop offset="1" stop-color="#9aa7bb"/>
+    </linearGradient>
+    <linearGradient id="goldO2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbeec3"/><stop offset="0.55" stop-color="#d9b25c"/><stop offset="1" stop-color="#8b6a2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#1b2438"/>
+  <rect x="118" y="76" width="276" height="208" rx="26" fill="#8892a4"/>
+  <rect x="136" y="94" width="240" height="172" rx="16" fill="#101623"/>
+  <g transform="translate(256 148) rotate(0) scale(0.34) translate(-256 -272)">
+    <path d="M256 64a84 84 0 0 1 84 84v306a26 26 0 0 1-26 26h-116a26 26 0 0 1-26-26v-306a84 84 0 0 1 84-84z" fill="#f6f0e1" stroke="#cbbf9c" stroke-width="5"/>
+    <path d="M244 76h24v56h-24z" fill="#f6f0e1"/>
+    <circle cx="256" cy="196" r="26" fill="#1b2430" stroke="#cbbf9c" stroke-width="4"/>
+    <rect x="176" y="222" width="160" height="96" rx="30" fill="url(#botO2)"/>
+    <rect x="194" y="240" width="124" height="52" rx="18" fill="#101623"/>
+    <rect x="208" y="254" width="42" height="20" rx="10" fill="#ffb454"/>
+    <rect x="262" y="254" width="42" height="20" rx="10" fill="#ffb454"/>
+    <path d="M236 302 q20 14 40 0" stroke="#3c4a63" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <rect x="184.0" y="334" width="144.0" height="74.0" rx="12.0" fill="#b4232a"/>
+    <text x="256" y="363.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="25.9" font-weight="700" letter-spacing="1" fill="#ffffff">DO NOT</text>
+    <text x="256" y="395.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="25.9" font-weight="700" letter-spacing="1" fill="#ffffff">DISTURB</text>
+  </g>
+  <path d="M84 284 L428 284 L468 360 L44 360 Z" fill="#cfd6e2"/>
+  <g fill="#8892a4"><rect x="140" y="304" width="232" height="12" rx="6"/></g>
+  <path d="M92 512 Q256 296 420 512 Z" fill="#9aa7bb"/>
+  <rect x="212" y="222" width="88" height="98" rx="30" fill="#101623" opacity="0.35"/>
+  <path d="M238 240 h36 M232 268 h48" stroke="#ffb454" stroke-width="14" stroke-linecap="round"/>
+  <path d="M148 344 q46 -34 96 -14 M364 344 q-46 -34 -96 -14" stroke="#b8c4d0" stroke-width="22" fill="none" stroke-linecap="round"/>
+</svg>

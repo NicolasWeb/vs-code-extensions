@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#223354"/><stop offset="1" stop-color="#151f39"/>
+    </linearGradient>
+    <linearGradient id="botC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E2E8F0"/><stop offset="1" stop-color="#9AACBE"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bgC)"/>
+  <!-- desk -->
+  <rect x="64" y="372" width="384" height="16" rx="8" fill="#35507e"/>
+  <rect x="92" y="388" width="16" height="72" fill="#2a4270"/>
+  <rect x="404" y="388" width="16" height="72" fill="#2a4270"/>
+  <!-- monitor showing AFK -->
+  <rect x="264" y="228" width="196" height="128" rx="14" fill="#16233f" stroke="#35507e" stroke-width="6"/>
+  <rect x="348" y="356" width="28" height="18" fill="#35507e"/>
+  <text x="362" y="310" text-anchor="middle" font-family="Consolas, monospace" font-size="51.2" font-weight="bold" fill="#86E49A">AWAY</text>
+  <!-- lounging bot -->
+  <g transform="rotate(-9 195 235)">
+    <path d="M128 236 L 92 240" stroke="#B8C4D0" stroke-width="16" stroke-linecap="round"/>
+    <path d="M270 250 L 278 246" stroke="#B8C4D0" stroke-width="16" stroke-linecap="round"/>
+    <polygon points="150,190 198,132 240,192" fill="#FF7EB6"/>
+    <circle cx="198" cy="128" r="12" fill="#FFB454"/>
+    <rect x="124" y="186" width="146" height="116" rx="34" fill="url(#botC)"/>
+    <rect x="136" y="216" width="56" height="36" rx="12" fill="#10182b"/>
+    <rect x="202" y="216" width="56" height="36" rx="12" fill="#10182b"/>
+    <rect x="190" y="228" width="14" height="8" fill="#10182b"/>
+    <path d="M148 224 l12 8 M214 224 l12 8" stroke="#3E5A8A" stroke-width="4" stroke-linecap="round"/>
+    <path d="M168 268 q26 20 52 2" stroke="#26324b" stroke-width="10" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- floating zzz -->
+  <g fill="#C2D0E6" font-family="Consolas, monospace" font-weight="bold">
+    <text x="292" y="128" font-size="44" transform="rotate(-14 292 128)">z</text>
+    <text x="340" y="96" font-size="32" transform="rotate(-14 340 96)">z</text>
+    <text x="382" y="72" font-size="22" transform="rotate(-14 382 72)">z</text>
+  </g>
+  <!-- mug on desk -->
+  <rect x="120" y="336" width="30" height="36" rx="5" fill="#E2E8F0"/>
+  <path d="M150 344 q14 0 14 12 q0 12 -14 12" stroke="#E2E8F0" stroke-width="6" fill="none"/>
+  <path d="M128 324 q4 -10 -2 -18" stroke="#8fa3b8" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+</svg>

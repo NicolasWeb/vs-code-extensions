@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Human Away — comparaison d’icônes</title>
+  <style>
+    :root { color-scheme: dark; --page:#10141d; --card:#1b2230; --text:#eef2fa; --muted:#b6c2d6; --line:#46536b; --accent:#ffd18a; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--page); color:var(--text); font:16px/1.5 system-ui,sans-serif; }
+    main { max-width:1480px; margin:auto; padding:36px 24px 60px; }
+    header { max-width:850px; margin-bottom:28px; }
+    .eyebrow { color:var(--accent); font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+    h1 { font-size:clamp(28px,4vw,44px); line-height:1.15; margin:10px 0 16px; }
+    p { margin:8px 0; }
+    .intro,.note { color:var(--muted); }
+    .guide { padding:14px 18px; border-left:3px solid var(--accent); background:var(--card); margin-top:20px; }
+    fieldset { border:0; padding:0; margin:0; min-width:0; }
+    legend { font-size:20px; font-weight:700; margin-bottom:18px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr)); gap:20px; }
+    .candidate { position:relative; min-width:0; }
+    input { position:absolute; top:22px; right:20px; width:20px; height:20px; margin:0; accent-color:#f6bd60; z-index:1; cursor:pointer; }
+    .card { display:block; height:100%; padding:20px; border:2px solid var(--line); border-radius:18px; background:var(--card); cursor:pointer; }
+    input:checked + .card { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+    input:focus-visible + .card { outline:3px solid #99d6ff; outline-offset:5px; }
+    .heading { display:flex; align-items:center; gap:10px; padding-right:32px; }
+    .letter { display:grid; place-items:center; width:34px; height:34px; flex-shrink:0; border-radius:9px; background:var(--page); color:var(--accent); font-weight:800; }
+    h2 { font-size:17px; line-height:1.3; margin:0; }
+    .description { min-height:3em; font-size:14px; color:var(--muted); margin:12px 0 16px; }
+    .surfaces { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .surface { display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:0; padding:14px 6px 10px; border-radius:12px; }
+    .dark { background:#0d1117; color:#c8d2e2; }
+    .light { background:#f5f7fb; color:#354052; }
+    .surface img { width:112px; height:112px; max-width:100%; object-fit:contain; }
+    .caption { font-size:12px; margin-top:8px; }
+    .sizes { display:flex; align-items:flex-end; justify-content:space-around; gap:12px; margin:16px 0 0; padding:14px 10px; background:var(--page); border-radius:12px; }
+    .size { display:flex; flex-direction:column; align-items:center; }
+    .size span { font-size:12px; color:var(--muted); margin-top:6px; }
+    img { display:block; }
+    .choice { display:block; font-size:13px; color:var(--muted); margin-top:16px; }
+    .selected { display:none; color:var(--accent); font-weight:700; }
+    input:checked + .card .unselected { display:none; }
+    input:checked + .card .selected { display:inline; }
+    footer { margin-top:28px; padding-top:20px; border-top:1px solid var(--line); font-size:14px; color:var(--muted); }
+    a { color:#a4d7ff; }
+    @media (prefers-color-scheme:light) {
+      :root { color-scheme:light; --page:#edf1f7; --card:#fff; --text:#172235; --muted:#4d5d73; --line:#a6b2c5; --accent:#805000; }
+      a { color:#07549c; }
+    }
+    @media (max-width:480px) { main { padding:24px 16px 40px; } .card { padding:16px; } input { top:18px; right:16px; } }
+    @media print { .grid { grid-template-columns:repeat(2,1fr); } .candidate { break-inside:avoid; } }
+    /* triage-ui:start */
+    section.batch { margin:38px 0 0; padding:0; }
+    section.batch > h2 { font-size:23px; margin:0 0 4px; }
+    section.batch > p.batchnote { color:var(--muted); font-size:14px; margin:0 0 18px; }
+    section.batch fieldset { margin:24px 0 0; }
+    section.batch fieldset legend { font-size:18px; }
+    /* A sub-section legend carries "<tiles on screen> / <tiles in the theme, eliminated
+       included>", recomputed by the script every time a tile moves. */
+    legend .tcount { font-variant-numeric:tabular-nums; color:var(--accent); }
+    .grid:empty::after { content:"{EMPTY_GRID_LABEL}"; color:var(--muted);
+      font-size:14px; }
+    .card { position:relative; }
+    .adapt { font-size:13px; color:var(--muted); border-left:2px solid var(--accent); padding-left:9px;
+      margin:0 0 14px; }
+    /* Header blocks: the lots are a bulleted list, one lot per line; the review guide is a
+       title and one explanation per line. */
+    header .lotslabel { margin:16px 0 0; font-weight:700; font-size:15px; }
+    header .lots { margin:6px 0 0; padding-left:24px; }
+    header .lots li { margin:5px 0; font-size:15px; }
+    header .notes { margin:12px 0 0; font-size:15px; }
+    header .guide-title { margin:18px 0 0; font-weight:700; font-size:15px; }
+    header .guide { margin:6px 0 0; padding-left:24px; }
+    header .guide li { margin:5px 0; font-size:15px; }
+    #summary { display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin:18px 0 0; padding:12px 16px;
+      border:1px solid var(--line); border-radius:12px; background:var(--card); font-size:14px; }
+    #summary b { color:var(--accent); }
+    #summary button { border:1px solid var(--line); border-radius:8px; background:var(--page);
+      color:var(--text); padding:6px 12px; font:inherit; font-size:13px; cursor:pointer; }
+    #summary button:hover { border-color:var(--accent); color:var(--accent); }
+    #summary .scope { color:var(--muted); font-size:12px; }
+    /* Control column: radio, then the close cross to its right, then the version badge under
+       both. The column width is one variable, so the badge's left edge and the radio's left
+       edge are the same line by construction. */
+    .candidate { --bw:104px; }
+    .candidate input[type="radio"] { top:22px; right:var(--bw); }
+    .candidate .heading, .candidate .description, .candidate .adapt { padding-right:152px; }
+    /* The close cross is drawn along the two diagonals of the box, so it is an x and its ink
+       is centred whatever font the browser picks. The glyph text stays for the script and the
+       accessible name, at zero size. */
+    .eliminate { position:absolute; top:18px; right:calc(var(--bw) - 32px); width:26px; height:26px;
+      padding:0; box-sizing:border-box; border:1px solid var(--line); border-radius:8px;
+      cursor:pointer; z-index:2; background-color:var(--page); color:var(--muted);
+      font-size:0; line-height:0; background-repeat:no-repeat;
+      background-image:
+        linear-gradient(45deg, transparent calc(50% - 1px), currentColor calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+        linear-gradient(-45deg, transparent calc(50% - 1px), currentColor calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)); }
+    .eliminate:hover, .eliminate:focus-visible { color:#ffd9d9; border-color:#ff8f8f; outline:none; }
+    .candidate.eliminated .eliminate { background-color:#b4232a; border-color:#b4232a; color:#ffffff; }
+    .candidate.eliminated .card { opacity:.42; filter:grayscale(.85); }
+    .candidate.eliminated .card::after { content:"{ELIMINATED_LABEL}"; position:absolute; top:22px; left:20px;
+      padding:3px 9px; border-radius:8px; background:#b4232a; color:#fff; font:700 12px/1.4 system-ui; }
+    /* The version badge: blue for a work version, green for a final one, left aligned on the
+       radio and always under the cross and the radio. */
+    .ver-badge { position:absolute; top:52px; right:20px; z-index:3; box-sizing:border-box;
+      width:var(--bw); padding:3px 8px; text-align:left;
+      border:1px solid #4f7fc4; border-radius:999px; background:#17324f; color:#a8d1ff;
+      font:700 10px/1.25 system-ui,sans-serif; cursor:pointer; box-shadow:0 2px 8px rgba(6,12,24,.42); }
+    .ver-badge.work { border-color:#4f7fc4; background:#17324f; color:#a8d1ff; }
+    .ver-badge.final { border-color:#2f9e63; background:#123627; color:#9ff0c4; }
+    .ver-badge:hover, .ver-badge:focus-visible { outline:none; box-shadow:0 0 0 2px rgba(79,127,196,.55); }
+    /* Reusable-element tiles: an illustration, the tiles it was taken from and reused in, and
+       the reader's own reason for keeping it. They carry no radio, cross or badge. */
+    .icard { padding:20px; border:2px solid var(--line); border-radius:18px; background:var(--card); }
+    .icard .heading { margin-top:14px; }
+    .icard .origins { font-size:13px; color:var(--muted); margin:10px 0 0; }
+    .icard .origins b { color:var(--accent); font-weight:700; }
+    .icard code, .icard .file { font-family:ui-monospace,monospace; }
+    footer #icons-folder { font-family:ui-monospace,monospace; font-size:13px; word-break:break-all; }
+    /* Sticky bar: the grouping toggle stays reachable at the bottom while scrolling. */
+    #triage-bar { position:fixed; left:0; right:0; bottom:0; z-index:30; display:flex; gap:12px;
+      align-items:center; flex-wrap:wrap; padding:10px 16px; background:var(--card);
+      border-top:1px solid var(--line); box-shadow:0 -8px 24px rgba(0,0,0,.3); font-size:14px; }
+    #triage-bar .barlabel { font-weight:700; color:var(--muted); }
+    #triage-bar .hint { color:var(--muted); font-size:13px; }
+    #triage-bar button { border:1px solid var(--line); border-radius:9px; background:var(--page);
+      color:var(--text); padding:8px 14px; font:inherit; font-size:14px; cursor:pointer; }
+    #triage-bar button:hover { border-color:var(--accent); color:var(--accent); }
+    main { padding-bottom:120px; }
+    @media (max-width:480px) { .candidate { --bw:98px; } .candidate .heading,
+      .candidate .description, .candidate .adapt { padding-right:142px; } #triage-bar { font-size:13px; } }
+    @media print { #triage-bar { display:none; } main { padding-bottom:60px; } }
+    /* triage-ui:end */
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Human Away / Icônes</div>
+    <h1>37 icônes, une seule page pour comparer</h1>
+    <p class="lotslabel" lang="fr">Lots livrés :</p>
+    <ul class="lots" lang="fr"><li><b>Lot Lot 1 : les huit premières propositions (A-H) :</b> Lot 1 : les huit premières propositions (A-H) — Concepts centrés sur le robot et badges de fonctionnalités, dessinés avant le choix de la pancarte de porte</li><li><b>Lot Lot 2 : itérations sur F, le badge Do Not Disturb (I-Q) :</b> Lot 2 : itérations sur F, le badge Do Not Disturb (I-Q) — Une vraie silhouette de pancarte, plusieurs visages de robot, et l’étiquette AWAY de H dimensionnée pour tenir dans une icône de 48 px</li><li><b>Lot Lot 3 : itérations sur les icones du lot 2 (R-Z) :</b> Lot 3 : itérations sur les icones du lot 2 (R-Z) — La porte elle-même devient reconnaissable à 48 px, et l’accroche est soit un trou rond percé dans la pancarte, soit un crochet taillé dans le carton</li><li><b>Lot Lot 4 : adaptations demandées après la revue du lot 3 (C1, D1, F1, F2, L1, L2, P1, Q3) :</b> Lot 4 : adaptations demandées après la revue du lot 3 (C1, D1, F1, F2, L1, L2, P1, Q3) — Chaque tuile répond à une ligne de la revue : le mot de l’écran, la bouche endormie, la tête du robot P ou S dans la pancarte de F, la pancarte de plage reconstruite avec son rond près du haut et la plaque AWAY sur sa propre bande de sable, un crochet taillé dans le carton, P sans son étiquette de porte et avec la plaque sous la table, et Q3 sans rien qui masque le capot</li></ul>
+    <p class="notes" lang="fr">Chaque tuile est montrée aux mêmes tailles sur fond clair et sur fond foncé, et aucune SVG antérieure n’a été supprimée. Les lots ne sont plus des sections de la page : ils restent enregistrés dans le générateur, et la page ne présente que thèmes et familles.</p>
+    <p class="guide-title" lang="fr">Comment faire une revue des propositions de design ?</p>
+    <ul class="guide" lang="fr"><li>La page n&#x27;a que trois sections : Propositions de design , Éléments réutilisables identifiés lors de la revue et Versions éliminées ; cette dernière reproduit les mêmes sous-sections que les propositions.</li><li>Le bouton radio en haut à droite marque la tuile que tu gardes comme favori.</li><li>La croix élimine la tuile ; un second clic sur la croix la restaure.</li><li>Le badge sous la croix qualifie la maturité de la version : « Version de travail » (bleu, par défaut) ou « Version finale » (vert).</li><li>Éliminer ou restaurer une tuile ne change jamais son statut de maturité.</li><li>« Revenir aux versions de travail » et « Tout marquer en version finale n&#x27;agissent que sur les tuiles affichées dans Propositions de design.</li><li>Chaque sous-section affiche &lt;tuiles affichées&gt; / &lt;tuiles du thème, éliminées comprises&gt;.</li><li>La barre fixée en bas de fenêtre rassemble les versions éliminées dans leur section, puis remet chaque tuile dans sa section d&#x27;origine, à son emplacement initial.</li><li>Ces états sont mémorisés d&#x27;un lot de production à l&#x27;autre, et rien ici ne modifie l&#x27;extension.</li></ul>
+  <div id="summary"><span>Gardées : <b id="kept-count">30</b></span><span>Éliminées : <b id="gone-count">7</b></span><button type="button" id="show-all" lang="fr">Tout ré-afficher (37)</button><button type="button" id="show-all-versions" lang="fr">Revenir aux versions de travail</button><button type="button" id="mark-all-final" lang="fr">Tout marquer en version finale (<b id="final-count">30</b>)</button><span class="scope" lang="fr"> ces deux boutons ne concernent que la section Propositions de design.</span></div>
+  </header>
+  <section class="batch" id="design-section">
+    <h2><span lang="fr">Propositions de design</span></h2>
+    <p class="batchnote" lang="fr">Toutes les propositions, rangées par thème ; une sous-version juste après la version dont elle est issue. Les lots de production restent enregistrés dans le générateur, plus dans la page.</p>
+    <fieldset>
+      <legend><span lang="fr">Concepts centrés sur le robot</span> <span class="tcount" data-theme="character">0 / 6</span></legend>
+      <div class="grid" data-theme="character">
+      <div class="candidate" data-letter="A" data-default-eliminated="false" data-default-final="false" data-theme="character" data-base="A">
+        <button type="button" class="eliminate" data-letter="A" title="Éliminer A"
+          aria-label="Éliminer A" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="A" aria-pressed="false" title="Marquer A comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="a" value="A" aria-labelledby="title-a">
+        <label class="card" for="a">
+          <div class="heading"><span class="letter">A</span><h2 id="title-a">Robot de fête</h2></div>
+          <p class="description">Chapeau de fête, confettis et grand sourire : un agent autonome joueur.</p>
+          <p class="adapt">Élément gardé : le chapeau de fête et les cotillons.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_a_party.svg?v=f4e227ba" width="112" height="112" alt="A : robot souriant avec chapeau de fête et confettis"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_a_party.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_a_party.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_a_party.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_a_party.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner A</span><span class="selected">Sélection : A</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="B" data-default-eliminated="false" data-default-final="false" data-theme="character" data-base="B">
+        <button type="button" class="eliminate" data-letter="B" title="Éliminer B"
+          aria-label="Éliminer B" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="B" aria-pressed="false" title="Marquer B comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="b" value="B" aria-labelledby="title-b">
+        <label class="card" for="b">
+          <div class="heading"><span class="letter">B</span><h2 id="title-b">Robot au travail</h2></div>
+          <p class="description">Cravate, clé et café : l’agent s’occupe des affaires pendant votre absence.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_b_work.svg?v=f4e227ba" width="112" height="112" alt="B : robot au travail avec cravate, clé et café"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_b_work.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_b_work.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_b_work.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_b_work.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner B</span><span class="selected">Sélection : B</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="C" data-default-eliminated="false" data-default-final="false" data-theme="character" data-base="C">
+        <button type="button" class="eliminate" data-letter="C" title="Éliminer C"
+          aria-label="Éliminer C" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="C" aria-pressed="false" title="Marquer C comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="c" value="C" aria-labelledby="title-c">
+        <label class="card" for="c">
+          <div class="heading"><span class="letter">C</span><h2 id="title-c">Robot AFK</h2></div>
+          <p class="description">Un robot au repos et un écran AFK : une lecture littérale de l’absence.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_c_afk.svg?v=f4e227ba" width="112" height="112" alt="C : robot au repos devant un écran affichant AFK"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_c_afk.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_c_afk.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_c_afk.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_c_afk.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner C</span><span class="selected">Sélection : C</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="C1" data-default-eliminated="false" data-default-final="false" data-theme="character" data-base="C">
+        <button type="button" class="eliminate" data-letter="C1" title="Éliminer C1"
+          aria-label="Éliminer C1" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="C1" aria-pressed="false" title="Marquer C1 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="c1" value="C1" aria-labelledby="title-c1">
+        <label class="card" for="c1">
+          <div class="heading"><span class="letter">C1</span><h2 id="title-c1">Au bureau, l’écran affiche AWAY</h2></div>
+          <p class="description">Le mot de l’écran de C passe de AFK à AWAY, dimensionné pour que le mot ne touche jamais le bord de l’écran.</p>
+          <p class="adapt">AFK a disparu : AWAY est dessiné en capitales de 51 px dans un écran de 184 unités, le mot dégage le cadre de tous les côtés.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_c1_monitor_away.svg?v=f4e227ba" width="112" height="112" alt="C1 : robot à son bureau, écran affichant AWAY, badge AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_c1_monitor_away.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_c1_monitor_away.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_c1_monitor_away.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_c1_monitor_away.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner C1</span><span class="selected">Sélection : C1</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="D" data-default-eliminated="false" data-default-final="false" data-theme="character" data-base="D">
+        <button type="button" class="eliminate" data-letter="D" title="Éliminer D"
+          aria-label="Éliminer D" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="D" aria-pressed="false" title="Marquer D comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="d" value="D" aria-labelledby="title-d">
+        <label class="card" for="d">
+          <div class="heading"><span class="letter">D</span><h2 id="title-d">Robot de veille nocturne</h2></div>
+          <p class="description">Lanterne, mug fumant et lune : l’agent veille toute la nuit.</p>
+          <p class="adapt">Le robot et sa lampe agrandis 1,3 fois autour de leurs pieds ; rien d’autre n’a été touché.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_d_night.svg?v=f4e227ba" width="112" height="112" alt="D : robot de veille nocturne avec lanterne sous la lune"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_d_night.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_d_night.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_d_night.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_d_night.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner D</span><span class="selected">Sélection : D</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="D1" data-default-eliminated="false" data-default-final="false" data-theme="character" data-base="D">
+        <button type="button" class="eliminate" data-letter="D1" title="Éliminer D1"
+          aria-label="Éliminer D1" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="D1" aria-pressed="false" title="Marquer D1 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="d1" value="D1" aria-labelledby="title-d1">
+        <label class="card" for="d1">
+          <div class="heading"><span class="letter">D1</span><h2 id="title-d1">Poste de nuit, robot endormi</h2></div>
+          <p class="description">D avec une bouche endormie et le visage remonté pour que les yeux respirent au-dessus du col.</p>
+          <p class="adapt">Bouche endormie ajoutée (ronde comme sur W), yeux et joues remontés pour que les yeux respirent au-dessus du col.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_d1_sleeping_mouth.svg?v=f4e227ba" width="112" height="112" alt="D1 : robot endormi sous une lampe, yeux fermés, bouche ronde de sommeil, croissant de lune"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_d1_sleeping_mouth.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_d1_sleeping_mouth.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_d1_sleeping_mouth.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_d1_sleeping_mouth.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner D1</span><span class="selected">Sélection : D1</span></span>
+        </label>
+      </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend><span lang="fr">Illustrations de fonctionnalités</span> <span class="tcount" data-theme="features">0 / 6</span></legend>
+      <div class="grid" data-theme="features">
+      <div class="candidate eliminated" data-letter="E" data-default-eliminated="true" data-default-final="false" data-theme="features" data-base="E">
+        <button type="button" class="eliminate" data-letter="E" title="Éliminer E"
+          aria-label="Éliminer E" aria-pressed="true">×</button>
+        <button type="button" class="ver-badge work" data-letter="E" aria-pressed="false" title="Marquer E comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="e" value="E" aria-labelledby="title-e">
+        <label class="card" for="e">
+          <div class="heading"><span class="letter">E</span><h2 id="title-e">Robot en pilote automatique</h2></div>
+          <p class="description">Un agent au volant : le travail autonome continue sans conducteur humain.</p>
+          <p class="adapt">Éliminée par la revue.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_e_autopilot.svg?v=f4e227ba" width="112" height="112" alt="E : robot tenant un volant"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_e_autopilot.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_e_autopilot.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_e_autopilot.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_e_autopilot.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner E</span><span class="selected">Sélection : E</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="F" data-default-eliminated="false" data-default-final="false" data-theme="features" data-base="F">
+        <button type="button" class="eliminate" data-letter="F" title="Éliminer F"
+          aria-label="Éliminer F" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="F" aria-pressed="false" title="Marquer F comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="f" value="F" aria-labelledby="title-f">
+        <label class="card" for="f">
+          <div class="heading"><span class="letter">F</span><h2 id="title-f">Badge Do Not Disturb</h2></div>
+          <p class="description">Un robot qui fait chut et un badge AWAY. Précédemment retenu comme icône temporaire.</p>
+          <p class="adapt">L’icône installée ; le tour sur lequel cette série itère.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_f_dnd.svg?v=f4e227ba" width="112" height="112" alt="F : badge de porte Do Not Disturb avec un robot qui fait chut"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_f_dnd.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_f_dnd.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_f_dnd.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_f_dnd.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner F</span><span class="selected">Sélection : F</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="F1" data-default-eliminated="false" data-default-final="false" data-theme="features" data-base="F">
+        <button type="button" class="eliminate" data-letter="F1" title="Éliminer F1"
+          aria-label="Éliminer F1" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="F1" aria-pressed="false" title="Marquer F1 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="f1" value="F1" aria-labelledby="title-f1">
+        <label class="card" for="f1">
+          <div class="heading"><span class="letter">F1</span><h2 id="title-f1">Pancarte de porte avec une tête de robot souriante</h2></div>
+          <p class="description">La pancarte de F, son trou percé et son clou, avec le visage humain remplacé par la tête du robot de P.</p>
+          <p class="adapt">Le visage humain est remplacé par la tête du robot de P, la tête seulement, même pancarte et même matériel.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_f1_head_dnd.svg?v=f4e227ba" width="112" height="112" alt="F1 : pancarte de porte accrochée à un clou, tête souriante du robot P et DO NOT DISTURB"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_f1_head_dnd.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_f1_head_dnd.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_f1_head_dnd.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_f1_head_dnd.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner F1</span><span class="selected">Sélection : F1</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="F2" data-default-eliminated="false" data-default-final="false" data-theme="features" data-base="F">
+        <button type="button" class="eliminate" data-letter="F2" title="Éliminer F2"
+          aria-label="Éliminer F2" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="F2" aria-pressed="false" title="Marquer F2 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="f2" value="F2" aria-labelledby="title-f2">
+        <label class="card" for="f2">
+          <div class="heading"><span class="letter">F2</span><h2 id="title-f2">Pancarte de porte avec la tête du robot S</h2></div>
+          <p class="description">La même pancarte avec la tête du robot S aux grands yeux, sa bouche recolorée pour le contraste.</p>
+          <p class="adapt">La tête du robot de S avec la bouche recolorée en fruits rouges sombres pour contraster avec le visage ; ce robot peut rester malheureux.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_f2_shead_dnd.svg?v=f4e227ba" width="112" height="112" alt="F2 : pancarte de porte accrochée à un clou, tête du robot S et DO NOT DISTURB"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_f2_shead_dnd.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_f2_shead_dnd.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_f2_shead_dnd.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_f2_shead_dnd.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner F2</span><span class="selected">Sélection : F2</span></span>
+        </label>
+      </div>
+      <div class="candidate eliminated" data-letter="G" data-default-eliminated="true" data-default-final="false" data-theme="features" data-base="G">
+        <button type="button" class="eliminate" data-letter="G" title="Éliminer G"
+          aria-label="Éliminer G" aria-pressed="true">×</button>
+        <button type="button" class="ver-badge work" data-letter="G" aria-pressed="false" title="Marquer G comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="g" value="G" aria-labelledby="title-g">
+        <label class="card" for="g">
+          <div class="heading"><span class="letter">G</span><h2 id="title-g">Phare-robot</h2></div>
+          <p class="description">Rais ambrés, lune et étoiles : un phare discret pendant le travail sans surveillance.</p>
+          <p class="adapt">Éliminée, mais son croissant de lune est gardé pour les ambiances nocturnes.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_g_beacon.svg?v=f4e227ba" width="112" height="112" alt="G : phare à visage de robot projetant des rais ambrés pendant la nuit"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_g_beacon.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_g_beacon.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_g_beacon.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_g_beacon.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner G</span><span class="selected">Sélection : G</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="H" data-default-eliminated="false" data-default-final="false" data-theme="features" data-base="H">
+        <button type="button" class="eliminate" data-letter="H" title="Éliminer H"
+          aria-label="Éliminer H" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="H" aria-pressed="false" title="Marquer H comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="h" value="H" aria-labelledby="title-h">
+        <label class="card" for="h">
+          <div class="heading"><span class="letter">H</span><h2 id="title-h">Robot à pastille AWAY</h2></div>
+          <p class="description">Le robot présente sa propre pastille AWAY : un clin d’œil à l’interface de l’extension.</p>
+          <p class="adapt">Source de l’étiquette AWAY que toutes les icônes suivantes portent.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_h_chip.svg?v=f4e227ba" width="112" height="112" alt="H : robot présentant une pastille AWAY ambrée"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_h_chip.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_h_chip.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_h_chip.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_h_chip.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner H</span><span class="selected">Sélection : H</span></span>
+        </label>
+      </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend><span lang="fr">Pancarte de porte d’hôtel</span> <span class="tcount" data-theme="door">0 / 7</span></legend>
+      <div class="grid" data-theme="door">
+      <div class="candidate" data-letter="I" data-default-eliminated="false" data-default-final="false" data-theme="door" data-base="I">
+        <button type="button" class="eliminate" data-letter="I" title="Éliminer I"
+          aria-label="Éliminer I" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="I" aria-pressed="false" title="Marquer I comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="i" value="I" aria-labelledby="title-i">
+        <label class="card" for="i">
+          <div class="heading"><span class="letter">I</span><h2 id="title-i">Pancarte accrochée à la porte</h2></div>
+          <p class="description">Vraie silhouette de pancarte de porte sur une porte : visière de robot, bande rouge DO NOT DISTURB, pastille AWAY.</p>
+          <p class="adapt">La carte affiche DO NOT DISTURB, elle ne porte donc pas d’étiquette AWAY.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_i_hanger_dnd.svg?v=f4e227ba" width="112" height="112" alt="I : pancarte de porte d’hôtel sur une porte, visière de robot, bande DO NOT DISTURB, pastille AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_i_hanger_dnd.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_i_hanger_dnd.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_i_hanger_dnd.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_i_hanger_dnd.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner I</span><span class="selected">Sélection : I</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="J" data-default-eliminated="false" data-default-final="false" data-theme="door" data-base="J">
+        <button type="button" class="eliminate" data-letter="J" title="Éliminer J"
+          aria-label="Éliminer J" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="J" aria-pressed="false" title="Marquer J comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="j" value="J" aria-labelledby="title-j">
+        <label class="card" for="j">
+          <div class="heading"><span class="letter">J</span><h2 id="title-j">Accrochée au bouton de porte</h2></div>
+          <p class="description">La carte passée sur le bouton de porte, le bouton visible dans le trou, le robot toujours à côté.</p>
+          <p class="adapt">Le bouton de porte transparaît dans le trou ; la puce AWAY a disparu, la porte garde le message.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_j_hanger_on_knob.svg?v=f4e227ba" width="112" height="112" alt="J : pancarte de porte d’hôtel accrochée à un bouton de porte avec le robot à côté"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_j_hanger_on_knob.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_j_hanger_on_knob.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_j_hanger_on_knob.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_j_hanger_on_knob.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner J</span><span class="selected">Sélection : J</span></span>
+        </label>
+      </div>
+      <div class="candidate eliminated" data-letter="K" data-default-eliminated="true" data-default-final="false" data-theme="door" data-base="K">
+        <button type="button" class="eliminate" data-letter="K" title="Éliminer K"
+          aria-label="Éliminer K" aria-pressed="true">×</button>
+        <button type="button" class="ver-badge work" data-letter="K" aria-pressed="false" title="Marquer K comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="k" value="K" aria-labelledby="title-k">
+        <label class="card" for="k">
+          <div class="heading"><span class="letter">K</span><h2 id="title-k">Cloche de notification barrée</h2></div>
+          <p class="description">Variante sans texte : une cloche de notification barrée remplace la bande, pastille AWAY conservée.</p>
+          <p class="adapt">Éliminée ; elle avait reçu un col en carton plein à la place de la fente sombre.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_k_hanger_muted.svg?v=f4e227ba" width="112" height="112" alt="K : pancarte de porte d’hôtel avec cloche de notification barrée et pastille AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_k_hanger_muted.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_k_hanger_muted.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_k_hanger_muted.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_k_hanger_muted.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner K</span><span class="selected">Sélection : K</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="R" data-default-eliminated="false" data-default-final="false" data-theme="door" data-base="R">
+        <button type="button" class="eliminate" data-letter="R" title="Éliminer R"
+          aria-label="Éliminer R" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="R" aria-pressed="false" title="Marquer R comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="r" value="R" aria-labelledby="title-r">
+        <label class="card" for="r">
+          <div class="heading"><span class="letter">R</span><h2 id="title-r">Accrochée à une punaise rouge</h2></div>
+          <p class="description">La pancarte épinglée à la porte par une punaise rouge dans son trou ; robot aux yeux ronds ; DO NOT DISTURB seulement, pas de pastille AWAY, comme demandé.</p>
+          <p class="adapt">Une vraie porte désormais : huisserie, panneaux, chant, gonds, loquet. Pancarte plus large, robot heureux.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_r_hanger_tack_dnd.svg?v=f4e227ba" width="112" height="112" alt="R : pancarte de porte d’hôtel accrochée à une punaise rouge, robot aux yeux ronds, DO NOT DISTURB"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_r_hanger_tack_dnd.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_r_hanger_tack_dnd.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_r_hanger_tack_dnd.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_r_hanger_tack_dnd.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner R</span><span class="selected">Sélection : R</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="S" data-default-eliminated="false" data-default-final="false" data-theme="door" data-base="S">
+        <button type="button" class="eliminate" data-letter="S" title="Éliminer S"
+          aria-label="Éliminer S" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="S" aria-pressed="false" title="Marquer S comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="s" value="S" aria-labelledby="title-s">
+        <label class="card" for="s">
+          <div class="heading"><span class="letter">S</span><h2 id="title-s">Ventouse sur la porte</h2></div>
+          <p class="description">Ventouse collée sur le panneau de la porte, carte pincée en dessous ; robot à points cyan ; disque barré et DO NOT DISTURB, pas de pastille AWAY.</p>
+          <p class="adapt">Vraie porte et ventouse ; DO NOT DISTURB affiché, donc pas d’étiquette AWAY.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_s_hanger_suction_dnd.svg?v=f4e227ba" width="112" height="112" alt="S : pancarte de porte d’hôtel sur ventouse, robot aux yeux cyan, panneau DO NOT DISTURB"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_s_hanger_suction_dnd.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_s_hanger_suction_dnd.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_s_hanger_suction_dnd.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_s_hanger_suction_dnd.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner S</span><span class="selected">Sélection : S</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="T" data-default-eliminated="false" data-default-final="false" data-theme="door" data-base="T">
+        <button type="button" class="eliminate" data-letter="T" title="Éliminer T"
+          aria-label="Éliminer T" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="T" aria-pressed="false" title="Marquer T comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="t" value="T" aria-labelledby="title-t">
+        <label class="card" for="t">
+          <div class="heading"><span class="letter">T</span><h2 id="title-t">Crochet sur la poignée de porte</h2></div>
+          <p class="description">Un crochet métallique enjambe le levier de poignée chromée et passe dans le trou de la carte ; visage de robot curieux, plaque AWAY sur le bas de la carte.</p>
+          <p class="adapt">Crochet taillé dans le carton qui enjambe le levier de poignée ; pancarte plus large, plaque AWAY en dessus.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_t_hanger_hook_handle.svg?v=f4e227ba" width="112" height="112" alt="T : pancarte de porte d’hôtel sur crochet métallique enjambant un levier de poignée, plaque AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_t_hanger_hook_handle.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_t_hanger_hook_handle.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_t_hanger_hook_handle.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_t_hanger_hook_handle.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner T</span><span class="selected">Sélection : T</span></span>
+        </label>
+      </div>
+      <div class="candidate eliminated" data-letter="U" data-default-eliminated="true" data-default-final="false" data-theme="door" data-base="U">
+        <button type="button" class="eliminate" data-letter="U" title="Éliminer U"
+          aria-label="Éliminer U" aria-pressed="true">×</button>
+        <button type="button" class="ver-badge work" data-letter="U" aria-pressed="false" title="Marquer U comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="u" value="U" aria-labelledby="title-u">
+        <label class="card" for="u">
+          <div class="heading"><span class="letter">U</span><h2 id="title-u">Crochet à vis, cloche barrée</h2></div>
+          <p class="description">Crochet à vis en laiton dans le trou, une cloche barrée au lieu d’une bande de mots pour que la carte fonctionne dans n’importe quelle langue, plaque AWAY conservée.</p>
+          <p class="adapt">Éliminée ; elle avait reçu une vraie porte, un trou rond percé et un crochet en carton.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_u_hanger_screw_bell.svg?v=f4e227ba" width="112" height="112" alt="U : pancarte de porte d’hôtel sur crochet à vis en laiton, cloche barrée et plaque AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_u_hanger_screw_bell.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_u_hanger_screw_bell.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_u_hanger_screw_bell.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_u_hanger_screw_bell.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner U</span><span class="selected">Sélection : U</span></span>
+        </label>
+      </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend><span lang="fr">Le robot part en vacances</span> <span class="tcount" data-theme="vacation">0 / 9</span></legend>
+      <div class="grid" data-theme="vacation">
+      <div class="candidate" data-letter="L" data-default-eliminated="false" data-default-final="false" data-theme="vacation" data-base="L">
+        <button type="button" class="eliminate" data-letter="L" title="Éliminer L"
+          aria-label="Éliminer L" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="L" aria-pressed="false" title="Marquer L comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="l" value="L" aria-labelledby="title-l">
+        <label class="card" for="l">
+          <div class="heading"><span class="letter">L</span><h2 id="title-l">Pancarte de plage</h2></div>
+          <p class="description">Pancarte maritime : la visière de robot porte des lunettes de soleil, bande ON VACATION et pastille AWAY.</p>
+          <p class="adapt">Garde son étiquette comme demandé ; palmier dessiné avec de vraies palmes, soleil déplacé.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_l_vacation_beach_hanger.svg?v=f4e227ba" width="112" height="112" alt="L : pancarte de porte à la plage, visière de robot avec lunettes de soleil, ON VACATION et AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_l_vacation_beach_hanger.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_l_vacation_beach_hanger.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_l_vacation_beach_hanger.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_l_vacation_beach_hanger.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner L</span><span class="selected">Sélection : L</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="L1" data-default-eliminated="false" data-default-final="false" data-theme="vacation" data-base="L">
+        <button type="button" class="eliminate" data-letter="L1" title="Éliminer L1"
+          aria-label="Éliminer L1" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="L1" aria-pressed="false" title="Marquer L1 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="l1" value="L1" aria-labelledby="title-l1">
+        <label class="card" for="l1">
+          <div class="heading"><span class="letter">L1</span><h2 id="title-l1">Pancarte de plage, de jour</h2></div>
+          <p class="description">La pancarte de plage du lot 2 reconstruite : carte plus large, rond près du haut, bande DO NOT DISTURB à son pied, ciel et mer de V, et la plaque AWAY seule sur le sable.</p>
+          <p class="adapt">Pancarte élargie avec le rond près de son bord haut et le bandeau rouge DO NOT DISTURB à son pied ; ciel et mer de V derrière, plaque AWAY sur sa propre bande de sable, jamais posée sur autre chose.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_l1_beach_placard.svg?v=f4e227ba" width="112" height="112" alt="L1 : scène de plage avec une large pancarte DO NOT DISTURB et un badge AWAY sur le sable"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_l1_beach_placard.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_l1_beach_placard.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_l1_beach_placard.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_l1_beach_placard.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner L1</span><span class="selected">Sélection : L1</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="L1N" data-default-eliminated="false" data-default-final="false" data-theme="vacation" data-base="L">
+        <button type="button" class="eliminate" data-letter="L1N" title="Éliminer L1N"
+          aria-label="Éliminer L1N" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="L1N" aria-pressed="false" title="Marquer L1N comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="l1n" value="L1N" aria-labelledby="title-l1n">
+        <label class="card" for="l1n">
+          <div class="heading"><span class="letter">L1N</span><h2 id="title-l1n">Pancarte de plage, de nuit</h2></div>
+          <p class="description">La même scène de nuit, avec le croissant de lune repris de G.</p>
+          <p class="adapt">L1 de nuit : le croissant de lune de G remplace le soleil, mer sombre, même pancarte et même plaque.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_l1n_beach_placard_night.svg?v=f4e227ba" width="112" height="112" alt="L1N : scène de plage nocturne avec une large pancarte DO NOT DISTURB et un badge AWAY sur le sable"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_l1n_beach_placard_night.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_l1n_beach_placard_night.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_l1n_beach_placard_night.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_l1n_beach_placard_night.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner L1N</span><span class="selected">Sélection : L1N</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="L2" data-default-eliminated="false" data-default-final="false" data-theme="vacation" data-base="L">
+        <button type="button" class="eliminate" data-letter="L2" title="Éliminer L2"
+          aria-label="Éliminer L2" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="L2" aria-pressed="false" title="Marquer L2 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="l2" value="L2" aria-labelledby="title-l2">
+        <label class="card" for="l2">
+          <div class="heading"><span class="letter">L2</span><h2 id="title-l2">Pancarte de plage sur crochet taillé</h2></div>
+          <p class="description">Même plage, même pancarte, mais accrochée par un crochet rond taillé directement dans le bord gauche du carton plutôt que dans un trou percé.</p>
+          <p class="adapt">La pancarte de L1 accrochée par un crochet taillé directement dans le bord gauche du carton, sans trou percé.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_l2_carved_hook.svg?v=f4e227ba" width="112" height="112" alt="L2 : scène de plage avec une pancarte DO NOT DISTURB accrochée par un crochet taillé dans le carton"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_l2_carved_hook.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_l2_carved_hook.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_l2_carved_hook.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_l2_carved_hook.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner L2</span><span class="selected">Sélection : L2</span></span>
+        </label>
+      </div>
+      <div class="candidate eliminated" data-letter="M" data-default-eliminated="true" data-default-final="false" data-theme="vacation" data-base="M">
+        <button type="button" class="eliminate" data-letter="M" title="Éliminer M"
+          aria-label="Éliminer M" aria-pressed="true">×</button>
+        <button type="button" class="ver-badge work" data-letter="M" aria-pressed="false" title="Marquer M comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="m" value="M" aria-labelledby="title-m">
+        <label class="card" for="m">
+          <div class="heading"><span class="letter">M</span><h2 id="title-m">Plantée dans le sable</h2></div>
+          <p class="description">La carte plantée dans le sable près du parasol et d’un cocktail : BACK LATER, AWAY.</p>
+          <p class="adapt">Éliminée ; elle a aussi perdu le parasol et le cocktail qui se lisaient comme deux cuillères.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_m_vacation_beach_planted.svg?v=f4e227ba" width="112" height="112" alt="M : pancarte de porte plantée dans le sable de la plage à côté d’un parasol et d’un cocktail"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_m_vacation_beach_planted.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_m_vacation_beach_planted.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_m_vacation_beach_planted.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_m_vacation_beach_planted.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner M</span><span class="selected">Sélection : M</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="N" data-default-eliminated="false" data-default-final="false" data-theme="vacation" data-base="N">
+        <button type="button" class="eliminate" data-letter="N" title="Éliminer N"
+          aria-label="Éliminer N" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="N" aria-pressed="false" title="Marquer N comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="n" value="N" aria-labelledby="title-n">
+        <label class="card" for="n">
+          <div class="heading"><span class="letter">N</span><h2 id="title-n">Hors du bureau</h2></div>
+          <p class="description">La pancarte agrandie devient la valise elle-même, robot en chapeau de soleil sur la piste de décollage.</p>
+          <p class="adapt">Pas de porte dans la scène, donc l’encoche est pleine dans le carton.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_n_hanger_suitcase.svg?v=f4e227ba" width="112" height="112" alt="N : valise en forme de pancarte de porte, bande OUT OF OFFICE et pastille AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_n_hanger_suitcase.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_n_hanger_suitcase.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_n_hanger_suitcase.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_n_hanger_suitcase.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner N</span><span class="selected">Sélection : N</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="V" data-default-eliminated="false" data-default-final="false" data-theme="vacation" data-base="V">
+        <button type="button" class="eliminate" data-letter="V" title="Éliminer V"
+          aria-label="Éliminer V" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="V" aria-pressed="false" title="Marquer V comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="v" value="V" aria-labelledby="title-v">
+        <label class="card" for="v">
+          <div class="heading"><span class="letter">V</span><h2 id="title-v">Carte plantée dans le sable</h2></div>
+          <p class="description">Robot à paupières mi-closes sous une casquette plate, carte calée dans le sable près du verre, bande BACK LATER et plaque AWAY ambrée.</p>
+          <p class="adapt">Palmier plus grand et volumineux avec des palmes dessinées ; les deux verres de cocktail ont disparu.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_v_vacation_sand_planted.svg?v=f4e227ba" width="112" height="112" alt="V : pancarte de porte plantée dans le sable avec un robot aux lunettes de soleil, BACK LATER et AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_v_vacation_sand_planted.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_v_vacation_sand_planted.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_v_vacation_sand_planted.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_v_vacation_sand_planted.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner V</span><span class="selected">Sélection : V</span></span>
+        </label>
+      </div>
+      <div class="candidate eliminated" data-letter="W" data-default-eliminated="true" data-default-final="false" data-theme="vacation" data-base="W">
+        <button type="button" class="eliminate" data-letter="W" title="Éliminer W"
+          aria-label="Éliminer W" aria-pressed="true">×</button>
+        <button type="button" class="ver-badge work" data-letter="W" aria-pressed="false" title="Marquer W comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="w" value="W" aria-labelledby="title-w">
+        <label class="card" for="w">
+          <div class="heading"><span class="letter">W</span><h2 id="title-w">Accrochée comme une serviette</h2></div>
+          <p class="description">La carte pincée sur un fil à linge entre deux piquets ; yeux à demi fermés de sommeil, OUT OF OFFICE, AWAY.</p>
+          <p class="adapt">Éliminée ; elle avait reçu des palmes dessinées, aucun verre et un col plein.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_w_vacation_towel_line.svg?v=f4e227ba" width="112" height="112" alt="W : pancarte de porte accrochée à un fil à linge de plage, visage de robot engourdi, OUT OF OFFICE et AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_w_vacation_towel_line.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_w_vacation_towel_line.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_w_vacation_towel_line.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_w_vacation_towel_line.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner W</span><span class="selected">Sélection : W</span></span>
+        </label>
+      </div>
+      <div class="candidate eliminated" data-letter="X" data-default-eliminated="true" data-default-final="false" data-theme="vacation" data-base="X">
+        <button type="button" class="eliminate" data-letter="X" title="Éliminer X"
+          aria-label="Éliminer X" aria-pressed="true">×</button>
+        <button type="button" class="ver-badge work" data-letter="X" aria-pressed="false" title="Marquer X comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="x" value="X" aria-labelledby="title-x">
+        <label class="card" for="x">
+          <div class="heading"><span class="letter">X</span><h2 id="title-x">Valise posée, robot sorti</h2></div>
+          <p class="description">Le robot pose sa valise au bord de la mer et lève la carte : OFF DUTY, visage à lunettes de soleil et grande pastille AWAY.</p>
+          <p class="adapt">Éliminée ; elle avait reçu des palmes dessinées et un col plein.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_x_vacation_suitcase_robot.svg?v=f4e227ba" width="112" height="112" alt="X : robot avec une valise à la plage tenant une pancarte de porte, pastille AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_x_vacation_suitcase_robot.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_x_vacation_suitcase_robot.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_x_vacation_suitcase_robot.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_x_vacation_suitcase_robot.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner X</span><span class="selected">Sélection : X</span></span>
+        </label>
+      </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend><span lang="fr">Le robot travaille sur son laptop</span> <span class="tcount" data-theme="laptop">0 / 9</span></legend>
+      <div class="grid" data-theme="laptop">
+      <div class="candidate" data-letter="O" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="O">
+        <button type="button" class="eliminate" data-letter="O" title="Éliminer O"
+          aria-label="Éliminer O" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="O" aria-pressed="false" title="Marquer O comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="o" value="O" aria-labelledby="title-o">
+        <label class="card" for="o">
+          <div class="heading"><span class="letter">O</span><h2 id="title-o">L’écran fait le panneau</h2></div>
+          <p class="description">Le laptop affiche la pancarte en plein écran pendant que deux pattes continuent de taper.</p>
+          <p class="adapt">Le robot est face à nous devant le laptop ; l’humain a disparu, la puce AWAY aussi.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_o_hanger_as_screen.svg?v=f4e227ba" width="112" height="112" alt="O : écran de laptop affichant une pancarte DO NOT DISTURB avec des pattes de robot qui tapent"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_o_hanger_as_screen.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_o_hanger_as_screen.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_o_hanger_as_screen.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_o_hanger_as_screen.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner O</span><span class="selected">Sélection : O</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="O2" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="O">
+        <button type="button" class="eliminate" data-letter="O2" title="Éliminer O2"
+          aria-label="Éliminer O2" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="O2" aria-pressed="false" title="Marquer O2 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="o2" value="O2" aria-labelledby="title-o2">
+        <label class="card" for="o2">
+          <div class="heading"><span class="letter">O2</span><h2 id="title-o2">Au laptop, vu de dos</h2></div>
+          <p class="description">Le même bureau vu de dos : le dos et la tête du robot masquent le bas du capot, la pancarte reste lisible au-dessus de l’écran.</p>
+          <p class="adapt">NOUVEAU : le même bureau vu de dos, le dos du robot masque le bas du capot.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_o2_laptop_back.svg?v=f4e227ba" width="112" height="112" alt="O2 : robot vu de dos travaillant sur un laptop avec une pancarte DO NOT DISTURB sur le capot"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_o2_laptop_back.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_o2_laptop_back.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_o2_laptop_back.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_o2_laptop_back.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner O2</span><span class="selected">Sélection : O2</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="P" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="P">
+        <button type="button" class="eliminate" data-letter="P" title="Éliminer P"
+          aria-label="Éliminer P" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="P" aria-pressed="false" title="Marquer P comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="p" value="P" aria-labelledby="title-p">
+        <label class="card" for="p">
+          <div class="heading"><span class="letter">P</span><h2 id="title-p">Pancarte sur le capot</h2></div>
+          <p class="description">Robot penché sur ses lignes de code, la pancarte posée sur le capot, un café pour une personne.</p>
+          <p class="adapt">Robot entier conservé, tasse agrandie 1,3 fois avec un bord sombre pour la détacher du capot.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_p_hanger_on_laptop.svg?v=f4e227ba" width="112" height="112" alt="P : robot travaillant sur un laptop avec une pancarte DO NOT DISTURB posée sur le capot"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_p_hanger_on_laptop.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_p_hanger_on_laptop.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_p_hanger_on_laptop.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_p_hanger_on_laptop.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner P</span><span class="selected">Sélection : P</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="P1" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="P">
+        <button type="button" class="eliminate" data-letter="P1" title="Éliminer P1"
+          aria-label="Éliminer P1" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="P1" aria-pressed="false" title="Marquer P1 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="p1" value="P1" aria-labelledby="title-p1">
+        <label class="card" for="p1">
+          <div class="heading"><span class="letter">P1</span><h2 id="title-p1">Robot au laptop avec sa tasse</h2></div>
+          <p class="description">P sans son étiquette de porte, souriant, tasse agrandie avec l’anse à gauche, et la plaque AWAY placée sous la table au lieu de dessus.</p>
+          <p class="adapt">Étiquette de porte supprimée, la ligne du ventre est devenue un sourire, tasse agrandie avec l’anse à gauche, et le dessin remonté pour que la plaque AWAY tienne sous la table avec un espace en dessous.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_p1_away_plate.svg?v=f4e227ba" width="112" height="112" alt="P1 : robot souriant devant un laptop avec une tasse et un badge AWAY sous la table"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_p1_away_plate.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_p1_away_plate.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_p1_away_plate.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_p1_away_plate.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner P1</span><span class="selected">Sélection : P1</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="Q" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="Q">
+        <button type="button" class="eliminate" data-letter="Q" title="Éliminer Q"
+          aria-label="Éliminer Q" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="Q" aria-pressed="false" title="Marquer Q comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="q" value="Q" aria-labelledby="title-q">
+        <label class="card" for="q">
+          <div class="heading"><span class="letter">Q</span><h2 id="title-q">Travail profond, casque sur les oreilles</h2></div>
+          <p class="description">Casque sur les oreilles, la carte scotchée sur le capot ouvert : QUIET et la pastille AWAY.</p>
+          <p class="adapt">Table de travail réduite et refroidie ; le robot au casque est extrait pour que Q2 le reprenne.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_q_hanger_sticker_lid.svg?v=f4e227ba" width="112" height="112" alt="Q : robot au casque derrière un capot de laptop scotché d’une pancarte QUIET"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_q_hanger_sticker_lid.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_q_hanger_sticker_lid.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_q_hanger_sticker_lid.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_q_hanger_sticker_lid.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner Q</span><span class="selected">Sélection : Q</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="Q2" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="Q">
+        <button type="button" class="eliminate" data-letter="Q2" title="Éliminer Q2"
+          aria-label="Éliminer Q2" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="Q2" aria-pressed="false" title="Marquer Q2 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="q2" value="Q2" aria-labelledby="title-q2">
+        <label class="card" for="q2">
+          <div class="heading"><span class="letter">Q2</span><h2 id="title-q2">Casque sur un établi en bois</h2></div>
+          <p class="description">Le même robot, même casque et même capot que Q, posé sur un petit établi en bois plutôt que sur une large table en aluminium.</p>
+          <p class="adapt">NOUVEAU : le même robot sur un petit établi en bois.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_q2_hanger_wood_laptop.svg?v=f4e227ba" width="112" height="112" alt="Q2 : robot au casque derrière un laptop posé sur un établi en bois, pancarte QUIET et badge AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_q2_hanger_wood_laptop.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_q2_hanger_wood_laptop.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_q2_hanger_wood_laptop.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_q2_hanger_wood_laptop.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner Q2</span><span class="selected">Sélection : Q2</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="Q3" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="Q">
+        <button type="button" class="eliminate" data-letter="Q3" title="Éliminer Q3"
+          aria-label="Éliminer Q3" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="Q3" aria-pressed="false" title="Marquer Q3 comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="q3" value="Q3" aria-labelledby="title-q3">
+        <label class="card" for="q3">
+          <div class="heading"><span class="letter">Q3</span><h2 id="title-q3">Robot face à nous devant un laptop ouvert</h2></div>
+          <p class="description">Q3 ouvre le capot pour que le robot le remplisse, pose la pancarte sur le clavier et la reconstruit sur le modèle de O.</p>
+          <p class="adapt">Rien ne masque plus le capot ; écran et clavier sont alignés à la ligne de contact avec deux rangées de touches ; oreilles et antenne de P sont revenues ; pancarte de O reconstruite avec le rond près du haut. Elle affiche DO NOT DISTURB, donc pas d’étiquette AWAY.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_q3_front_laptop.svg?v=f4e227ba" width="112" height="112" alt="Q3 : robot face à nous dans un laptop ouvert, avec oreilles, antenne et pancarte DO NOT DISTURB"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_q3_front_laptop.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_q3_front_laptop.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_q3_front_laptop.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_q3_front_laptop.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner Q3</span><span class="selected">Sélection : Q3</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="Y" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="Y">
+        <button type="button" class="eliminate" data-letter="Y" title="Éliminer Y"
+          aria-label="Éliminer Y" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="Y" aria-pressed="false" title="Marquer Y comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="y" value="Y" aria-labelledby="title-y">
+        <label class="card" for="y">
+          <div class="heading"><span class="letter">Y</span><h2 id="title-y">Pancarte épinglée sur le capot</h2></div>
+          <p class="description">Robot concentré aux paupières mi-closes qui tape sous ses pattes ; la pancarte est épinglée sur l’écran par une punaise rouge et affiche DO NOT DISTURB, donc pas de plaque AWAY.</p>
+          <p class="adapt">La carte DO NOT DISTURB ne porte pas d’étiquette AWAY ; pas de porte, donc pas d’encoche.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_y_laptop_lid_hanger.svg?v=f4e227ba" width="112" height="112" alt="Y : robot devant un laptop avec une pancarte de porte DO NOT DISTURB épinglée sur l’écran"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_y_laptop_lid_hanger.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_y_laptop_lid_hanger.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_y_laptop_lid_hanger.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_y_laptop_lid_hanger.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner Y</span><span class="selected">Sélection : Y</span></span>
+        </label>
+      </div>
+      <div class="candidate" data-letter="Z" data-default-eliminated="false" data-default-final="false" data-theme="laptop" data-base="Z">
+        <button type="button" class="eliminate" data-letter="Z" title="Éliminer Z"
+          aria-label="Éliminer Z" aria-pressed="false">×</button>
+        <button type="button" class="ver-badge work" data-letter="Z" aria-pressed="false" title="Marquer Z comme version finale ou version de travail">Version de travail</button>
+        <input type="radio" name="favorite" id="z" value="Z" aria-labelledby="title-z">
+        <label class="card" for="z">
+          <div class="heading"><span class="letter">Z</span><h2 id="title-z">L’écran parle pour lui</h2></div>
+          <p class="description">L’écran garde le visage de robot curieux pendant que la pancarte pend au bord du capot : SHIPPING CODE et une plaque AWAY flottant au-dessus du bureau.</p>
+          <p class="adapt">Pas de porte, donc pas d’encoche ; plaque AWAY centrée en haut de la tuile.</p>
+          <div class="surfaces">
+            <div class="surface dark"><img src="icon_z_laptop_screen_away.svg?v=f4e227ba" width="112" height="112" alt="Z : laptop avec un visage de robot à l’écran et une pancarte SHIPPING CODE au bord du capot, plaque AWAY"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="icon_z_laptop_screen_away.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+          </div>
+          <div class="sizes"><div class="size"><img src="icon_z_laptop_screen_away.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="icon_z_laptop_screen_away.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="icon_z_laptop_screen_away.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+          <span class="choice"><span class="unselected">Sélectionner Z</span><span class="selected">Sélection : Z</span></span>
+        </label>
+      </div>
+      </div>
+    </fieldset>
+  </section>
+  <section class="batch" id="ideas-section">
+    <h2><span lang="fr">Éléments réutilisables identifiés lors de la revue</span></h2>
+    <p class="batchnote" lang="fr">Chaque élément gardé par la revue est dessiné seul, avec les tuiles dont il vient et celles qui l’ont déjà réutilisé.</p>
+    <fieldset>
+      <legend><span lang="fr">elements</span> (3)</legend>
+      <div class="grid">
+      <div class="icard" lang="fr" data-idea="hat">
+        <div class="surfaces">
+            <div class="surface dark"><img src="idea_a_party_hat_confetti.svg?v=f4e227ba" width="112" height="112" alt="Tuile d’élément réutilisable : le chapeau de fête de A avec ses confettis"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="idea_a_party_hat_confetti.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+        </div>
+        <div class="heading"><span class="letter">hat</span><h2>Chapeau de fête et cotillons</h2></div>
+        <p class="description" lang="fr">Le chapeau de fête et les cotillons d&#x27;A peuvent revenir sur n&#x27;importe quelle autre proposition.</p>
+        <p class="origins" lang="fr"><b>Extrait de :</b> <code>A</code> <span class="file">icon_a_party.svg</span> &nbsp;·&nbsp; <b>Réutilisé dans :</b> aucune tuile pour l’instant</p>
+        <div class="sizes"><div class="size"><img src="idea_a_party_hat_confetti.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="idea_a_party_hat_confetti.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="idea_a_party_hat_confetti.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+      </div>
+      <div class="icard" lang="fr" data-idea="moon">
+        <div class="surfaces">
+            <div class="surface dark"><img src="idea_g_crescent_moon.svg?v=f4e227ba" width="112" height="112" alt="Tuile d’élément réutilisable : le croissant de lune de G avec ses étoiles"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="idea_g_crescent_moon.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+        </div>
+        <div class="heading"><span class="letter">moon</span><h2>Croissant de lune, ambiance nocturne</h2></div>
+        <p class="description" lang="fr">Le croissant de lune de G reste disponible dès que l&#x27;ambiance doit être nocturne.</p>
+        <p class="origins" lang="fr"><b>Extrait de :</b> <code>G</code> <span class="file">icon_g_beacon.svg</span> &nbsp;·&nbsp; <b>Réutilisé dans :</b> <code>L1N</code> <span class="file">icon_l1n_beach_placard_night.svg</span></p>
+        <div class="sizes"><div class="size"><img src="idea_g_crescent_moon.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="idea_g_crescent_moon.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="idea_g_crescent_moon.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+      </div>
+      <div class="icard" lang="fr" data-idea="mouth">
+        <div class="surfaces">
+            <div class="surface dark"><img src="idea_s_mouth_contrast.svg?v=f4e227ba" width="112" height="112" alt="Tuile d’élément réutilisable : la bouche de S avant et après recoloration"><span class="caption">Fond sombre / 112 px</span></div>
+            <div class="surface light"><img src="idea_s_mouth_contrast.svg?v=f4e227ba" width="112" height="112" alt=""><span class="caption">Fond clair / 112 px</span></div>
+        </div>
+        <div class="heading"><span class="letter">mouth</span><h2>Bouche contrastée sur le visage du robot</h2></div>
+        <p class="description" lang="fr">La couleur de la bouche doit trancher avec le visage du robot. Ce robot peut, par exception, ne pas être heureux, alors que tous les autres restent heureux.</p>
+        <p class="origins" lang="fr"><b>Extrait de :</b> <code>S</code> <span class="file">icon_s_hanger_suction_dnd.svg</span> &nbsp;·&nbsp; <b>Réutilisé dans :</b> <code>F2</code> <span class="file">icon_f2_shead_dnd.svg</span></p>
+        <div class="sizes"><div class="size"><img src="idea_s_mouth_contrast.svg?v=f4e227ba" width="24" height="24" alt=""><span>24 px</span></div><div class="size"><img src="idea_s_mouth_contrast.svg?v=f4e227ba" width="48" height="48" alt=""><span>48 px</span></div><div class="size"><img src="idea_s_mouth_contrast.svg?v=f4e227ba" width="72" height="72" alt=""><span>72 px</span></div></div>
+      </div>
+      </div>
+    </fieldset>
+  </section>
+  <section class="batch" id="eliminated-section">
+    <h2><span lang="fr">Versions éliminées</span> (<span id="elim-count">0</span>)</h2>
+    <p class="batchnote" lang="fr">Le premier bouton de la barre du bas rassemble ici les tuiles éliminées, thème par thème, sans effacer leur section d’origine : une tuile éliminée reste sélectionnable ici, donc une décision peut être reprise.</p>
+    <fieldset>
+      <legend><span lang="fr">Concepts centrés sur le robot</span> <span class="tcount" data-theme="character">0 / 6</span></legend>
+      <div class="grid" data-theme="character"></div>
+    </fieldset>
+    <fieldset>
+      <legend><span lang="fr">Illustrations de fonctionnalités</span> <span class="tcount" data-theme="features">0 / 6</span></legend>
+      <div class="grid" data-theme="features"></div>
+    </fieldset>
+    <fieldset>
+      <legend><span lang="fr">Pancarte de porte d’hôtel</span> <span class="tcount" data-theme="door">0 / 7</span></legend>
+      <div class="grid" data-theme="door"></div>
+    </fieldset>
+    <fieldset>
+      <legend><span lang="fr">Le robot part en vacances</span> <span class="tcount" data-theme="vacation">0 / 9</span></legend>
+      <div class="grid" data-theme="vacation"></div>
+    </fieldset>
+    <fieldset>
+      <legend><span lang="fr">Le robot travaille sur son laptop</span> <span class="tcount" data-theme="laptop">0 / 9</span></legend>
+      <div class="grid" data-theme="laptop"></div>
+    </fieldset>
+  </section>
+  <footer>    <p>Familles : A–D sont des concepts centrés sur le personnage, E–H illustrent les fonctionnalités de l’extension, I–Q itèrent sur F (le badge Do Not Disturb) avec un visage de robot et la pastille AWAY de H, et R–Z font de la carte une vraie pancarte de porte avec une accroche visible (punaise, ventouse, crochet sur la poignée) — une carte DO NOT DISTURB ne porte pas de pastille AWAY. Aucune proposition n’est sélectionnée par défaut.</p>
+    <p>Galerie hors ligne : les SVG vivent à côté de cette page dans <strong id="icons-folder">icons preview</strong>. Aucun script distant, aucune police distante, aucune requête réseau.</p>
+    <p><a href="../../../../ai-automation-tools/plans/PLAN_HUMAN_AWAY_ICON_ACTION.md">Record d’application de l’icône</a> · Choisir une carte ne vaut pas approbation de l’installation.</p>
+</footer>
+</main>
+  <div id="triage-bar" role="toolbar" aria-label="Triage des versions"><span class="barlabel" lang="fr">Triage</span><button type="button" id="hide-elim" lang="fr">Cacher les versions éliminées</button><span class="hint" lang="fr">Une tuile ne change pas de statut « Version de travail » ou « Version Finale » lorsqu&#x27;elle est éliminée ou restaurée.</span></div>
+
+
+  <script>
+    // The radio marks the favourite, the cross eliminates a tile, and the badge under them says
+    // how mature that version is. Elimination and maturity are two separate states: gathering a
+    // tile never writes the maturity key, and marking a tile never moves it. All three states
+    // live in localStorage keyed by letter, so the triage survives a reload and every later
+    // production batch.
+    const store = { elim: 'human-away-preview-eliminated', pick: 'human-away-preview-pick',
+                    final: 'human-away-preview-final', views: 'human-away-preview-view' };
+    const tiles = () => Array.from(document.querySelectorAll('.candidate[data-letter]'));
+    // The crosses the review drew are the seed for a first visit only; once the reader touches a
+    // cross, their own list is the truth and no control on the page overwrites it.
+    const defaults = () => tiles()
+      .filter((t) => t.dataset.defaultEliminated === 'true').map((t) => t.dataset.letter);
+    // Maturity is seeded the same way: an entry the reviewer ticked in the manifest is a final
+    // version on the first visit, and the reader's own marks take over from there.
+    const defaultsFinal = () => tiles()
+      .filter((t) => t.dataset.defaultFinal === 'true').map((t) => t.dataset.letter);
+    const eliminated = () => {
+      const raw = localStorage.getItem(store.elim);
+      return new Set(raw === null ? defaults() : JSON.parse(raw));
+    };
+    const finals = () => {
+      const raw = localStorage.getItem(store.final);
+      return new Set(raw === null ? defaultsFinal() : JSON.parse(raw));
+    };
+    // Eliminated tiles start gathered, which is the layout every earlier round used.
+    const hideElim = () => {
+      let raw = null;
+      try { raw = JSON.parse(localStorage.getItem(store.views) || 'null'); } catch (e) { raw = null; }
+      return raw ? raw.hideElim !== false : true;
+    };
+    const saveView = () => localStorage.setItem(store.views, JSON.stringify({ hideElim: hideElim() }));
+    // Only the tiles on screen in Propositions de design; the two maturity buttons act on those,
+    // never on a tile the reader has gathered in Versions eliminees.
+    const designTiles = () => Array.from(document.querySelectorAll('#design-section .candidate'));
+    const FINAL_TEXT = 'Version finale';
+    const WORK_TEXT = 'Version de travail';
+    const badgeText = (on) => (on ? FINAL_TEXT : WORK_TEXT);
+    const badgeHint = (on) => (on ? 'cliquer pour repasser en version de travail'
+                                 : 'cliquer pour marquer en version finale');
+    const THEME_NAMES = Array.from(document.querySelectorAll('#design-section .grid[data-theme]'))
+      .map((g) => g.dataset.theme);
+    const gridIn = (section, theme) =>
+      document.querySelector('#' + section + ' .grid[data-theme="' + theme + '"]');
+    // A comment node left in the tile's own spot: restoring puts the tile back at its exact
+    // former slot and order instead of at the end of the section.
+    const origins = new Map();
+
+    function placeOrigins() {
+      tiles().forEach((tile) => {
+        if (origins.has(tile.dataset.letter)) return;
+        const ph = document.createComment(' tile-slot:' + tile.dataset.letter + ' ');
+        origins.set(tile.dataset.letter, ph);
+        tile.parentNode.insertBefore(ph, tile);
+      });
+    }
+    function layout() {
+      const gather = hideElim();
+      tiles().forEach((tile) => {
+        if (gather && eliminated().has(tile.dataset.letter)) {
+          const target = gridIn('eliminated-section', tile.dataset.theme);
+          if (target && tile.parentElement !== target) target.appendChild(tile);
+          return;
+        }
+        const ph = origins.get(tile.dataset.letter);
+        if (ph && ph.parentNode) {
+          if (ph.parentNode === tile.parentNode && ph.previousSibling === tile) return;
+          ph.parentNode.insertBefore(tile, ph);
+        } else if (tile.parentElement) { tile.parentElement.appendChild(tile); }
+      });
+    }
+    // Every sub-section legend reads "<tiles on screen> / <tiles in the theme, eliminated
+    // included>", in both the design section and the eliminated section.
+    function syncCounts() {
+      THEME_NAMES.forEach((theme) => {
+        const total = tiles().filter((t) => t.dataset.theme === theme).length;
+        const d = gridIn('design-section', theme);
+        const e = gridIn('eliminated-section', theme);
+        const set = (id, n) => {
+          const cell = document.querySelector('#' + id + ' .tcount[data-theme="' + theme + '"]');
+          if (cell) cell.textContent = n + ' / ' + total;
+        };
+        set('design-section', d ? d.querySelectorAll('.candidate').length : 0);
+        set('eliminated-section', e ? e.querySelectorAll('.candidate').length : 0);
+      });
+    }
+    function syncLabels() {
+      const el = document.getElementById('hide-elim');
+      // A button always offers the action it performs, so the label flips with the state.
+      el.textContent = hideElim() ? 'Montrer les versions éliminées'
+                                 : 'Cacher les versions éliminées';
+      el.title = 'Rassembler ou non les tuiles éliminées dans leur section, par thème';
+      const mark = document.getElementById('final-count');
+      if (mark) mark.textContent = String(designTiles().length);
+      syncCounts();
+    }
+    function layoutAfter() { layout(); syncLabels(); }
+    function refreshAll() { refresh(); layout(); syncLabels(); }
+
+    function refresh() {
+      const gone = eliminated();
+      const fin = finals();
+      let kept = 0;
+      tiles().forEach((tile) => {
+        const letter = tile.dataset.letter;
+        const off = gone.has(letter);
+        tile.classList.toggle('eliminated', off);
+        tile.querySelector('.eliminate').setAttribute('aria-pressed', String(off));
+        const badge = tile.querySelector('.ver-badge');
+        if (badge) {
+          const isFinal = fin.has(letter);
+          badge.classList.toggle('final', isFinal);
+          badge.classList.toggle('work', !isFinal);
+          badge.setAttribute('aria-pressed', String(isFinal));
+          badge.textContent = badgeText(isFinal);
+          badge.title = letter + ' : ' + badgeText(isFinal) + ' — ' + badgeHint(isFinal);
+          badge.setAttribute('aria-label', badge.title);
+        }
+        if (!off) kept += 1;
+      });
+      document.getElementById('kept-count').textContent = String(kept);
+      document.getElementById('gone-count').textContent = String(gone.size);
+      document.getElementById('elim-count').textContent = String(gone.size);
+      const pick = localStorage.getItem(store.pick) || '';
+      const radio = document.getElementById(pick.toLowerCase());
+      if (radio) radio.checked = true;
+    }
+
+    function setFinal(letters, on) {
+      const fin = finals();
+      letters.forEach((l) => (on ? fin.add(l) : fin.delete(l)));
+      localStorage.setItem(store.final, JSON.stringify(Array.from(fin)));
+      refresh();
+      layoutAfter();
+    }
+
+    document.addEventListener('click', (event) => {
+      const btn = event.target.closest('.eliminate');
+      if (btn) {
+        const gone = eliminated();
+        const letter = btn.dataset.letter;
+        if (gone.has(letter)) gone.delete(letter); else gone.add(letter);
+        localStorage.setItem(store.elim, JSON.stringify(Array.from(gone)));
+        refresh();
+        layoutAfter();
+        return;
+      }
+      const radio = event.target.closest('input[name="favorite"]');
+      if (radio) {
+        localStorage.setItem(store.pick, radio.value);
+        refresh();
+        layoutAfter();
+        return;
+      }
+      // No control rewinds the reader's own elimination list any more: defaults() is only the
+      // data-default-eliminated seed of a first visit.
+      if (event.target.id === 'show-all') {
+        localStorage.setItem(store.elim, '[]');
+        refresh();
+        layoutAfter();
+      }
+      if (event.target.id === 'show-all-versions') {
+        setFinal(designTiles().map((t) => t.dataset.letter), false);
+      }
+      if (event.target.id === 'mark-all-final') {
+        setFinal(designTiles().map((t) => t.dataset.letter), true);
+      }
+    });
+    function initBadges() {
+      tiles().forEach((t) => {
+        if (t.querySelector('.ver-badge') || !t.querySelector('input[name="favorite"]')) return;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ver-badge work';
+        b.dataset.letter = t.dataset.letter;
+        b.setAttribute('aria-pressed', 'false');
+        b.textContent = WORK_TEXT;
+        t.querySelector('input[name="favorite"]').before(b);
+      });
+    }
+    function badgeClick(event) {
+      const badge = event.target.closest('.ver-badge');
+      if (!badge) return;
+      setFinal([badge.dataset.letter], !finals().has(badge.dataset.letter));
+    }
+    // The footer states where the SVGs live, in the form the reader's own OS prints. No literal
+    // separator is written here: the backslash is built by code so the source stays plain.
+    function iconsFolder() {
+      const B = String.fromCharCode(92);
+      const p = decodeURIComponent(location.pathname);
+      const dir = p.slice(0, p.lastIndexOf('/'));
+      const isWin = /Win/i.test(navigator.platform || '') || /Windows/i.test(navigator.userAgent || '');
+      if (!isWin) return dir;
+      const host = (location.hostname && location.hostname !== 'localhost') ? location.hostname : '';
+      const body = (host ? host + dir : dir.slice(1)).split('/').join(B);
+      return host ? B + B + body : body;
+    }
+
+    document.addEventListener('click', badgeClick);
+    document.getElementById('hide-elim').addEventListener('click', () => {
+      localStorage.setItem(store.views, JSON.stringify({ hideElim: !hideElim() }));
+      layout();
+      syncLabels();
+    });
+
+    const folderCell = document.getElementById('icons-folder');
+    if (folderCell) folderCell.textContent = iconsFolder();
+    initBadges();
+    placeOrigins();
+    refreshAll();
+  </script>
+</body>
+</html>

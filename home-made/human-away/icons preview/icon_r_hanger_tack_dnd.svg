@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="botR" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6ecf5"/><stop offset="1" stop-color="#9fb0c6"/>
+    </linearGradient>
+    <linearGradient id="goldR" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbeec3"/><stop offset="0.55" stop-color="#d9b25c"/><stop offset="1" stop-color="#8b6a2a"/>
+    </linearGradient>
+    <linearGradient id="steelR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f2f5f9"/><stop offset="0.5" stop-color="#b9c4d2"/><stop offset="1" stop-color="#7f8ca0"/>
+    </linearGradient>
+  </defs>
+  <defs><clipPath id="doorTile"><rect width="512" height="512" rx="96"/></clipPath></defs>
+  <g clip-path="url(#doorTile)">
+  <rect width="512" height="512" fill="#242e3d"/>
+  <rect x="0" y="0" width="404" height="512" fill="#3d4a5e"/>
+  <rect x="0" y="0" width="404" height="512" fill="none" stroke="#2a3543" stroke-width="10"/>
+  <rect x="52" y="44" width="300" height="176" rx="14" fill="none" stroke="#2a3543" stroke-width="12"/>
+  <rect x="52" y="252" width="300" height="216" rx="14" fill="none" stroke="#2a3543" stroke-width="12"/>
+  <rect x="52" y="44" width="300" height="176" rx="14" fill="#334051" opacity="0.45"/>
+  <rect x="66" y="58" width="272" height="148" rx="10" fill="none" stroke="#2a3543" stroke-width="5" opacity="0.8"/>
+  <rect x="66" y="266" width="272" height="188" rx="10" fill="none" stroke="#2a3543" stroke-width="5" opacity="0.8"/>
+  <rect x="404" y="0" width="16" height="512" fill="#000000" opacity="0.4"/>
+  <rect x="420" y="0" width="92" height="512" fill="#2a3543" opacity="0.55"/>
+  <rect x="392" y="276" width="16" height="74" rx="6" fill="#b9c4d2"/>
+  <rect x="392" y="96" width="16" height="60" rx="6" fill="#b9c4d2"/>
+  <rect x="392" y="392" width="16" height="60" rx="6" fill="#b9c4d2"/>
+  <rect x="300" y="210" width="86" height="30" rx="15" fill="#b9c4d2" stroke="#6f7d92" stroke-width="5"/>
+  <circle cx="384" cy="225" r="24" fill="#b9c4d2" stroke="#6f7d92" stroke-width="5"/>
+  </g>
+  <g transform="translate(218 318.0) rotate(-4) scale(0.8076923076923077) translate(-256 -272)">
+    <path d="M256 64 a100 100 0 0 1 100 100 V454 a26 26 0 0 1 -26 26 H182 a26 26 0 0 1 -26 -26 V164 a100 100 0 0 1 100 -100 z" fill="#f7f1e3" stroke="#cbbf9c" stroke-width="5"/>
+    <path d="M244 76h24v56h-24z" fill="#26303d"/>
+    <g transform="translate(217.8 314.8) rotate(4.0) scale(0.940) translate(-256 -268)">
+    <rect x="172" y="216" width="168" height="106" rx="34" fill="url(#botR)" stroke="#7f8ca0" stroke-width="4"/>
+    <path d="M202 262 q24 -26 48 0" stroke="#101623" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M262 262 q24 -26 48 0" stroke="#101623" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M224 288 h64 a32 32 0 0 1 -64 0 z" fill="#101623"/>
+    <path d="M236 296 h40" stroke="#ff8f9c" stroke-width="8" stroke-linecap="round"/>
+    </g>
+    <rect x="168.0" y="326" width="176.0" height="84.0" rx="16.0" fill="#cf2f2f"/>
+    <text x="256" y="359.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="30.0" font-weight="700" letter-spacing="1" fill="#ffffff">DO NOT</text>
+    <text x="256" y="393.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="30.0" font-weight="700" letter-spacing="1" fill="#ffffff">DISTURB</text>
+    <ellipse cx="272" cy="212" rx="38" ry="15" fill="#000000" opacity="0.25"/>
+    <circle cx="256" cy="196" r="26" fill="#26303d" stroke="#cbbf9c" stroke-width="5"/>
+    <circle cx="256" cy="192" r="30" fill="#c0392b" stroke="#7d1f18" stroke-width="5"/>
+    <circle cx="245" cy="181" r="9" fill="#f4c0b6"/>
+  </g>
+</svg>

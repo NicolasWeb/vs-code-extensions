@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="faceG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E2E8F0"/><stop offset="1" stop-color="#9AACBE"/>
+    </linearGradient>
+  </defs>
+  <!-- the element: S's head, kept as the one robot that may stay un-happy -->
+  <rect x="96" y="120" width="320" height="224" rx="52" fill="url(#faceG)"/>
+  <circle cx="196" cy="212" r="26" fill="#26324b"/>
+  <circle cx="316" cy="212" r="26" fill="#26324b"/>
+  <rect x="150" y="322" width="64" height="12" rx="6" fill="#86E49A" opacity="0.85"/>
+  <rect x="298" y="322" width="64" height="12" rx="6" fill="#86E49A" opacity="0.85"/>
+  <!-- the mouth before the change, low contrast against the face -->
+  <path d="M216 286 q40 10 80 0" stroke="#8f9fb2" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <!-- the mouth after the change: dark berry, reads against both faces -->
+  <path d="M212 356 q44 -22 88 0" stroke="#6E1F35" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <rect x="204" y="384" width="104" height="10" rx="5" fill="#6E1F35"/>
+  <text x="256" y="446" text-anchor="middle" font-family="system-ui,sans-serif" font-size="34"
+        font-weight="700" fill="#6E1F35">6E1F35</text>
+</svg>

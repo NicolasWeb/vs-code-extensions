@@ -1,0 +1,6 @@
+{
+  "note_design": "Toutes les propositions, rangées par thème ; une sous-version juste après la version dont elle est issue. Les lots de production restent enregistrés dans le générateur, plus dans la page.",
+  "note_elements": "Chaque élément gardé par la revue est dessiné seul, avec les tuiles dont il vient et celles qui l’ont déjà réutilisé.",
+  "note_eliminated": "Le premier bouton de la barre du bas rassemble ici les tuiles éliminées, thème par thème, sans effacer leur section d’origine : une tuile éliminée reste sélectionnable ici, donc une décision peut être reprise.",
+  "origins_none": "aucune tuile pour l’instant"
+}

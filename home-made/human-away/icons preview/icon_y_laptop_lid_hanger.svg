@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="botY" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6ecf5"/><stop offset="1" stop-color="#9fb0c6"/>
+    </linearGradient>
+    <linearGradient id="goldY" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbeec3"/><stop offset="0.55" stop-color="#d9b25c"/><stop offset="1" stop-color="#8b6a2a"/>
+    </linearGradient>
+    <linearGradient id="steelY" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f2f5f9"/><stop offset="0.5" stop-color="#b9c4d2"/><stop offset="1" stop-color="#7f8ca0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#141c2b"/>
+  <rect x="16" y="430" width="480" height="82" rx="26" fill="#243149"/>
+  <rect x="112" y="112" width="288" height="246" rx="24" fill="#1b2430" stroke="#43536f" stroke-width="10"/>
+  <rect x="136" y="136" width="240" height="198" rx="14" fill="#0e121c"/>
+  <path d="M62 358 h388 l46 90 h-480 z" fill="#2b3a52"/>
+  <rect x="126" y="382" width="260" height="44" rx="14" fill="#1b2430" opacity="0.7"/>
+  <g transform="translate(256 281.0) rotate(0) scale(0.8990384615384616) translate(-256 -272)">
+    <path d="M256 64 a100 100 0 0 1 100 100 V454 a26 26 0 0 1 -26 26 H182 a26 26 0 0 1 -26 -26 V164 a100 100 0 0 1 100 -100 z" fill="#f7f1e3" stroke="#cbbf9c" stroke-width="5"/>
+    <path d="M244 76h24v56h-24z" fill="#f7f1e3"/>
+    <g transform="translate(256.0 277.4) rotate(0.0) scale(0.940) translate(-256 -268)">
+    <rect x="172" y="216" width="168" height="106" rx="34" fill="url(#botY)" stroke="#7f8ca0" stroke-width="4"/>
+    <rect x="192" y="240" width="128" height="50" rx="16" fill="#101623"/>
+    <rect x="206" y="254" width="46" height="20" rx="10" fill="#ffb454"/>
+    <rect x="260" y="254" width="46" height="20" rx="10" fill="#ffb454"/>
+    <rect x="202" y="244" width="56" height="13" rx="6" fill="#c9d2df"/>
+    <rect x="254" y="244" width="56" height="13" rx="6" fill="#c9d2df"/>
+    <path d="M230 300 q26 -9 52 0" stroke="#26324b" stroke-width="10" fill="none" stroke-linecap="round"/>
+    </g>
+    <rect x="168.0" y="334" width="176.0" height="84.0" rx="16.0" fill="#cf2f2f"/>
+    <text x="256" y="367.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="30.0" font-weight="700" letter-spacing="1" fill="#ffffff">DO NOT</text>
+    <text x="256" y="401.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="30.0" font-weight="700" letter-spacing="1" fill="#ffffff">DISTURB</text>
+    <ellipse cx="272" cy="212" rx="38" ry="15" fill="#000000" opacity="0.25"/>
+    <circle cx="256" cy="196" r="26" fill="#0e121c" stroke="#cbbf9c" stroke-width="5"/>
+    <circle cx="256" cy="192" r="30" fill="#c0392b" stroke="#7d1f18" stroke-width="5"/>
+    <circle cx="245" cy="181" r="9" fill="#f4c0b6"/>
+  </g>
+  <path d="M130 440 L196 400" stroke="#b8c4d0" stroke-width="22" stroke-linecap="round"/>
+  <ellipse cx="204" cy="396" rx="34" ry="23" transform="rotate(-16 204 396)" fill="url(#botY)"/>
+  <path d="M256 446 L322 406" stroke="#b8c4d0" stroke-width="22" stroke-linecap="round"/>
+  <ellipse cx="330" cy="402" rx="34" ry="23" transform="rotate(14 330 402)" fill="url(#botY)"/>
+</svg>

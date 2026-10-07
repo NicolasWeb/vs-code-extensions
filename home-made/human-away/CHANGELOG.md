@@ -4,6 +4,52 @@ All notable changes to the Human Away extension (ex Away Mode Indicator,
 renamed 2026-10-02 at 0.1.0) are documented here. Format follows Keep a
 Changelog; versions are SEMVER-ready but the first tag is a preview release.
 
+## [0.4.0] - 2026-10-07
+
+- The conf file `~/agents/human_away_mode` becomes the ONE recording surface for the
+  `chat.agent.maxRequests` override: `key value` records (`awayMaxRequests`,
+  `prevMaxRequests`, `mrOwner extension|agent`) written by the Human Away Ext. and by
+  an agent acting under MASTER AGENTS alike, so the value held before the override is
+  recoverable whichever hand raised it (arbitrated ARB-1, user choice 2026-10-07).
+- Ownership is read from those records: a record owned by `agent` is never stepped on,
+  one owned by `extension` makes the raise idempotent, a `prevMaxRequests` left by the
+  other owner is adopted when ownership is taken, and a live value that no longer
+  equals the target only releases our own record - the other writer is never
+  overwritten.
+- Target precedence: conf `awayMaxRequests` > `humanAway.awayMaxRequests` > built-in
+  fallback.
+- Removed: the private `globalState` stash of `chat.agent.maxRequests`, which only the
+  extension could see (the Auto-Approve ledger in globalState is unchanged).
+- `src/parser.js` grows the record grammar (`parseConf`, `renderConf`, `setConfValue`,
+  `dropConfValue`, `getConfValue`); a toggle rewrites the state word and keeps the
+  records. The tooltip discloses owner, previous value and target.
+- Tests: `test/parser_unit.js` (PARSE_UNIT_OK) and a rewritten `test/maxrequests_unit.js`
+  (MAXREQ_UNIT_OK) covering agent-owned, takeover-with-adopted-previous, release and
+  garbage-record cases.
+
+## [0.3.0] - 2026-10-07
+
+### Changed
+- The mode is now **Human Away Mode**; the extension is referenced as
+  Human Away Extension / Human Away Ext / Human Away Ext.
+- Truth source moved out of AGENTS.md into the conf file
+  `~/agents/human_away_mode` (one `ON`/`OFF` word, gitignored, written
+  directly on disk): switching the mode no longer edits AGENTS.md and
+  leaves nothing to commit.
+- The chip renders in both states — `Human : Here` when ON, `Human : Away`
+  when OFF (`Human : switching…` / `Human : error` transiently) — instead of
+  hiding itself while OFF.
+- A click keeps the coordinated action: switch the state, then apply the
+  `chat.agent.maxRequests` policy.
+- Ownership of `chat.agent.maxRequests` is decided by comparing the live
+  value with `humanAway.awayMaxRequests`: the extension takes ownership
+  while the two correspond and releases the stash as soon as they no longer
+  correspond, so a second writer (the agent rule) is never overwritten.
+
+### Removed
+- Settings `humanAway.agentsFile` and `humanAway.heading`, replaced by
+  `humanAway.configFile` (default `~/agents/human_away_mode`).
+
 ## [0.2.1] - 2026-10-04
 
 ### Changed

@@ -1,32 +1,37 @@
 # Human Away — Help
 
-The indicator is **presence, not a status menu**: it shows Away mode only
-while it is ON (or on error). While OFF it hides itself; it does not render
-"OFF", to avoid cluttering the Chat pane.
+The indicator renders **Human Away Mode** as one chip with two labels:
+`Human : Here` when the mode is ON (a human is here, the AI is attended)
+and `Human : Away` when it is OFF (the AI works unattended). Both states
+are always visible, so a click is always available.
 
 ## Where it lives
 - Default: a chip beside the Autopilot control in the Chat view.
 - If that placement API is unavailable in this VS Code build, the extension
   falls back to the window **status bar (left)** and says so in its tooltip;
-  a minimal row also appears in the "Away Mode" explorer view.
+  a minimal row also appears in the "Human Away Mode" explorer view.
 - Choose another placement in `humanAway.position`.
 
 ## Click behaviour
-- Click while ON (or "Away switching…"): toggle OFF.
+- Click on `Human : Here` (or on `Human : switching…`): switch OFF.
+- Click on `Human : Away`: switch ON.
 - Click while in ERROR: open the fix menu (open setting / retry / help).
-- While OFF there is nothing to click (the indicator is hidden); turn it on
-  by editing the STATUS token in ~/agents/AGENTS.md.
+- A click writes ~/agents/human_away_mode directly on disk (atomic
+  tmp+rename) — the state word and the shared `key value` records together —
+  then applies the coordinated `chat.agent.maxRequests` action; git never sees
+  the change because the file is gitignored.
 
 ## Refresh
-- A file watcher fires on every save of the agents file (a small 250 ms
+- A file watcher fires on every save of the conf file (a small 250 ms
   debounce coalesces bursts; no full re-parse until mtime/size actually
   change).
 - A periodic guard re-checks file metadata only, every
   `humanAway.refreshSeconds` seconds.
 
 ## Settings
-- `humanAway.agentsFile`: path to the memory file holding the
-  STATUS token. Accepts POSIX, UNC or `~` forms. Default `~/agents/AGENTS.md`.
+- `humanAway.configFile`: path to the Human Away Mode conf file (one
+  `ON`/`OFF` word). Accepts POSIX, UNC or `~` forms. Default
+  `~/agents/human_away_mode` (gitignored; an absent file counts as OFF).
 - `humanAway.position`: `chatInputBesideAutopilot` (default),
   `statusBarLeft`, `statusBarRight`.
 - `humanAway.style`: `outlinedPill` (default, V5) or `dotWord` (V2).
@@ -43,9 +48,6 @@ while it is ON (or on error). While OFF it hides itself; it does not render
 - `humanAway.onColor` / `pendingColor` / `errorColor`: theme color
   ids. Defaults: editorWarning.foreground / editorInfo.foreground /
   editorError.foreground (light+dark safe, dynamic with theme).
-- `humanAway.heading`: exact heading line anchored by the parser
-  (update here if the rule is ever renamed; the [STATUS:] token must stay
-  on that line).
 - `humanAway.statusBarPriority`: order of the fallback status-bar
   chip (higher = further left). Use "Shift Status Chip Left/Right"
   commands for stepwise +-100 moves.
@@ -55,19 +57,29 @@ while it is ON (or on error). While OFF it hides itself; it does not render
   from AGENTS.md at run time); the interactive channel is the GitHub
   Copilot Chat question UI above the Chat input, and with force ON an
   autopilot auto-answer never settles an arbitration.
-- `humanAway.awayMaxRequests` (default 100000): while Away mode
-  is ON, the extension temporarily raises GitHub Copilot Chat's
+- `humanAway.awayMaxRequests` (default 100000): while Human Away Mode
+  is ON, the extension sets GitHub Copilot Chat's
   `chat.agent.maxRequests` to this value, so long unattended runs never
   stop with "Copilot has been working on this problem for a while…
   Continue to iterate?" (100000 requests ≈ a full day at ~20 s each — no
   interruption for 24 h). Your previous value is kept aside and restored
   exactly when Away goes OFF (also on window reload/quit); if you never
   set it, VS Code's own default (200) comes back. If your own value is
-  already ≥ this setting, it is left untouched. Note: the temporary
+  already ≥ this setting, it is left untouched. Ownership of the override is
+  recorded in the conf file as `key value` records shared with the agent
+  (`mrOwner` = `extension`|`agent`, `prevMaxRequests` = the value held before
+  the override or `default`, `awayMaxRequests` = the target): while the record
+  says `agent` the extension never touches the setting; while it says
+  `extension` the value is ours (one that merely equals the target is taken
+  over, never written twice); a `prevMaxRequests` left by the agent is adopted,
+  so the earlier value is never lost; and as soon as the live value no longer
+  equals the target the extension releases its own record and never overwrites
+  the other writer. Note: the
+  temporary
   value is written at user scope, so a workspace-level
   `chat.agent.maxRequests` still takes precedence — keep the setting at
   user level for the silence to apply. What the extension currently
-  holds is always shown by "Show Away Mode Status".
+  holds is always shown by "Show Human Away Mode Status".
 - `humanAway.observeAutoApprove` (default true): a small passive
   observatory that watches the public
   `chat.tools.terminal.autoApprove` setting (the one VS Code writes
@@ -81,6 +93,7 @@ while it is ON (or on error). While OFF it hides itself; it does not render
   `humanAway.observeWindowDays` (default 7) shape the verdict line.
 
 ## Errors
-The chip shows in the error color when the truth is unreadable: file
-missing, unreadable, heading absent, or STATUS token malformed. The tooltip
+The chip shows in the error color when the conf file is unreadable or its
+content is neither `ON` nor `OFF`. A missing conf file is not an error: it
+counts as OFF, and the first click creates it. The tooltip
 lists the resolution chain tried; click for the fix menu.

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="gF" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d7dde8"/><stop offset="1" stop-color="#9aa7bb"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#2a2025"/>
+  <g transform="rotate(-8 256 280)">
+    <!-- hotel-style do-not-disturb hanger card -->
+    <rect x="146" y="112" width="220" height="330" rx="28" fill="#f5efdf" stroke="#cbbf9c" stroke-width="4"/>
+    <g transform="translate(256.00 246.00) rotate(0.00) scale(0.4000) translate(-256.00 -163.00)">
+          <rect x="250" y="66" width="12" height="26" rx="6" fill="#8f9cb0"/>
+          <circle cx="256" cy="60" r="11" fill="#ffb454"/>
+          <rect x="160" y="90" width="192" height="146" rx="36" fill="url(#gF)" stroke="#8f9cb0" stroke-width="4"/>
+          <rect x="142" y="128" width="20" height="64" rx="10" fill="#7c8698"/>
+          <rect x="350" y="128" width="20" height="64" rx="10" fill="#7c8698"/>
+          <rect x="182" y="118" width="148" height="60" rx="17" fill="#101623"/>
+          <g fill="#ffb454"><rect x="198" y="136" width="36" height="16" rx="8" transform="rotate(-10 216 144)"/><rect x="278" y="136" width="36" height="16" rx="8" transform="rotate(10 296 144)"/></g>
+          <path d="M234 200 q22 20 44 0" stroke="#ffb454" stroke-width="10" fill="none" stroke-linecap="round"/>
+    </g>
+    <rect x="158.0" y="326.0" width="196.0" height="90.0" rx="14.0" fill="#cf2f2f"/>
+    <text x="256" y="362.0" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="37.6" font-weight="700" letter-spacing="1" fill="#ffffff">DO NOT</text>
+    <text x="256" y="402.0" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="37.6" font-weight="700" letter-spacing="1" fill="#ffffff">DISTURB</text>
+    <circle cx="256" cy="152" r="26" fill="#2a2025" stroke="#cbbf9c" stroke-width="6"/>
+    <!-- shushing robot face -->
+    <rect x="250" y="188" width="12" height="20" rx="6" fill="#8892a4"/>
+    <circle cx="256" cy="182" r="9" fill="#ffb454"/>
+    <path d="M222 258 q10 -14 20 0" fill="none" stroke="#101623" stroke-width="6" stroke-linecap="round"/>
+    <path d="M270 258 q10 -14 20 0" fill="none" stroke="#101623" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="206" cy="286" rx="11" ry="6" fill="#f5b8ae" opacity="0.6"/>
+    <ellipse cx="306" cy="286" rx="11" ry="6" fill="#f5b8ae" opacity="0.6"/>
+  </g>
+  <!-- the doorknob it hangs on -->
+  <circle cx="240" cy="150" r="19" fill="#d9b25c"/>
+  <ellipse cx="234" cy="144" rx="7" ry="5" fill="#f2dfae"/>
+</svg>

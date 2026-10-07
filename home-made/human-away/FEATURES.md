@@ -1,8 +1,18 @@
-# FEATURES — human-away (ex away-mode-indicator) (O-A) — rev 6 (2026-10-02)
+# FEATURES — human-away (ex away-mode-indicator) (O-A) — rev 7 (2026-10-07)
 
 Status: **historical design record** — shipped (rev 4 build); rev 5 =
 user-ordered rename to **Human Away** (0.1.0); rev 6 = Auto-Approve
-observatory admitted (§9 re-admits it, §16 build) for 0.2.0.
+observatory admitted (§9 re-admits it, §16 build) for 0.2.0; rev 7 (2026-10-07) =
+**Human Away Mode** (0.3.0): the truth source moved out of the AGENTS.md
+`[STATUS:]` token into the gitignored conf file `~/agents/human_away_mode`
+(written directly on disk, so a switch never produces a diff), the chip now
+renders in BOTH states as `Human : Here` / `Human : Away`, and the
+`chat.agent.maxRequests` ownership is keyed on whether the live value still
+corresponds to `humanAway.awayMaxRequests` (take over while it corresponds,
+release the stash as soon as it does not); rev 8 (2026-10-07, ARB-1) = that same
+conf file also records the override itself (`mrOwner`, `prevMaxRequests`,
+`awayMaxRequests`), written by the extension and by the agent alike, which retires
+the private `globalState` stash (§14 rev 8).
 README.md + HELP.md are the live docs; the LIVE plan (by-feature,
 decisions + pending arbitrations + status log) is kevina
 OpenBRSM/.ai_baseline/plans/feature_plans/PLAN_HUMAN_AWAY.md. Superseded build-gate wording (was: propose UI -> user
@@ -17,18 +27,20 @@ ai-agents-md repo (folder renamed by git mv in the 2026-10-02 rename pass;
 old spelling `away-mode-indicator/` lives only in historical lines below).
 
 ## 1 Purpose
-Show, permanently and identically at two places, that the Away mode is
-ON, with colors consistent with the VS Code design system in BOTH light
+Show, permanently and identically at two places, whether Human Away Mode is
+ON (`Human : Here`) or OFF (`Human : Away`), with colors consistent with the VS Code design system in BOTH light
 and dark themes, so the user sees the state while typing, before sending.
 (A sister Auto-Approve observatory was once sketched here — REJECTED,
 see §9; that tuning lives in its own standalone plan.)
 
 ## 2 Source of truth and state (single, global)
-- Truth source: the MASTER AGENTS rule-state line
-  `## Autonomous unattended work (Away mode) [STATUS: ON|OFF ...]` inside
-  the configured AGENTS file (§3).
-- ONE state per user, NOT per workspace (analysis: the MASTER AGENTS
-  rule-state line is unique; SESSION.md is per-project PROGRESS, not rule state
+- Truth source (rev 7): the conf file `~/agents/human_away_mode` — a single
+  `ON`/`OFF` word, gitignored and written directly on disk (§3). Before rev 7
+  the truth was the MASTER AGENTS rule-state line
+  `## Autonomous unattended work (Away mode) [STATUS: ON|OFF ...]`, which
+  made every mode switch a change in a versioned file.
+- ONE state per user, NOT per workspace (analysis: the conf file is unique
+  per user, as the rule-state line was; SESSION.md is per-project PROGRESS, not rule state
   — it narrows what the run does, never whether Away is on). SESSION.md context is
   SURFACED per workspace in the tooltip (focused workspace's SESSION.md
   first 'State'/'Away' lines) instead of duplicating state. Open point
@@ -45,10 +57,10 @@ see §9; that tuning lives in its own standalone plan.)
   infers state from anything but the token line.
 
 ## 3 Path resolution (WSL distro/version agnostic)
-- Config `humanAway.agentsFile` accepts: POSIX path
-  (`/home/nicolas/agents/AGENTS.md`), UNC path
-  (`\\wsl.localhost\FedoraLinux-44\home\nicolas\agents\AGENTS.md`), or
-  `~/agents/AGENTS.md`. Both spellings resolve to the same file — the
+- Config `humanAway.configFile` accepts: POSIX path
+  (`/home/nicolas/agents/human_away_mode`), UNC path
+  (`\\wsl.localhost\FedoraLinux-44\home\nicolas\agents\human_away_mode`), or
+  `~/agents/human_away_mode`. Both spellings resolve to the same file — the
   same URI normalization is applied before watching/reading.
 - Reliability chain at activation (first hit wins; each step logged in
   showHelp output):
@@ -81,8 +93,10 @@ see §9; that tuning lives in its own standalone plan.)
 - CLICK (both surfaces) runs the ONE command
   `humanAway.toggle` — identical to what ctrl+shift+P -> same
   command does manually; the click never bypasses the command. The
-  command rewrites ONLY the token word ON<->OFF inside `[STATUS: ]` of
-  the Away section (anchored, byte-exact elsewhere, atomic tmp+rename)
+  command rewrites ONLY the state word ON<->OFF of the Human Away Mode conf
+  file (atomic tmp+rename plus a `#` audit line; rev 7 — before rev 7 it
+  rewrote the token word inside `[STATUS: ]` of the Away section of
+  AGENTS.md)
   in global scope; in window scope it writes only the window override
   (§8b scopeMode=window). Chat-side activation (exact keyword) makes
   the SAME token edit as its final act — both routes converge on the
@@ -105,7 +119,9 @@ see §9; that tuning lives in its own standalone plan.)
   dark, automatically.
 - Switching/pending: `editorInfo.foreground`.
 - Error (bad/missing file): `editorError.foreground`.
-- OFF: surfaces hidden (absence = off is the clearest grammar).
+- OFF: surfaces hidden (absence = off was the clearest grammar; REV 7
+  supersedes this design point: OFF renders `Human : Away`, so the chip
+  stays visible and clickable in both states).
 - All three are settings (ThemeColor ids; e.g. a user may set
   `statusBar_item` ids per taste). Default = the three ids above.
 - Hardcoded hex is not a feature; theme switching is the contract.
@@ -121,7 +137,7 @@ see §9; that tuning lives in its own standalone plan.)
   must navigate to settings himself.
 - E2 (recommended) — tooltip E1 PLUS: clicking the error chip opens a
   quick-pick with the same info as actionable rows: `Open
-  humanAway.agentsFile setting`, `Retry now`, `Show help`;
+  humanAway.configFile setting`, `Retry now`, `Show help`;
   fixing becomes one click instead of a hunt. Same surfaces, same
   colors, only the click target changes in error state.
 
@@ -146,7 +162,7 @@ see §9; that tuning lives in its own standalone plan.)
 ## 8 Configuration
 | Key | Default | Meaning |
 |---|---|---|
-| `humanAway.agentsFile` | `~/agents/AGENTS.md` | truth source (POSIX/UNC/`~`) |
+| `humanAway.configFile` | `~/agents/human_away_mode` | Human Away Mode conf file: one `ON`/`OFF` word, gitignored, written directly on disk (rev 7; POSIX/UNC/`~` forms); shared `key value` records live on the same lines |
 | `humanAway.refreshSeconds` | `5` | max staleness: stat-only poll ceiling (watcher is primary) |
 | `humanAway.pendingGraceSeconds` | `3` | window showing the switching color |
 | `humanAway.compactLabel` | `false` | icon-only labels |
@@ -157,8 +173,8 @@ see §9; that tuning lives in its own standalone plan.)
 | `humanAway.position` | `chatInputBesideAutopilot` | ONE active placement: chatInputBesideAutopilot (default, the chip under the input beside Autopilot) \| inputTop \| statusBarLeft \| statusBarRight; when the chat-area API is absent the active placement falls back to statusBarLeft, fact surfaced in showStatus |
 | `humanAway.preferNativeChatChip` | `true` | input-area chip when API exists |
 | `humanAway.showSessionScope` | `true` | per-workspace SESSION.md context in tooltip |
-| `humanAway.scopeMode` | `global` | `global` = token file is the state, every window shows/edits it (toggle edits AGENTS.md). `window` = the file seeds every window, then PER-WINDOW overrides live only in that window (workspace-state, never on disk): toggles change only that window; a file change resets all overrides. Default `global` (matches the rule's user-global scope); pick `window` when windows must diverge |
-| `humanAway.heading` | `## Autonomous unattended work (Away mode)` | exact anchor heading in the truth file; rename-safe (variabilisation #1, user YES). Token `[STATUS: ]` must stay on this line |
+| `humanAway.scopeMode` | `global` | `global` = token file is the state, every window shows/edits it (toggle edits the conf file). `window` = the file seeds every window, then PER-WINDOW overrides live only in that window (workspace-state, never on disk): toggles change only that window; a file change resets all overrides. Default `global` (matches the rule's user-global scope); pick `window` when windows must diverge |
+| ~~`humanAway.heading`~~ | — | REMOVED in rev 7: the conf file holds one word, so no heading anchor is needed (was: exact anchor heading in the truth file; rename-safe — variabilisation #1, user YES) |
 | `humanAway.statusBarPriority` | `10001` | fallback status-bar chip order (higher = further left); shifted by the two shift commands (variabilisation #4-7, user YES) |
 | `humanAway.sessionHeadLines` | `5` | SESSION.md lines shown in the tooltip (1-20) (variabilisation #4-7, user YES) |
 | `humanAway.arbitrationChannel` | `interactive` | agent-facing arbitration policy: `interactive` (GitHub Copilot Chat question UI) or `chat` (plain numbered prose). Executed by the agents memory rule, which reads this value from **settings.json only, never from AGENTS.md at run time** (user constraint) |
@@ -181,8 +197,8 @@ see §9; that tuning lives in its own standalone plan.)
 ## 10 Performance (budget + how it is met + measured)
 - Budget: idle CPU < 0.1 % median, < 5 MB RSS, work per refresh < 1 ms.
 - Design: watcher + stat-only poll; re-read only on mtime/size change;
-  read the file ONCE (UTF-8), locate the single heading with one anchor
-  indexOf then a 2-line slice (no whole-file regex passes); debounce
+  read the file ONCE (UTF-8; rev 7: a 74-byte conf file, was a multi-KB memory file), locate
+  the first non-comment word (no whole-file regex passes); debounce
   watch bursts 250 ms; zero timers in hot path besides one poll;
   single state machine; surfaces re-render only on state change
   (no-op when unchanged); TreeDataProvider caches rows.
@@ -254,7 +270,7 @@ see §9; that tuning lives in its own standalone plan.)
      built (one_shot/away_ui_v2v5_states_20261001.html, chat screenshot)
      — user pick pending.
 
-## 14 Away-mode silent run (§14 added rev 4, user order 2026-10-02, BUILT)
+## 14 Away-mode silent run (§14 added rev 4, user order 2026-10-02, BUILT; ownership records rev 8, 2026-10-07)
 - Observed pain (chat evidence): a long autonomous run stops with
   "Copilot has been working on this problem for a while. It can continue
   to iterate, or you can send a new message to refine your prompt." +
@@ -280,14 +296,33 @@ see §9; that tuning lives in its own standalone plan.)
   best-effort companion); a user value already ≥ temporary is left
   untouched (no write at all); writes are sequential
   (stash-then-setting) to stay crash-consistent.
+- SUPERSEDED in rev 8 (2026-10-07): the private `globalState` stash in the design above is
+  replaced by the shared conf records described below; the guard rails themselves survive
+  unchanged (idempotence, exact restore, already-high left untouched, sequential writes).
 - Known precedence limit (documented README/HELP): applied at Global
   (user) scope; a workspace/folder value of chat.agent.maxRequests
   wins over the temporary override — visible via Show Away Mode Status
   (the note names the temporary value AND the held restore value).
-- Test mirror: test/maxrequests_unit.js, 8 cases (stash/apply,
-  idempotence, exact restore, unset→default, already-high untouched,
-  already-high-then-OFF no-op, raise-setting case, crash-surviving
-  stash) — token MAXREQ_UNIT_OK.
+- Test mirror: test/maxrequests_unit.js, 8 cases (raise+stash, idempotence across
+  re-renders, exact restore, unset->default, already-high left untouched, agent-owned
+  override never stepped on, takeover adopts the previous value recorded by the other
+  owner, foreign move releases our record; plus records surviving a toggle) -
+  token MAXREQ_UNIT_OK.
+
+### rev 8 (2026-10-07) - the conf file is also the ownership record (ARB-1, user-pick)
+
+- Both owners of `chat.agent.maxRequests` (the Human Away Ext. and an agent acting under
+  MASTER AGENTS) record their configuration in the SAME gitignored conf file, as
+  `key value` lines after the state word: `awayMaxRequests <target>`,
+  `prevMaxRequests <value|default>`, `mrOwner extension|agent`. One recording surface, so
+  no writer can miss a value another hand saved.
+- Reader rules: `mrOwner agent` -> the extension never touches the setting (the
+  non-concurrence the shared agent tool refuses to assume); `mrOwner extension` -> the
+  raise is idempotent; no owner but a `prevMaxRequests` recorded by the other owner -> it
+  is adopted when ownership is taken; live value != target at OFF -> our own record is
+  released and the other writer's value is left alone.
+- Target precedence: conf `awayMaxRequests` > `humanAway.awayMaxRequests` > built-in
+  fallback. `globalState` keeps only the Auto-Approve ledger (no maxRequests stash).
 
 ## 15 Rename to Human Away (rev 5, user order 2026-10-02)
 - Folder `human-away`, prefix `humanAway` everywhere (id,

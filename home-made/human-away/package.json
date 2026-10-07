@@ -1,8 +1,8 @@
 {
   "name": "human-away",
   "displayName": "Human Away",
-  "description": "Read-only-visible Away mode state chip (chat pane + input row) driven by the AGENTS.md STATUS token.",
-  "version": "0.2.1",
+  "description": "Human Away Mode chip (chat pane + input row) driven by the gitignored ~/agents/human_away_mode conf file.",
+  "version": "0.4.0",
   "publisher": "nicolas-web-local",
   "license": "MIT",
   "engines": {
@@ -20,7 +20,7 @@
       "activitybar": [
         {
           "id": "humanAway",
-          "title": "Away Mode",
+          "title": "Human Away Mode",
           "icon": "$(eye)"
         }
       ]
@@ -29,7 +29,7 @@
       "chat": [
         {
           "id": "humanAway.status",
-          "name": "Away Mode",
+          "name": "Human Away Mode",
           "visibility": "visible",
           "when": "humanAway.present"
         }
@@ -37,7 +37,7 @@
       "humanAway": [
         {
           "id": "humanAway.statusFallback",
-          "name": "Away Mode",
+          "name": "Human Away Mode",
           "visibility": "visible",
           "when": "humanAway.present"
         }
@@ -46,12 +46,12 @@
     "commands": [
       {
         "command": "humanAway.toggle",
-        "title": "Toggle Away Mode",
+        "title": "Toggle Human Away Mode",
         "icon": "$(eye)"
       },
       {
         "command": "humanAway.showStatus",
-        "title": "Show Away Mode Status"
+        "title": "Show Human Away Mode Status"
       },
       {
         "command": "humanAway.showHelp",
@@ -81,15 +81,10 @@
     "configuration": {
       "title": "Human Away",
       "properties": {
-        "humanAway.agentsFile": {
+        "humanAway.configFile": {
           "type": "string",
-          "default": "~/agents/AGENTS.md",
-          "markdownDescription": "Truth-source file holding the `[STATUS: ON|OFF]` token (POSIX, UNC or `~` path)."
-        },
-        "humanAway.heading": {
-          "type": "string",
-          "default": "## Autonomous unattended work (Away mode)",
-          "markdownDescription": "Exact heading line the parser anchors on in the truth file. Update it here if the rule is renamed; the `[STATUS: ON|OFF]` token must stay on that line."
+          "default": "~/agents/human_away_mode",
+          "markdownDescription": "Human Away Mode truth-source conf file: a single `ON`/`OFF` word, gitignored and written directly on disk (POSIX, UNC or `~` path). An absent file counts as OFF. It also holds the shared `key value` records that the extension and the agent both read and write."
         },
         "humanAway.position": {
           "type": "string",
@@ -195,7 +190,7 @@
           "type": "number",
           "default": 100000,
           "minimum": 1,
-          "markdownDescription": "While Away mode is ON, `chat.agent.maxRequests` (GitHub Copilot Chat) is temporarily raised to this value so long unattended runs never pause with \"Copilot has been working on this problem for a while… Continue to iterate?\". The value 100000 covers a full day of uninterrupted tool requests (~5 s/request \u2248 17 000; VS Code accepts no greater-than setting, so no upper bound applies). When Away goes OFF the previous value is restored exactly \u2014 including an unset one, in which case VS Code's own default applies again."
+          "markdownDescription": "While Away mode is ON, `chat.agent.maxRequests` (GitHub Copilot Chat) is temporarily raised to this value so long unattended runs never pause with \"Copilot has been working on this problem for a while… Continue to iterate?\". The value 100000 covers a full day of uninterrupted tool requests (~5 s/request \u2248 17 000; VS Code accepts no greater-than setting, so no upper bound applies). When Away goes OFF the previous value is restored exactly \u2014 including an unset one, in which case VS Code's own default applies again. Ownership and the previous value are recorded in the conf file (`mrOwner`, `prevMaxRequests`, `awayMaxRequests`); a conf record overrides this setting and a record left by the other owner is adopted rather than lost."
         },
         "humanAway.observeAutoApprove": {
           "type": "boolean",
