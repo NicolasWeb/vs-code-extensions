@@ -1,43 +1,285 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <linearGradient id="botP" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#d7dde8"/><stop offset="1" stop-color="#9aa7bb"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 512 512"
+   width="512"
+   height="512"
+   version="1.1"
+   id="svg24"
+   sodipodi:docname="icon_p1_away_plate.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview24"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.7285156"
+     inkscape:cx="256"
+     inkscape:cy="256"
+     inkscape:window-width="3440"
+     inkscape:window-height="1369"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g21" />
+  <defs
+     id="defs5">
+    <linearGradient
+       id="botP"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#d7dde8"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#9aa7bb"
+         id="stop2" />
     </linearGradient>
-    <linearGradient id="goldP" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fbeec3"/><stop offset="0.55" stop-color="#d9b25c"/><stop offset="1" stop-color="#8b6a2a"/>
+    <linearGradient
+       id="goldP"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#fbeec3"
+         id="stop3" />
+      <stop
+         offset="0.55"
+         stop-color="#d9b25c"
+         id="stop4" />
+      <stop
+         offset="1"
+         stop-color="#8b6a2a"
+         id="stop5" />
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="96" fill="#1b2438"/>
-  <g transform="translate(26.17 -18.19) scale(0.8978)">
-  <rect x="40" y="398" width="432" height="18" rx="9" fill="#3b4a68"/>
-  <rect x="72" y="416" width="18" height="56" fill="#2f3c56"/>
-  <rect x="422" y="416" width="18" height="56" fill="#2f3c56"/>
-  <rect x="170" y="70" width="12" height="24" rx="6" fill="#8892a4"/>
-  <circle cx="176" cy="62" r="12" fill="#ffb454"/>
-  <rect x="160" y="90" width="192" height="146" rx="36" fill="url(#botP)"/>
-  <rect x="142" y="134" width="18" height="52" rx="9" fill="#7c8698"/>
-  <rect x="352" y="134" width="18" height="52" rx="9" fill="#7c8698"/>
-  <rect x="182" y="118" width="148" height="60" rx="17" fill="#101623"/>
-  <g fill="#ffb454"><rect x="198" y="136" width="36" height="16" rx="8" transform="rotate(-10 216 144)"/><rect x="278" y="136" width="36" height="16" rx="8" transform="rotate(10 296 144)"/></g>
-  <path d="M232 196 q24 18 48 0" stroke="#ffb454" stroke-width="10" fill="none" stroke-linecap="round"/>
-  <path d="M112 244 L400 244 L424 398 L88 398 Z" fill="#cfd6e2"/>
-  <path d="M112 244 L400 244 L424 398 L88 398 Z" fill="none" stroke="#8892a4" stroke-width="6"/>
-  <rect x="132" y="262" width="248" height="118" rx="12" fill="#101623"/>
-  <rect x="60" y="300" width="392" height="14" rx="7" fill="#5f6d86"/>
-  <ellipse cx="406" cy="410" rx="66" ry="14" fill="#2f3c56"/>
-  <g transform="translate(406 402) scale(1.2)">
-  <g transform="translate(0.0 -40.0) scale(1.0)">
-    <path d="M-34 -34 h68 l-7 74 h-54 z" fill="#e85d75" stroke="#a62b45" stroke-width="6"/>
-    <ellipse cx="0" cy="-34" rx="34" ry="11" fill="#fbe3ea"/>
-    <ellipse cx="0" cy="-34" rx="24" ry="7" fill="#7b3f2e"/>
-    <path d="M-34 -18 q-34 4 -34 26 q0 24 34 24" fill="none" stroke="#fbe3ea" stroke-width="14"/>
-    <path d="M-14 -56 q7 -14 -1 -26 M12 -56 q7 -14 -1 -26" fill="none" stroke="#cfe0f2" stroke-width="6" stroke-linecap="round" opacity="0.75"/>
+  <rect
+     width="512"
+     height="512"
+     rx="96"
+     fill="#1b2438"
+     id="rect5" />
+  <g
+     transform="translate(26.17 -18.19) scale(0.8978)"
+     id="g23">
+    <g
+       id="g30"
+       transform="translate(0,4.4553352)">
+      <rect
+         x="40"
+         y="398"
+         width="432"
+         height="18"
+         rx="9"
+         fill="#3b4a68"
+         id="rect6" />
+      <rect
+         x="72"
+         y="416"
+         width="18"
+         height="56"
+         fill="#2f3c56"
+         id="rect7" />
+      <rect
+         x="422"
+         y="416"
+         width="18"
+         height="56"
+         fill="#2f3c56"
+         id="rect8" />
+    </g>
+    <g
+       id="g29">
+      <g
+         id="g27">
+        <g
+           id="g25">
+          <rect
+             x="170"
+             y="70"
+             width="12"
+             height="24"
+             rx="6"
+             fill="#8892a4"
+             id="rect9" />
+          <circle
+             cx="176"
+             cy="62"
+             r="12"
+             fill="#ffb454"
+             id="circle9" />
+        </g>
+        <g
+           id="g26">
+          <rect
+             x="160"
+             y="90"
+             width="192"
+             height="146"
+             rx="36"
+             fill="url(#botP)"
+             id="rect10" />
+          <rect
+             x="142"
+             y="134"
+             width="18"
+             height="52"
+             rx="9"
+             fill="#7c8698"
+             id="rect11" />
+          <rect
+             x="352"
+             y="134"
+             width="18"
+             height="52"
+             rx="9"
+             fill="#7c8698"
+             id="rect12" />
+          <rect
+             x="182"
+             y="118"
+             width="148"
+             height="60"
+             rx="17"
+             fill="#101623"
+             id="rect13" />
+          <g
+             fill="#ffb454"
+             id="g15">
+            <rect
+               x="198"
+               y="136"
+               width="36"
+               height="16"
+               rx="8"
+               transform="rotate(-10 216 144)"
+               id="rect14" />
+            <rect
+               x="278"
+               y="136"
+               width="36"
+               height="16"
+               rx="8"
+               transform="rotate(10 296 144)"
+               id="rect15" />
+          </g>
+          <path
+             d="M232 196 q24 18 48 0"
+             stroke="#ffb454"
+             stroke-width="10"
+             fill="none"
+             stroke-linecap="round"
+             id="path15" />
+        </g>
+      </g>
+      <g
+         id="g28">
+        <path
+           d="M112 244 L400 244 L424 398 L88 398 Z"
+           fill="#cfd6e2"
+           id="path16" />
+        <path
+           d="M112 244 L400 244 L424 398 L88 398 Z"
+           fill="none"
+           stroke="#8892a4"
+           stroke-width="6"
+           id="path17" />
+        <rect
+           x="132"
+           y="262"
+           width="248"
+           height="118"
+           rx="12"
+           fill="#101623"
+           id="rect17" />
+      </g>
+    </g>
+    <g
+       transform="matrix(1.2,0,0,1.2,409.22194,397.7838)"
+       id="g22">
+      <g
+         transform="translate(0,-40)"
+         id="g21">
+        <path
+           d="M -34,-34 H 34 L 27,40 H -27 Z"
+           fill="#e85d75"
+           stroke="#a62b45"
+           stroke-width="6"
+           id="path18" />
+        <ellipse
+           cx="0"
+           cy="-34"
+           rx="34"
+           ry="11"
+           fill="#fbe3ea"
+           id="ellipse19" />
+        <ellipse
+           cx="0"
+           cy="-34"
+           rx="24"
+           ry="7"
+           fill="#7b3f2e"
+           id="ellipse20" />
+        <path
+           d="m -35.014204,-20.243574 q -33.502043,7.043658 -31.522115,28.9543833 2.159922,23.9026087 36.021952,20.8427197"
+           fill="none"
+           stroke="#fbe3ea"
+           stroke-width="14"
+           id="path20" />
+        <path
+           d="m -14,-56 q 7,-14 -1,-26 m 27,26 q 7,-14 -1,-26"
+           fill="none"
+           stroke="#cfe0f2"
+           stroke-width="6"
+           stroke-linecap="round"
+           opacity="0.75"
+           id="path21" />
+      </g>
+    </g>
   </g>
-  </g>
-  </g>
-  <g transform="translate(256.0 452.0) rotate(0.0)">
-    <rect x="-161.2" y="-48.0" width="322.5" height="96.0" rx="48.0" fill="#ffb454" stroke="#a86a12" stroke-width="4.7"/>
-    <circle cx="-115.5" cy="0" r="14.2" fill="#ffd166"/>
-    <text x="25.5" y="26.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="75.0" font-weight="700" letter-spacing="3" fill="#2a1c05">AWAY</text>
+  <g
+     transform="matrix(0.78830593,0,0,0.72273853,256.01059,452)"
+     id="g24">
+    <rect
+       x="-161.2"
+       y="-48"
+       width="322.5"
+       height="96"
+       rx="48"
+       fill="#ffb454"
+       stroke="#a86a12"
+       stroke-width="4.7"
+       id="rect23" />
+    <ellipse
+       cx="-115.5"
+       cy="0"
+       fill="#ffd166"
+       id="circle23"
+       rx="23.006699"
+       ry="24.606119"
+       style="stroke-width:1.67556" />
+    <text
+       x="25.5"
+       y="26.6"
+       text-anchor="middle"
+       font-family="'Segoe UI', Arial, 'DejaVu Sans', sans-serif"
+       font-size="75px"
+       font-weight="700"
+       letter-spacing="3"
+       fill="#2a1c05"
+       id="text23">AWAY</text>
   </g>
 </svg>

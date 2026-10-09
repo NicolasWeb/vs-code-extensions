@@ -1,46 +1,321 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <linearGradient id="botM" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#d7dde8"/><stop offset="1" stop-color="#9aa7bb"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 512 512"
+   width="512"
+   height="512"
+   version="1.1"
+   id="svg24"
+   sodipodi:docname="icon_m_vacation_beach_planted.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview24"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.7285156"
+     inkscape:cx="256"
+     inkscape:cy="255.71073"
+     inkscape:window-width="1718"
+     inkscape:window-height="1360"
+     inkscape:window-x="1913"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg24" />
+  <defs
+     id="defs5">
+    <linearGradient
+       id="botM"
+       x1="136.32901"
+       y1="286.60077"
+       x2="136.32901"
+       y2="410.53623"
+       gradientTransform="scale(1.2909944,0.77459667)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#d7dde8"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#9aa7bb"
+         id="stop2" />
     </linearGradient>
-    <linearGradient id="goldM" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fbeec3"/><stop offset="0.55" stop-color="#d9b25c"/><stop offset="1" stop-color="#8b6a2a"/>
+    <linearGradient
+       id="goldM"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#fbeec3"
+         id="stop3" />
+      <stop
+         offset="0.55"
+         stop-color="#d9b25c"
+         id="stop4" />
+      <stop
+         offset="1"
+         stop-color="#8b6a2a"
+         id="stop5" />
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="96" fill="#22315a"/>
-  <circle cx="52" cy="62" r="26" fill="#ffb454"/>
-  <circle cx="52" cy="62" r="38" fill="#ffb454" opacity="0.16"/>
-  <path d="M0 330 Q128 312 256 330 T512 330 L512 512 L0 512 Z" fill="#1f4d78"/>
-  <path d="M320 356 q30 -12 60 0 t60 0" stroke="#4f86b4" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <path d="M0 402 Q256 366 512 402 L512 512 L0 512 Z" fill="#dcbb80"/>
-  <g transform="translate(104.0 448.0) scale(0.9)">
-    <path d="M-9 0 q-8 -92 6 -164 l16 3 q-12 70 -5 161 z" fill="#7a5230"/>
-    <path d="M-4 -30 q10 -80 4 -130" fill="none" stroke="#7a4a22" stroke-width="5" opacity="0.6"/>
-    <path d="M0 -170 C-34 -206 -86 -208 -116 -184 C-80 -190 -36 -180 -4 -160 z" fill="#43b073"/>
-    <path d="M0 -170 C34 -208 88 -206 118 -180 C82 -188 38 -178 4 -158 z" fill="#2f8f5b"/>
-    <path d="M0 -174 C-26 -226 -66 -252 -96 -250 C-66 -234 -32 -206 -6 -168 z" fill="#43b073"/>
-    <path d="M0 -174 C26 -228 68 -250 100 -244 C70 -230 34 -204 6 -166 z" fill="#2f8f5b"/>
-    <path d="M0 -176 C-10 -232 -6 -268 12 -286 C6 -254 4 -214 6 -170 z" fill="#43b073"/>
-    <path d="M0 -172 C-40 -188 -74 -172 -84 -146 C-56 -160 -26 -160 -4 -158 z" fill="#2f8f5b"/>
-    <circle cx="-12" cy="-164" r="11" fill="#6b4a24"/>
-    <circle cx="9" cy="-158" r="10" fill="#6b4a24"/>
+  <g
+     id="g25" />
+  <g
+     id="g26">
+    <rect
+       width="512"
+       height="512"
+       rx="96"
+       fill="#22315a"
+       id="rect5" />
+    <path
+       d="M0 330 Q128 312 256 330 T512 330 L512 512 L0 512 Z"
+       fill="#1f4d78"
+       id="path6" />
+    <path
+       d="M0 402 Q256 366 512 402 L512 512 L0 512 Z"
+       fill="#dcbb80"
+       id="path8" />
   </g>
-  <g transform="translate(316 300) rotate(-7) scale(0.86) translate(-256 -272)">
-    <path d="M256 64a84 84 0 0 1 84 84v306a26 26 0 0 1-26 26h-116a26 26 0 0 1-26-26v-306a84 84 0 0 1 84-84z" fill="#f6f0e1" stroke="#cbbf9c" stroke-width="5"/>
-    <path d="M244 76h24v56h-24z" fill="#f6f0e1"/>
-    <circle cx="256" cy="196" r="26" fill="#c7a869" stroke="#cbbf9c" stroke-width="4"/>
-    <rect x="176" y="222" width="160" height="96" rx="30" fill="url(#botM)"/>
-    <g fill="#101623"><rect x="190" y="238" width="58" height="42" rx="15"/><rect x="264" y="238" width="58" height="42" rx="15"/></g>
-    <path d="M248 254h16M176 250l-14 -8M336 250l14 -8" stroke="#101623" stroke-width="8" stroke-linecap="round"/>
-    <path d="M198 246 l16 10M272 246 l16 10" stroke="#eef3fb" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
-    <path d="M226 296 q30 22 60 0" stroke="#26324b" stroke-width="10" fill="none" stroke-linecap="round"/>
-    <rect x="184.0" y="334" width="144.0" height="74.0" rx="12.0" fill="#b4232a"/>
-    <text x="256" y="363.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="28" font-weight="700" letter-spacing="1" fill="#ffffff">BACK</text>
-    <text x="256" y="395.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="28" font-weight="700" letter-spacing="1" fill="#ffffff">LATER</text>
+  <g
+     transform="matrix(0.9,0,0,0.9,74.494915,417.33785)"
+     id="g17">
+    <path
+       d="m -9,0 q -8,-92 6,-164 l 16,3 Q 1,-91 8,0 Z"
+       fill="#7a5230"
+       id="path9" />
+    <path
+       d="M -4,-30 Q 6,-110 0,-160"
+       fill="none"
+       stroke="#7a4a22"
+       stroke-width="5"
+       opacity="0.6"
+       id="path10" />
+    <path
+       d="m 0,-170 c -34,-36 -86,-38 -116,-14 36,-6 80,4 112,24 z"
+       fill="#43b073"
+       id="path11" />
+    <path
+       d="m 0,-170 c 34,-38 88,-36 118,-10 -36,-8 -80,2 -114,22 z"
+       fill="#2f8f5b"
+       id="path12" />
+    <path
+       d="m 0,-174 c -26,-52 -66,-78 -96,-76 30,16 64,44 90,82 z"
+       fill="#43b073"
+       id="path13" />
+    <path
+       d="m 0,-174 c 26,-54 68,-76 100,-70 -30,14 -66,40 -94,78 z"
+       fill="#2f8f5b"
+       id="path14" />
+    <path
+       d="m 0,-176 c -10,-56 -6,-92 12,-110 -6,32 -8,72 -6,116 z"
+       fill="#43b073"
+       id="path15" />
+    <path
+       d="m 0,-172 c -40,-16 -74,0 -84,26 28,-14 58,-14 80,-12 z"
+       fill="#2f8f5b"
+       id="path16" />
+    <circle
+       cx="-12"
+       cy="-164"
+       r="11"
+       fill="#6b4a24"
+       id="circle16" />
+    <circle
+       cx="9"
+       cy="-158"
+       r="10"
+       fill="#6b4a24"
+       id="circle17" />
   </g>
-  <g transform="translate(256.0 60.0) rotate(0.0)">
-    <rect x="-161.2" y="-48.0" width="322.5" height="96.0" rx="48.0" fill="#ffb454" stroke="#8a5a12" stroke-width="4.7"/>
-    <circle cx="-115.5" cy="0" r="14.2" fill="#ffd166"/>
-    <text x="25.5" y="26.6" text-anchor="middle" font-family="'Segoe UI',Arial,'DejaVu Sans',sans-serif" font-size="75.0" font-weight="700" letter-spacing="3" fill="#2a1c05">AWAY</text>
+  <g
+     transform="matrix(0.85358969,-0.10480764,0.10480764,0.85358969,34.840029,68.041929)"
+     id="g23">
+    <path
+       d="m 255.9642,63.457333 a 84.297945,61.181432 7 0 1 86.75081,64.320957 l 10.18614,224.12592 A 26.092221,18.93711 7 0 1 327.78069,370.0821 L 211.84336,366.22069 A 26.092221,18.93711 7 0 1 184.99192,346.31182 L 174.80578,122.1859 A 84.297945,61.181432 7 0 1 255.9642,63.457333 Z"
+       fill="#f6f0e1"
+       stroke="#cbbf9c"
+       stroke-width="4.27473"
+       id="path17" />
+    <circle
+       cx="254.99083"
+       cy="115.90012"
+       r="26"
+       fill="#c7a869"
+       stroke="#cbbf9c"
+       stroke-width="4"
+       id="circle18"
+       style="display:inline;fill:#22315a;fill-opacity:1" />
+    <g
+       id="g30"
+       transform="translate(7.6362337,-56.6722)">
+      <rect
+         x="176"
+         y="222"
+         width="160"
+         height="96"
+         rx="30"
+         fill="url(#botM)"
+         id="rect18"
+         style="fill:url(#botM)" />
+      <g
+         id="g29">
+        <g
+           fill="#101623"
+           id="g20">
+          <rect
+             x="190"
+             y="238"
+             width="58"
+             height="42"
+             rx="15"
+             id="rect19" />
+          <rect
+             x="264"
+             y="238"
+             width="58"
+             height="42"
+             rx="15"
+             id="rect20" />
+        </g>
+        <g
+           id="g28">
+          <path
+             d="m 248,254 h 16 m -88,-4 -14,-8 m 174,8 14,-8"
+             stroke="#101623"
+             stroke-width="8"
+             stroke-linecap="round"
+             id="path20" />
+          <path
+             d="m 198,246 16,10 m 58,-10 16,10"
+             stroke="#eef3fb"
+             stroke-width="6"
+             stroke-linecap="round"
+             opacity="0.6"
+             id="path21" />
+          <path
+             d="m 226,296 q 30,22 60,0"
+             stroke="#26324b"
+             stroke-width="10"
+             fill="none"
+             stroke-linecap="round"
+             id="path22" />
+        </g>
+      </g>
+    </g>
+    <g
+       id="g27"
+       transform="matrix(0.99260171,-9.0839569e-4,0.06025422,1.0073983,-7.2247693,-55.10809)">
+      <rect
+         x="184"
+         y="334"
+         width="144"
+         height="74"
+         rx="12"
+         fill="#b4232a"
+         id="rect22" />
+      <text
+         x="256"
+         y="363.60001"
+         text-anchor="middle"
+         font-family="'Segoe UI', Arial, 'DejaVu Sans', sans-serif"
+         font-size="28px"
+         font-weight="700"
+         letter-spacing="1"
+         fill="#ffffff"
+         id="text22">BACK</text>
+      <text
+         x="256"
+         y="395.60001"
+         text-anchor="middle"
+         font-family="'Segoe UI', Arial, 'DejaVu Sans', sans-serif"
+         font-size="28px"
+         font-weight="700"
+         letter-spacing="1"
+         fill="#ffffff"
+         id="text23">LATER</text>
+    </g>
+    <g
+       id="g1"
+       transform="matrix(1.1541234,0.14170855,-0.14170855,1.1541234,-58.189514,-92.647564)">
+      <g
+         id="g31"
+         transform="translate(-35.868927,21.40565)">
+        <circle
+           cx="456"
+           cy="70"
+           r="40"
+           fill="#fbeec3"
+           id="circle5" />
+        <circle
+           cx="438"
+           cy="58"
+           r="34"
+           fill="#16233c"
+           id="circle6"
+           style="fill:#22315a;fill-opacity:1" />
+      </g>
+      <circle
+         cx="104"
+         cy="72"
+         r="4"
+         fill="#f7e6a5"
+         opacity="0.75"
+         id="circle7" />
+      <circle
+         cx="182"
+         cy="126"
+         r="3"
+         fill="#f7e6a5"
+         opacity="0.6"
+         id="circle8" />
+      <circle
+         cx="330"
+         cy="56"
+         r="3"
+         fill="#f7e6a5"
+         opacity="0.6"
+         id="circle9" />
+    </g>
+  </g>
+  <g
+     transform="translate(254.84294,450.50847)"
+     id="g24">
+    <rect
+       x="-161.2"
+       y="-48"
+       width="322.5"
+       height="96"
+       rx="48"
+       fill="#ffb454"
+       stroke="#8a5a12"
+       stroke-width="4.7"
+       id="rect23" />
+    <circle
+       cx="-115.5"
+       cy="0"
+       r="14.2"
+       fill="#ffd166"
+       id="circle23" />
+    <text
+       x="22.028814"
+       y="26.021469"
+       text-anchor="middle"
+       font-family="'Segoe UI', Arial, 'DejaVu Sans', sans-serif"
+       font-size="75px"
+       font-weight="700"
+       letter-spacing="3"
+       fill="#2a1c05"
+       id="text24">AWAY</text>
   </g>
 </svg>
