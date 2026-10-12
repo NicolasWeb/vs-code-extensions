@@ -1,7 +1,7 @@
 {
   "name": "human-away",
   "displayName": "Human Away",
-  "description": "Human Away Mode chip (chat pane + input row) driven by the gitignored ~/agents/human_away_mode conf file.",
+  "description": "Status chip that tells your AI agent the human is away, so it keeps working unattended, stops asking questions, and raises its request budget until you return.",
   "version": "0.4.0",
   "publisher": "nicolas-web-local",
   "license": "MIT",
@@ -213,6 +213,10 @@
     }
   },
   "preview": true,
+  "galleryBanner": {
+    "color": "#1b2438",
+    "theme": "dark"
+  },
   "icon": "media/icon.png",
   "repository": {
     "type": "git",
@@ -229,7 +233,13 @@
     "copilot",
     "agents",
     "status",
-    "indicator"
+    "indicator",
+    "presence",
+    "afk",
+    "agent",
+    "autonomy",
+    "unattended",
+    "token"
   ],
   "capabilities": {
     "virtualWorkspaces": false,

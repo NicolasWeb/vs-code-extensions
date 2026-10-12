@@ -11,7 +11,7 @@ the state at a glance — without opening any file.
 > **Human Away Ext** or **Human Away Ext.**; the state it renders is
 > **Human Away Mode**.
 
-> **Preview / v0.0.x**: the extension has been verified by unit tests and
+> **Preview / v0.4.0**: the extension has been verified by unit tests and
 > benches but is not yet validated in live use by its author. Behavior
 > may change before 0.1.0.
 
@@ -105,7 +105,7 @@ only `ON` and `OFF`; anything else is reported as an error, never guessed.
 | `Human Away: Shift Status Chip Left/Right` | step `statusBarPriority` by +/-100 (the Settings page itself cannot host buttons — API limit) |
 | `Human Away: Auto-Approve Tiering Report (observatory)` | webview showing per-tier approval tallies vs the tier table, NEVER-tier violations, the live approved-map, and the collection verdict |
 
-## Known limitations (0.0.x)
+## Known limitations (0.4.0)
 
 - The chat-input placement uses a proposed status-item location; where
   unavailable the extension falls back to the status bar and reports it
