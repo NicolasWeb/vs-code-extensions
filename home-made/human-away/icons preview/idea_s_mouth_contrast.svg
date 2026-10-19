@@ -1,20 +1,129 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <linearGradient id="faceG" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#E2E8F0"/><stop offset="1" stop-color="#9AACBE"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 512 512"
+   width="512"
+   height="512"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="idea_s_mouth_contrast.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.7285156"
+     inkscape:cx="255.71074"
+     inkscape:cy="256.28927"
+     inkscape:window-width="1718"
+     inkscape:window-height="1360"
+     inkscape:window-x="1913"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg5" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="faceG"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0"
+         stop-color="#E2E8F0"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#9AACBE"
+         id="stop2" />
     </linearGradient>
   </defs>
   <!-- the element: S's head, kept as the one robot that may stay un-happy -->
-  <rect x="96" y="120" width="320" height="224" rx="52" fill="url(#faceG)"/>
-  <circle cx="196" cy="212" r="26" fill="#26324b"/>
-  <circle cx="316" cy="212" r="26" fill="#26324b"/>
-  <rect x="150" y="322" width="64" height="12" rx="6" fill="#86E49A" opacity="0.85"/>
-  <rect x="298" y="322" width="64" height="12" rx="6" fill="#86E49A" opacity="0.85"/>
+  <rect
+     x="96"
+     y="120"
+     width="320"
+     height="224"
+     rx="52"
+     fill="url(#faceG)"
+     id="rect2" />
+  <circle
+     cx="196"
+     cy="212"
+     r="26"
+     fill="#26324b"
+     id="circle2"
+     style="fill:#4d1d8b;fill-opacity:0.8346774" />
+  <circle
+     cx="316"
+     cy="212"
+     r="26"
+     fill="#26324b"
+     id="circle3"
+     style="fill:#603a98;fill-opacity:1" />
+  <rect
+     x="150"
+     y="322"
+     width="64"
+     height="12"
+     rx="6"
+     fill="#86E49A"
+     opacity="0.85"
+     id="rect3" />
+  <rect
+     x="298"
+     y="322"
+     width="64"
+     height="12"
+     rx="6"
+     fill="#86E49A"
+     opacity="0.85"
+     id="rect4" />
   <!-- the mouth before the change, low contrast against the face -->
-  <path d="M216 286 q40 10 80 0" stroke="#8f9fb2" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <path
+     d="M216 286 q40 10 80 0"
+     stroke="#8f9fb2"
+     stroke-width="13"
+     fill="none"
+     stroke-linecap="round"
+     id="path4"
+     style="fill:#4d1d8b;fill-opacity:0.83529413;stroke:#4d1d8b;stroke-opacity:0.83529413" />
   <!-- the mouth after the change: dark berry, reads against both faces -->
-  <path d="M212 356 q44 -22 88 0" stroke="#6E1F35" stroke-width="16" fill="none" stroke-linecap="round"/>
-  <rect x="204" y="384" width="104" height="10" rx="5" fill="#6E1F35"/>
-  <text x="256" y="446" text-anchor="middle" font-family="system-ui,sans-serif" font-size="34"
-        font-weight="700" fill="#6E1F35">6E1F35</text>
+  <g
+     id="g5"
+     transform="translate(6.9423729,52.646328)">
+    <path
+       d="m 212,356 q 44,-22 88,0"
+       stroke="#6e1f35"
+       stroke-width="16"
+       fill="none"
+       stroke-linecap="round"
+       id="path5" />
+    <rect
+       x="204"
+       y="384"
+       width="104"
+       height="10"
+       rx="5"
+       fill="#6e1f35"
+       id="rect5" />
+    <text
+       x="256"
+       y="446"
+       text-anchor="middle"
+       font-family="system-ui, sans-serif"
+       font-size="34px"
+       font-weight="700"
+       fill="#6e1f35"
+       id="text5">6E1F35</text>
+  </g>
 </svg>
