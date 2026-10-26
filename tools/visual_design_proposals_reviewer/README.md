@@ -226,5 +226,12 @@ command, no shared configuration, no path naming one. `check_independence.py` pr
 `STDLIB_ONLY yes` and `INDEPENDENT yes <hits>`; a mention inside a Markdown file is reported
 separately (`INDEP_DOCS <n>`) and never counted as a dependency.
 
-`docs/HOW_TO_REVIEW.md` is written in English; the pages it produces carry the review's own
+[`docs/HOW_TO_REVIEW.md`](docs/HOW_TO_REVIEW.md) is written in English; the pages it produces carry the review's own
 language, which the manifest declares.
+
+## Dependencies
+
+Runtime dependency: `python3` only (layer host measured at 3.14) — nothing else. The package is
+stdlib-only and offline by design; [`check_independence.py`](check_independence.py) proves it on every
+run (`STDLIB_ONLY yes`, `INDEPENDENT yes`). No VS Code, no network, no shared automation layer. The
+workflow itself is documented in [`docs/HOW_TO_REVIEW.md`](docs/HOW_TO_REVIEW.md).

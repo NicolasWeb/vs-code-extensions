@@ -54,6 +54,12 @@ the state at a glance — without opening any file.
 ## Requirements
 
 - VS Code **1.95+** (tested against 1.140).
+- GitHub Copilot Chat extension — the chat-input chip placement, the
+  `chat.agent.maxRequests` unattended raise and the Auto-Approve
+  observatory all target Copilot Chat surfaces and settings
+  (`chat.agent.maxRequests`, `chat.tools.terminal.autoApprove`);
+  without it the chip stays on the status bar and those three features
+  remain inert.
 - A Human Away Mode conf file holding a single
   `ON` or `OFF` word (an absent file counts as OFF; the first click creates
   it). Default path `~/agents/human_away_mode`, gitignored. POSIX, UNC
