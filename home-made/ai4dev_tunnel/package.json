@@ -4,7 +4,7 @@
   "description": "Monitor and control the ai4dev tunnel from VS Code.",
   "version": "0.1.0",
   "publisher": "nicolas-web-local",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -42,5 +42,23 @@
         }
       }
     }
-  }
+  },
+  "preview": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NicolasWeb/ai-agents-md.git",
+    "directory": "vs-code-extensions/home-made/ai4dev_tunnel"
+  },
+  "bugs": {
+    "url": "https://github.com/NicolasWeb/ai-agents-md/issues"
+  },
+  "homepage": "https://github.com/NicolasWeb/ai-agents-md/tree/main/vs-code-extensions/home-made/ai4dev_tunnel",
+  "keywords": [
+    "ai4dev",
+    "tunnel",
+    "vscode",
+    "wsl",
+    "status-bar",
+    "remote-development"
+  ]
 }

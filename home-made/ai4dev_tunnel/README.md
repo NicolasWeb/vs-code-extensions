@@ -22,3 +22,7 @@ The extension reuses `bashrc/ai4dev.bashrc` and its tunnel commands. The status 
 The status bar uses monochrome Codicons. Status colors use VS Code theme tokens, so they adapt to light and dark themes. Runtime labels and notifications support `fr-FR`, `en-US`, and `es-ES`; VS Code's display language takes priority, followed by the operating-system locale, then `en-US`.
 
 Diagnostics and explicitly requested tunnel logs are shown in the local `ai4dev Tunnel` Output channel. The extension does not collect telemetry or persist credentials.
+
+## Distribution
+
+Packaging, Marketplace readiness, and local Windows/Remote WSL installation are documented in the [distribution guide](./docs/DISTRIBUTION.md).

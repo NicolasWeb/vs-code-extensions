@@ -3,5 +3,7 @@
 .vscodeignore
 node_modules/**
 out/**
+scripts/**
 test/**
 *.vsix
+SESSION.md
