@@ -1,0 +1,46 @@
+{
+  "name": "ai4dev-tunnel",
+  "displayName": "ai4dev Tunnel",
+  "description": "Monitor and control the ai4dev tunnel from VS Code.",
+  "version": "0.1.0",
+  "publisher": "nicolas-web-local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:ai4devTunnel.showActions"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "ai4devTunnel.showActions",
+        "title": "ai4dev Tunnel",
+        "category": "ai4dev Tunnel"
+      }
+    ],
+    "configuration": {
+      "title": "ai4dev Tunnel",
+      "properties": {
+        "ai4devTunnel.installPath": {
+          "type": "string",
+          "default": "~/agents/ai4dev_tunnel"
+        },
+        "ai4devTunnel.wslDistro": {
+          "type": "string",
+          "default": ""
+        },
+        "ai4devTunnel.refreshIntervalSeconds": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1
+        }
+      }
+    }
+  }
+}
