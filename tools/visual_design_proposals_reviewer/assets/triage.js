@@ -67,6 +67,9 @@
           ph.parentNode.insertBefore(tile, ph);
         } else if (tile.parentElement) { tile.parentElement.appendChild(tile); }
       });
+      document.querySelectorAll('.grid').forEach((grid) => {
+        grid.classList.toggle('is-empty', grid.children.length === 0);
+      });
     }
     // Every sub-section legend reads "<tiles on screen> / <tiles in the theme, eliminated
     // included>", in both the design section and the eliminated section.

@@ -6,7 +6,7 @@
     /* A sub-section legend carries "<tiles on screen> / <tiles in the theme, eliminated
        included>", recomputed by the script every time a tile moves. */
     legend .tcount { font-variant-numeric:tabular-nums; color:var(--accent); }
-    .grid:empty::after { content:"{EMPTY_GRID_LABEL}"; color:var(--muted);
+    .grid:empty::after, .grid.is-empty::after { content:"{EMPTY_GRID_LABEL}"; color:var(--muted);
       font-size:14px; }
     .card { position:relative; }
     .adapt { font-size:13px; color:var(--muted); border-left:2px solid var(--accent); padding-left:9px;

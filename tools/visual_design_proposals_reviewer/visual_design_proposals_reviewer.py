@@ -24,6 +24,7 @@ from lib_visual_design_proposals_reviewer import (  # noqa: E402
     verdict_lines)
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
+REPORT_COLLISION_WAIT = 2.0
 # CLI option -> manifest setting name, so one override path serves every flag.
 CLI_KEYS = {"page": "preview", "single_file": "preview_single", "sizes": "sizes",
             "formats": "formats"}
@@ -39,7 +40,8 @@ class Build:
                if getattr(args, name) is not None}
         self.review = load_manifest(self.folder / MANIFEST, cli=cli, conf=args.conf)
         self.settings = self.review.settings
-        self.token = assets.asset_token(self.settings.asset_folder, self.settings.formats)
+        self.token, self.asset_snapshot = assets.asset_state(
+            self.settings.asset_folder, self.settings.formats)
         self.pages = self._targets()
 
     def _targets(self) -> dict:
@@ -70,22 +72,23 @@ class Build:
                             textlib.review_override(self.settings))
 
     def run(self) -> tuple:
-        """The build, in plan order: validate, render, write only on change, judge what landed."""
+        """Validate and judge rendered pages, then write changes and run the review's rule packs."""
         problems = validate(self.review, self.settings)
         if problems:
             return ["VDPR_FAIL MANIFEST_FAIL"] + problems, 2
         strings = self.strings()
         rendered = page.render_page(self.review, self.settings, strings, ASSETS_DIR, self.token)
         single = page.embed_assets(rendered, self.settings.asset_folder, self.settings.formats)
-        idempotence, sizes, hashes = {}, {}, {}
-        for which, text, path in self._emit(rendered, single):
-            data = text.encode("utf-8")
+        idempotence, sizes, hashes, pending, before = {}, {}, {}, [], {}
+        emitted = [(which, text.encode("utf-8"), path)
+                   for which, text, path in self._emit(rendered, single)]
+        for which, data, path in emitted:
             old = path.read_bytes() if path.is_file() else None
+            before[which] = old
             idempotence[which] = old == data
             sizes[which] = len(data)
-            if old != data and not (self.args.dry_run or self.args.check):
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(data)
+            if old != data:
+                pending.append((path, data))
             # PRE is what was on disk before, POST what the build produced.
             hashes[which] = (assets.blob_sha(old) if old is not None else "absent",
                              assets.blob_sha(data))
@@ -93,15 +96,68 @@ class Build:
         gates = assets.run_gates(judged, self.settings, self.review, ASSETS_DIR)
         gates["failures"] += assets.card_cell_gate(judged, assets.backgrounds_of(judged),
                                                   self.settings.strip_sizes)
+        roundtrip = self._roundtrip()
+        if roundtrip != "yes":
+            gates["failures"].append("MANIFEST_NOT_ROUNDTRIP")
+        written = 0
+        if gates["failures"]:
+            pack_lines, run_failures = ["RULE_PACKS skipped: universal gate failure"], []
+        elif missing_packs := assets.inspect_rule_packs(self.review, self.settings):
+            pack_lines = ["RULE_PACKS preflight failed"] + missing_packs
+            run_failures = missing_packs
+        else:
+            if not (self.args.dry_run or self.args.check):
+                for path, data in pending:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_bytes(data)
+                    written += 1
+            pack_lines, run_failures = assets.run_rule_packs(self.review, self.settings)
+            if (self.args.dry_run or self.args.check) and self.review.checks and pending:
+                run_failures.append("RULE_PACKS_PREVIEW_UNVERIFIED")
+            try:
+                manifest = (self.folder / MANIFEST).read_bytes()
+            except OSError as exc:
+                run_failures.append("MANIFEST_READ_ERROR %s: %s"
+                                    % (exc.__class__.__name__, exc))
+            else:
+                if manifest != self.review.dumps().encode("utf-8"):
+                    run_failures.append("MANIFEST_CHANGED_DURING_RUN")
+            try:
+                _, asset_snapshot = assets.asset_state(
+                    self.settings.asset_folder, self.settings.formats)
+            except OSError as exc:
+                run_failures.append("ASSET_READ_ERROR %s: %s" % (exc.__class__.__name__, exc))
+            else:
+                if asset_snapshot != self.asset_snapshot:
+                    run_failures.append("ASSETS_CHANGED_DURING_RUN")
+            for which, data, path in emitted:
+                try:
+                    actual = path.read_bytes()
+                except FileNotFoundError:
+                    actual = None
+                except OSError as exc:
+                    run_failures.append("PAGE_READ_ERROR %s %s: %s"
+                                        % (which, exc.__class__.__name__, exc))
+                    continue
+                preview = self.args.dry_run or self.args.check
+                expected = before[which] if preview else data
+                if actual != expected:
+                    run_failures.append(("PAGE_CHANGED_DURING_PREVIEW " if preview else
+                                         "PAGE_CHANGED_AFTER_BUILD ") + which)
+                if not preview:
+                    hashes[which] = (hashes[which][0],
+                                     assets.blob_sha(actual) if actual is not None else "absent")
+        failed = bool(gates["failures"] or run_failures)
         lines = verdict_lines(self.review, self.settings, self.token, gates, idempotence, sizes,
-                              roundtrip=self._roundtrip(), hashes=hashes)
-        lines.append("CHECK ok" if self.args.check else
+                              roundtrip=roundtrip, hashes=hashes, failed=failed)
+        lines.append(("CHECK failed" if failed else "CHECK ok") if self.args.check else
                      ("DRY_RUN written=0" if self.args.dry_run else
-                      "BUILD written=%d" % len(self.pages)))
+                      "BUILD written=%d" % written))
         # The verdict function owns the one GATES token; each failure also gets its own detail line.
         lines += ["GATE " + failure for failure in gates["failures"]]
-        lines += assets.run_rule_packs(self.review, self.settings)
-        return lines, 0 if not gates["failures"] else 1
+        lines += pack_lines
+        lines += [failure for failure in run_failures if failure not in pack_lines]
+        return lines, 1 if failed else 0
 
     def _roundtrip(self) -> str:
         """Reading the manifest and writing it back must reproduce it byte for byte."""
@@ -158,9 +214,18 @@ def write_report(lines: list, report_dir) -> Path:
     """Report file plus stdout echo: the same words in both, so a reader never has to choose."""
     path = Path(report_dir) if report_dir else Path(__file__).resolve().parent / "output"
     path.mkdir(parents=True, exist_ok=True)
-    full = path / (REPORT_STEM + time.strftime("%Y%m%d-%H%M%S") + ".txt")
-    full.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
-    return full
+    deadline = time.monotonic() + REPORT_COLLISION_WAIT
+    while True:
+        full = path / (REPORT_STEM + time.strftime("%Y%m%d-%H%M%S") + ".txt")
+        try:
+            with full.open("x", encoding="utf-8", newline="\n") as report:
+                report.write("\n".join(lines) + "\n")
+            return full
+        except FileExistsError as exc:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise OSError("REPORT_NAME_COLLISION " + str(full)) from exc
+            time.sleep(min(0.05, remaining))
 
 
 def compare_pair(build, other) -> list:
@@ -202,13 +267,15 @@ def main(argv=None) -> int:
             lines.append("MARKER roundtrip=%s"
                          % ("yes" if page.marker_round_trip(ASSETS_DIR) else "no"))
             failed = self_test_failed(lines)
-            write_report(lines, args.report_dir)
-            print("\n".join(lines))
-            if failed:
-                print("SELF_TEST_FAIL " + " | ".join(failed))
+            lines.append("SELF_TEST_FAIL " + " | ".join(failed) if failed else "SELF_TEST ok")
+            try:
+                write_report(lines, args.report_dir)
+            except OSError as exc:
+                lines[-1] = "SELF_TEST_FAIL REPORT_ERROR %s: %s" % (exc.__class__.__name__, exc)
+                print("\n".join(lines))
                 return 1
-            print("SELF_TEST ok")
-            return 0
+            print("\n".join(lines))
+            return 1 if failed else 0
         if not args.review:
             raise VdprError("REVIEW_FOLDER_MISSING --review")
         build = Build(args)
@@ -223,10 +290,20 @@ def main(argv=None) -> int:
             lines, code = build.run()
         # Every run keeps its verdict in a report; --dry-run is the one mode that writes nothing.
         if not args.dry_run:
-            lines.append("REPORT " + str(write_report(lines, args.report_dir)))
+            try:
+                report = write_report(lines, args.report_dir)
+            except OSError as exc:
+                if lines and lines[0] == "VDPR_OK":
+                    lines[0] = "VDPR_FAIL"
+                elif not lines or not lines[0].startswith("VDPR_FAIL"):
+                    lines.insert(0, "VDPR_FAIL")
+                lines.append("REPORT_ERROR %s: %s" % (exc.__class__.__name__, exc))
+                print("\n".join(lines))
+                return 1
+            lines.append("REPORT " + str(report))
         print("\n".join(lines))
         return code
-    except VdprError as exc:
+    except (VdprError, page.VdprPageError) as exc:
         print("VDPR_FAIL " + str(exc))
         return 1
     except OSError as exc:

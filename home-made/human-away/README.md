@@ -3,9 +3,9 @@
 **Human Away Mode** chip in the Chat pane (and fallback surfaces), driven
 by the conf file `~/agents/human_away_mode` — one `ON`/`OFF` word that is
 gitignored and rewritten directly on disk, so switching the mode never
-touches a memory file and leaves nothing to commit. `ON` means a human is
-here and the AI is attended; `OFF` means the AI works unattended. You see
-the state at a glance — without opening any file.
+touches a memory file and leaves nothing to commit. `ON` activates the mode
+and its request-limit behavior; `OFF` deactivates it. The displayed labels are
+the user-selected switch wording, not a sensor of actual human presence.
 
 > Naming: the extension is referenced as **Human Away Extension**,
 > **Human Away Ext** or **Human Away Ext.**; the state it renders is

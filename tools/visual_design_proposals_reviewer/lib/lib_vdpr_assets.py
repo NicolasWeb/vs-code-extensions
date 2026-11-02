@@ -12,7 +12,9 @@ from __future__ import annotations
 
 import hashlib
 import re
+import stat
 import subprocess
+import sys
 import xml.etree.ElementTree as ET
 
 IMG_SRC = re.compile(r'<img src="([^"]+)"')
@@ -65,13 +67,20 @@ def blob_sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def asset_state(folder, formats) -> tuple[str, dict[str, str]]:
+    digest = hashlib.sha256()
+    files = {}
+    for name in inventory(folder, formats):
+        data = (folder / name).read_bytes()
+        digest.update(name.encode("utf-8"))
+        digest.update(data)
+        files[name] = blob_sha(data)
+    return digest.hexdigest()[:8], files
+
+
 def asset_token(folder, formats) -> str:
     """Stamp that only changes when an asset's bytes change, so a stale cache cannot be judged."""
-    digest = hashlib.sha256()
-    for name in inventory(folder, formats):
-        digest.update(name.encode("utf-8"))
-        digest.update((folder / name).read_bytes())
-    return digest.hexdigest()[:8]
+    return asset_state(folder, formats)[0]
 
 
 def check_one(folder, name: str, formats) -> str:
@@ -310,27 +319,55 @@ def run_gates(page: str, settings, review, assets_dir) -> dict:
     }
 
 
-def run_rule_packs(review, settings) -> list:
+def inspect_rule_packs(review, settings) -> list[str]:
+    failures = []
+    for name in review.checks:
+        if not name or any(ord(char) < 32 or ord(char) == 127 for char in name):
+            failures.append("RULE_PACK_INVALID_NAME")
+            continue
+        path = settings.review_folder / name
+        try:
+            mode = path.stat().st_mode
+        except FileNotFoundError:
+            failures.append("RULE_PACK_MISSING " + name)
+        except (OSError, ValueError) as exc:
+            failures.append("RULE_PACK_ERROR %s %s: %s" % (name, exc.__class__.__name__, exc))
+        else:
+            if not stat.S_ISREG(mode):
+                failures.append("RULE_PACK_NOT_FILE " + name)
+    return failures
+
+
+def run_rule_packs(review, settings) -> tuple[list[str], list[str]]:
     """Run the review folder's own checkers (ARB-R5); their tokens join the build verdict."""
-    lines = []
+    lines, failures = [], []
     if not review.checks:
-        return ["RULE_PACKS none"]
+        return ["RULE_PACKS none"], failures
     lines.append("RULE_PACKS " + ",".join(review.checks))
     for name in review.checks:
         path = settings.review_folder / name
         if not path.is_file():
-            lines.append("RULE_PACK_MISSING " + name)
+            failure = "RULE_PACK_MISSING " + name
+            lines.append(failure)
+            failures.append(failure)
             continue
         try:
             completed = subprocess.run(
-                ["python3", str(path)] if path.suffix == ".py" else [str(path)],
+                [sys.executable, str(path)] if path.suffix == ".py" else [str(path)],
                 cwd=str(settings.review_folder), capture_output=True, text=True,
                 input="", timeout=RULE_PACK_TIMEOUT)
-        except (OSError, subprocess.TimeoutExpired) as exc:
-            lines.append("RULE_PACK_ERROR %s %s" % (name, exc.__class__.__name__))
+        except (OSError, UnicodeError, subprocess.TimeoutExpired) as exc:
+            failure = "RULE_PACK_ERROR %s %s: %s" % (name, exc.__class__.__name__, exc)
+            lines.append(failure)
+            failures.append(failure)
             continue
         for line in (completed.stdout or "").splitlines():
             if line.strip():
                 lines.append("RULE_PACK_OUT %s %s" % (name, line.strip()))
+        for line in (completed.stderr or "").splitlines():
+            if line.strip():
+                lines.append("RULE_PACK_ERR %s %s" % (name, line.strip()))
         lines.append("RULE_PACK_RC %s %d" % (name, completed.returncode))
-    return lines
+        if completed.returncode:
+            failures.append("RULE_PACK_FAILED %s rc=%d" % (name, completed.returncode))
+    return lines, failures

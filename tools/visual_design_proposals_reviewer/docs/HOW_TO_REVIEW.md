@@ -64,18 +64,22 @@ The build prints its verdict and keeps a copy in the tool's `output/` folder. Wh
 
 | token | read it as |
 | --- | --- |
-| `VDPR_OK` + `GATES ok` | the round is sound; the pages on disk are what the manifest declares |
+| `VDPR_OK` + `GATES ok` | the rendered candidate and applicable rule-pack checks passed; preview modes do not write review pages |
 | `IDEMPOTENT preview=yes` | rebuilding again changes nothing (a `no` after a real edit is expected, the next build flips it back) |
 | `SINGLE_FILE_BUDGET <kib>` | the size of the send-along page |
 | `SEED_ELIMINATIONS <n>` | how many cards the manifest put in the eliminated section |
 | `CHECKED <n>` | how many cards start the round already final |
-| `MANIFEST roundtrip=no` | stop: the manifest did not survive a read/write cycle byte for byte |
+| `MANIFEST roundtrip=no` | stop: the manifest did not survive a read/write cycle byte for byte; the reviewer does not write pages |
+| `RULE_PACKS_PREVIEW_UNVERIFIED` | a preview target differs from the candidate, so a rule pack that reads the existing page cannot certify that candidate |
+| `RULE_PACK_MISSING`, `RULE_PACK_ERROR`, `RULE_PACK_FAILED` | stop: a declared rule pack is missing, could not run, or returned nonzero |
+| `MANIFEST_CHANGED_DURING_RUN`, `ASSETS_CHANGED_DURING_RUN`, `PAGE_CHANGED_DURING_PREVIEW`, `PAGE_CHANGED_AFTER_BUILD` | stop: a checked input or target changed during the run |
+| `REPORT_ERROR` | stop: the report could not be saved; inspect the page-write count before retrying |
 | `BROKEN_REFS`, `UNSHOWN_FILES` | a drawing is missing from the folder, or the page never shows one it holds |
 | `CARD_SURFACES`, `CARD_SIZE_CELLS` | a card does not show every background or every declared size |
 | `XML_FAIL`, `EMPTY_ASSET` | a drawing file is corrupt or empty |
-| `VDPR_FAIL <token>` | the manifest broke a rule; the token names it (`DUPLICATE_ID E`, `BACKGROUND_MISSING C light`, …) |
+| `VDPR_FAIL` | validation or a rule pack failed; inspect the accompanying detail tokens |
 
-A failing gate exits non-zero, so a build can be chained safely after other commands.
+A failing gate or rule pack exits nonzero. Universal gates and rule-pack file preflight precede reviewer writes, but rule packs run after a normal build and can fail after pages have changed; inspect `BUILD written=<n>` and preserve existing pages before an authorized build.
 
 ## 5. When the page was edited outside the tool
 

@@ -8,6 +8,8 @@ each proposal is shown on every declared background at the reference size, plus 
 other declared sizes, with a two-state triage (eliminate / mark final) that survives a reload and a
 cache token so a stale drawing can never be judged.
 
+Eliminated proposals and empty grids display the localized labels from the review's text table, including permitted per-review overrides.
+
 ## Quick start
 
 ```bash
@@ -46,16 +48,14 @@ The build writes the two pages next to `review.md`:
 | `--formats LIST` | override the accepted drawing formats |
 | `--conf FILE` | use this conf file instead of the folder's `vdpr.conf` |
 | `--report-dir DIR` | where the report goes (default this tool's `output/`) |
-| `--check` | render and judge, write nothing |
-| `--dry-run` | print what would be written, write nothing at all (no report either) |
+| `--check` | render and judge without writing review pages; write a report and run declared rule packs |
+| `--dry-run` | print what the reviewer would write without writing its pages or report; still run declared rule packs |
 | `--self-test` | run the tool's own regression guards |
 | `--compare PAGE` | judge another page against what this manifest now renders |
 | `--export FOLDER` | write a self-contained offline copy of the review there |
 | `--version` | print the tool name |
 
-Configuration precedence is `CLI` over `vdpr.conf` over the manifest bullets over the built-in
-defaults. The tool never reads stdin and every external call is bounded. `--check` and `--dry-run`
-write no review file; `--dry-run` is the one mode that writes nothing at all, not even a report.
+Configuration precedence is `CLI` over `vdpr.conf` over the manifest bullets over the built-in defaults. The tool never reads stdin and every external call is bounded. Rule packs are executable review-folder scripts, including in `--check` and `--dry-run`; inspect and authorize them before any run because they may have their own side effects. Python rule packs use the same interpreter as the reviewer.
 
 ## The manifest
 
@@ -134,11 +134,13 @@ Reading the manifest and writing it back reproduces the file **byte for byte**, 
 
 ## What a build does
 
-Load the manifest → refuse it on any rule break (`VDPR_FAIL`, one token per problem) → render both
-pages → write only when the bytes change → judge what was emitted with the universal gates → run the
-review's own rule packs → print the verdict tokens, and keep them in
-`output/visual_design_proposals_reviewer_report_<YYYYMMDD-HHMMSS>.txt`, echoed to stdout. Exit is
-non-zero with the reason printed whenever a gate fails.
+Load the manifest → render both pages → check the universal gates and manifest round trip → verify that declared rule-pack files exist → write changed pages → run the review's own rule packs → print the verdict tokens and keep them in `output/visual_design_proposals_reviewer_report_<YYYYMMDD-HHMMSS>.txt`, echoed to stdout. A failed universal gate, non-round-tripping manifest, or missing rule-pack file prevents the reviewer's page writes.
+
+An unsuccessful gate or rule pack returns nonzero and `VDPR_FAIL`. Rule packs run after a normal build writes pages because they may inspect those pages; a failing pack can therefore leave changed pages on disk, as indicated by `BUILD written=<n>`. Inspect existing pages and their ownership before authorizing a build.
+
+In `--check` and `--dry-run`, a rule pack sees the current review folder, not an unwritten candidate page. If a target page differs from the candidate, `RULE_PACKS_PREVIEW_UNVERIFIED` returns nonzero rather than certifying that pack against the candidate. After the packs run, the reviewer compares the manifest, full per-asset SHA-256 values, and target-page bytes with their expected values; a detected change returns nonzero. These checks are not an atomic lock against concurrent writers. Rule-pack stdout and stderr are included in the report; keep potentially sensitive output local.
+
+Reports are created exclusively, without overwriting an existing report. A timestamp collision is retried for at most two seconds; `REPORT_NAME_COLLISION` or another report-write error returns nonzero and preserves any reported page-write count.
 
 Verdict tokens, printed by one function so this file, the CLI and the report agree word for word:
 
@@ -150,6 +152,12 @@ MANIFEST roundtrip=yes|no | CACHE_TOKEN <hex> | ASSETS <n> | IMAGES <n>
 PRE_SHA256 <page>=<hex|absent> POST_SHA256 <page>=<hex> IDEMPOTENT <page>=yes|no (per emitted page)
 SINGLE_FILE_BUDGET <kib>
 GATES ok | GATES FAIL <tokens...> | BUILD written=<n> | RULE_PACKS <names>
+RULE_PACK_MISSING <name> | RULE_PACK_NOT_FILE <name> | RULE_PACK_INVALID_NAME
+RULE_PACK_ERROR <name> <reason> | RULE_PACK_FAILED <name> rc=<n>
+RULE_PACKS_PREVIEW_UNVERIFIED
+MANIFEST_CHANGED_DURING_RUN | ASSETS_CHANGED_DURING_RUN
+PAGE_CHANGED_DURING_PREVIEW <page> | PAGE_CHANGED_AFTER_BUILD <page>
+REPORT_ERROR <reason>
 ```
 
 The gates are judged on the emitted page, never back out of the model, so a gate stays a check and

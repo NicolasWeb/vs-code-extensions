@@ -16,6 +16,7 @@ TRIAGE_END = "    /* triage-ui:end */"
 STYLE_CLOSE = "  </style>"
 SECTION_COUNT = 3
 MARKER = re.compile(r"@@([A-Z0-9_]+)@@")
+CSS_SLOT = re.compile(r"\{([A-Z][A-Z0-9_]*)\}")
 
 SURFACE_MIME = {
     "svg": "image/svg+xml", "png": "image/png", "jpg": "image/jpeg",
@@ -63,6 +64,15 @@ def esc(value: str) -> str:
     return html.escape(value or "", quote=True)
 
 
+def css_string(value: str) -> str:
+    if "\x00" in value:
+        raise VdprPageError("CSS_TEXT_NUL")
+    return "".join(
+        "\\%x " % ord(char) if char in '"\\<' or ord(char) < 32 or ord(char) == 127 else char
+        for char in value
+    )
+
+
 def load_template(assets_dir, name: str) -> str:
     path = assets_dir / name
     if not path.is_file():
@@ -79,6 +89,15 @@ def fill(template: str, mapping: dict, name: str) -> str:
     if leftover:
         raise VdprPageError("TEMPLATE_SLOT_UNFILLED %s %s" % (name, " ".join(leftover)))
     return template
+
+
+def fill_css(template: str, mapping: dict[str, str]) -> str:
+    slots = set(CSS_SLOT.findall(template))
+    missing = sorted(set(mapping) - slots)
+    unknown = sorted(slots - set(mapping))
+    if missing or unknown:
+        raise VdprPageError("CSS_TEMPLATE_SLOTS missing=%s unknown=%s" % (missing, unknown))
+    return CSS_SLOT.sub(lambda match: mapping[match.group(1)], template)
 
 
 def triage_block(triage_css: str) -> str:
@@ -335,8 +354,12 @@ def render_page(review, settings, strings, assets_dir, token: str) -> str:
         "TRIAGE_BAR": triage_bar(strings),
         "SCRIPT": triage_script(assets_dir, settings, strings),
     }, "page.html")
+    triage_css = fill_css(load_template(assets_dir, "triage.css"), {
+        "EMPTY_GRID_LABEL": css_string(strings.key("empty_grid_label")),
+        "ELIMINATED_LABEL": css_string(strings.key("eliminated_label")),
+    })
     head, close, tail = page.partition(STYLE_CLOSE)
-    page = inject_css(head + close, triage_block(load_template(assets_dir, "triage.css"))) + tail
+    page = inject_css(head + close, triage_block(triage_css)) + tail
     return page
 
 

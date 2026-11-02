@@ -719,9 +719,10 @@ def validate(review: Review, settings) -> list:
 
 def verdict_lines(review: Review, settings, cache_token: str = "", gates: dict = None,
                   idempotence: dict = None, sizes: dict = None, roundtrip: str = "",
-                  hashes: dict = None) -> list:
+                  hashes: dict = None, failed: bool = False) -> list:
     """The CAPS verdict tokens of the F5 list: printed here, never rewritten anywhere else."""
-    tokens = ["VDPR_OK", "REVIEW " + settings.id]
+    failed = failed or bool((gates or {}).get("failures"))
+    tokens = ["VDPR_FAIL" if failed else "VDPR_OK", "REVIEW " + settings.id]
     tokens.append("TILES %d" % len(review.proposals))
     tokens.append("SECTIONS %d" % PAGE_SECTIONS)
     tokens.append("GROUP_GRIDS %d" % len(review.themes))
