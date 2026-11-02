@@ -3,7 +3,7 @@
 const vscode = require("vscode");
 const { ACTIONS, operationForAction } = require("./actions");
 const { detectLocale, operatingSystemLocales, translate } = require("./localization");
-const { nextNotificationState, parseStatusOutput } = require("./status");
+const { formatServiceWindow, nextNotificationState, parseStatusOutput } = require("./status");
 const { createTunnelClient, resolveDistro } = require("./tunnelClient");
 
 const NOTIFICATION_KEY = "ai4devTunnel.failureNotified";
@@ -50,12 +50,16 @@ function activate(context) {
       remoteName: vscode.env.remoteName,
       distro,
       installPath: configuration.get("installPath", "~/agents/ai4dev_tunnel"),
+      timeoutSeconds: configuration.get("commandTimeoutSeconds", 60),
+      logLines: configuration.get("logLines", 50),
     });
   }
 
   function errorText(error) {
     if (error && error.kind === "configuration") {
-      return text("errors.invalidInstallPath");
+      return error.setting
+        ? text("errors.invalidSetting", { setting: error.setting })
+        : text("errors.invalidInstallPath");
     }
     if (!error || error.kind === "spawn") {
       return text("errors.couldNotStart");
@@ -100,13 +104,24 @@ function activate(context) {
           new Date(currentStatus.checkedAt)
         )
       : text("values.notChecked");
+    const serviceWindow = currentStatus.serviceWindow;
+    const serviceWindowLine = serviceWindow
+      ? serviceWindow.invalid
+        ? text("tooltip.serviceWindowInvalid")
+        : text("tooltip.serviceWindow", {
+            value: formatServiceWindow(serviceWindow, locale),
+          })
+      : "";
     statusItem.tooltip = [
       statusLabel,
       text("tooltip.supervisor", { value: supervisor }),
       text("tooltip.port", { value: port }),
+      serviceWindowLine,
       text("tooltip.lastCheck", { value: checkedAt }),
       text("tooltip.clickHint"),
-    ].join("\n");
+    ]
+      .filter(Boolean)
+      .join("\n");
   }
 
   async function persistFailureFlag(value) {

@@ -1,6 +1,41 @@
 "use strict";
 
 const STATUS_PREFIX = "AI4DEV_TUNNEL_STATUS\t";
+const SERVICE_WINDOW_FIELDS = 5;
+
+function parseServiceWindow(fields) {
+  if (fields.every((field) => field === "")) {
+    return null;
+  }
+  if (fields.length !== SERVICE_WINDOW_FIELDS) {
+    return { invalid: true };
+  }
+
+  const [rawStartDay, startTime, rawEndDay, endTime, timeZone] = fields;
+  if (
+    !/^[1-7]$/.test(rawStartDay) ||
+    !/^[1-7]$/.test(rawEndDay) ||
+    !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(startTime) ||
+    !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(endTime) ||
+    !/^[A-Za-z0-9._+-]+(?:\/[A-Za-z0-9._+-]+)*$/.test(timeZone)
+  ) {
+    return { invalid: true };
+  }
+
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone });
+  } catch {
+    return { invalid: true };
+  }
+
+  return {
+    startDay: Number(rawStartDay),
+    startTime,
+    endDay: Number(rawEndDay),
+    endTime,
+    timeZone,
+  };
+}
 
 function parseStatusOutput(output) {
   const line = String(output)
@@ -12,7 +47,7 @@ function parseStatusOutput(output) {
   }
 
   const fields = line.slice(STATUS_PREFIX.length).split("\t");
-  if (fields.length !== 4) {
+  if (fields.length !== 4 && fields.length !== 4 + SERVICE_WINDOW_FIELDS) {
     throw new Error("Malformed tunnel status record.");
   }
 
@@ -35,7 +70,20 @@ function parseStatusOutput(output) {
     port,
     listening: rawListening === "1",
     state: classifyStatus(serviceState, rawListening === "1"),
+    serviceWindow: fields.length === 4 ? null : parseServiceWindow(fields.slice(4)),
   };
+}
+
+function formatServiceWindow(serviceWindow, locale) {
+  if (!serviceWindow || serviceWindow.invalid) {
+    return "";
+  }
+  const weekdayFormatter = new Intl.DateTimeFormat(locale, {
+    weekday: "long",
+    timeZone: "UTC",
+  });
+  const formatDay = (isoDay) => weekdayFormatter.format(new Date(Date.UTC(2024, 0, isoDay)));
+  return `${formatDay(serviceWindow.startDay)} ${serviceWindow.startTime} – ${formatDay(serviceWindow.endDay)} ${serviceWindow.endTime} (${serviceWindow.timeZone})`;
 }
 
 function classifyStatus(serviceState, listening) {
@@ -66,6 +114,7 @@ function nextNotificationState(alreadyNotified, state) {
 
 module.exports = {
   classifyStatus,
+  formatServiceWindow,
   nextNotificationState,
   parseStatusOutput,
 };

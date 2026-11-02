@@ -13,11 +13,14 @@ const statusItems = [];
 const notifications = [];
 const outputChannels = [];
 const terminals = [];
+const processInvocations = [];
 let selectedAction;
 const settings = {
   installPath: "~/agents/ai4dev_tunnel",
   wslDistro: "",
   refreshIntervalSeconds: 30,
+  commandTimeoutSeconds: 60,
+  logLines: 25,
 };
 
 const fakeVscode = {
@@ -106,6 +109,7 @@ Module._load = function load(request, parent, isMain) {
 };
 
 childProcess.spawn = (command, args) => {
+  processInvocations.push({ command, args });
   const child = new EventEmitter();
   child.stdout = new PassThrough();
   child.stderr = new PassThrough();
@@ -113,7 +117,7 @@ childProcess.spawn = (command, args) => {
   const action = args.at(-2);
   process.nextTick(() => {
     if (action === "status") {
-      child.stdout.end("AI4DEV_TUNNEL_STATUS\tsystemd\tinactive\t7000\t0\n");
+      child.stdout.end("AI4DEV_TUNNEL_STATUS\tsystemd\tinactive\t7000\t0\t1\t00:00\t6\t00:00\tEurope/Paris\n");
     } else if (action === "logs") {
       child.stdout.end("sample tunnel log\n");
     } else {
@@ -147,6 +151,7 @@ async function run() {
     assert.equal(statusItems.length, 2);
     assert.match(statusItems[0].text, /ai4dev : arrêté/, outputChannels[0].content);
     assert.equal(statusItems[0].color.id, "editorWarning.foreground");
+    assert.match(statusItems[0].tooltip, /Horaires documentés du service.*lundi 00:00/);
     assert.equal(notifications.length, 1);
     assert.match(notifications[0].message, /ne fonctionne pas/);
     assert.equal(notifications[0].actions.length, 3);
@@ -158,6 +163,8 @@ async function run() {
     await registeredCommands.get("ai4devTunnel.showActions")();
     assert.equal(outputChannels[0].visible, true);
     assert.match(outputChannels[0].content, /sample tunnel log/);
+    const logsInvocation = processInvocations.find(({ args }) => args.at(-2) === "logs");
+    assert.equal(logsInvocation.args.at(-1), "25");
 
     selectedAction = "renewAuthentication";
     await registeredCommands.get("ai4devTunnel.showActions")();

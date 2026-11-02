@@ -3,6 +3,7 @@
 const assert = require("node:assert/strict");
 const {
   classifyStatus,
+  formatServiceWindow,
   nextNotificationState,
   parseStatusOutput,
 } = require("../src/status");
@@ -15,7 +16,27 @@ assert.deepEqual(
     port: 8443,
     listening: true,
     state: "connected",
+    serviceWindow: null,
   }
+);
+const configuredStatus = parseStatusOutput(
+  "AI4DEV_TUNNEL_STATUS\tsystemd\tactive\t8443\t1\t1\t00:00\t6\t00:00\tEurope/Paris"
+);
+assert.deepEqual(configuredStatus.serviceWindow, {
+  startDay: 1,
+  startTime: "00:00",
+  endDay: 6,
+  endTime: "00:00",
+  timeZone: "Europe/Paris",
+});
+assert.equal(
+  formatServiceWindow(configuredStatus.serviceWindow, "fr-FR"),
+  "lundi 00:00 – samedi 00:00 (Europe/Paris)"
+);
+assert.deepEqual(
+  parseStatusOutput("AI4DEV_TUNNEL_STATUS\tsystemd\tactive\t8443\t1\t1\t25:00\t6\t00:00\tEurope/Paris")
+    .serviceWindow,
+  { invalid: true }
 );
 assert.equal(classifyStatus("activating", false), "connecting");
 assert.equal(classifyStatus("deactivating", false), "transitioning");

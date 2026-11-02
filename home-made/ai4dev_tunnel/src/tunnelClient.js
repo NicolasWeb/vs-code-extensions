@@ -32,7 +32,11 @@ const SHELL_SCRIPT = [
   "    fi",
   '    if ! [[ "$AI4DEV_PORT" =~ ^[0-9]{1,5}$ ]] || (( AI4DEV_PORT < 1 || AI4DEV_PORT > 65535 )); then printf "%s\\n" "Invalid tunnel port." >&2; exit 65; fi',
   '    if ss -tlnH "sport = :$AI4DEV_PORT" 2>/dev/null | grep -q LISTEN; then listening="1"; else listening="0"; fi',
-  '    printf "AI4DEV_TUNNEL_STATUS\\t%s\\t%s\\t%s\\t%s\\n" "$supervisor" "$service_state" "$AI4DEV_PORT" "$listening"',
+  '    service_window_fields=("" "" "" "" "")',
+  '    if [ "$AI4DEV_SERVICE_WINDOW_ENABLED" = "1" ]; then',
+  '      service_window_fields=("$AI4DEV_SERVICE_WINDOW_START_DAY" "$AI4DEV_SERVICE_WINDOW_START_TIME" "$AI4DEV_SERVICE_WINDOW_END_DAY" "$AI4DEV_SERVICE_WINDOW_END_TIME" "$AI4DEV_SERVICE_WINDOW_TIMEZONE")',
+  "    fi",
+  '    printf "AI4DEV_TUNNEL_STATUS\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n" "$supervisor" "$service_state" "$AI4DEV_PORT" "$listening" "${service_window_fields[@]}"',
   "    ;;",
   "  connect) ai4dev_connect ;;",
   "  disconnect) stop_tunnel ;;",
@@ -96,6 +100,17 @@ function validateInstallPath(installPath) {
   return value;
 }
 
+function positiveInteger(value, settingName) {
+  const numericValue = Number(value);
+  if (!Number.isSafeInteger(numericValue) || numericValue < 1) {
+    const error = new Error(`Invalid ${settingName} setting.`);
+    error.kind = "configuration";
+    error.setting = settingName;
+    throw error;
+  }
+  return numericValue;
+}
+
 function buildInvocation(options) {
   const {
     platform = process.platform,
@@ -111,7 +126,8 @@ function buildInvocation(options) {
   }
 
   const home = validateInstallPath(installPath);
-  const args = ["-lc", SHELL_SCRIPT, "ai4dev-tunnel", home, action, String(logLines)];
+  const requestedLogLines = action === "logs" ? positiveInteger(logLines, "logLines") : 50;
+  const args = ["-lc", SHELL_SCRIPT, "ai4dev-tunnel", home, action, String(requestedLogLines)];
   if (platform === "win32" && remoteName !== "wsl") {
     const wslArgs = [];
     if (distro) {
@@ -135,7 +151,7 @@ function processError(kind, exitCode) {
 
 function runProcess(command, args, options = {}) {
   const spawnImpl = options.spawnImpl || spawn;
-  const timeoutMs = options.timeoutMs || 60000;
+  const timeoutMs = positiveInteger(options.timeoutMs ?? 60000, "commandTimeoutSeconds");
 
   return new Promise((resolve, reject) => {
     let child;
@@ -198,8 +214,9 @@ function createTunnelClient(options) {
     remoteName: options.remoteName,
     distro: options.distro,
     installPath: options.installPath,
+    logLines: options.logLines ?? 50,
   };
-  const timeoutMs = options.timeoutMs || 60000;
+  const timeoutSeconds = options.timeoutSeconds ?? 60;
   const spawnImpl = options.spawnImpl || spawn;
 
   return {
@@ -210,7 +227,7 @@ function createTunnelClient(options) {
       const invocation = buildInvocation({ ...invocationOptions, action });
       return runProcess(invocation.command, invocation.args, {
         spawnImpl,
-        timeoutMs,
+        timeoutMs: positiveInteger(timeoutSeconds, "commandTimeoutSeconds") * 1000,
       });
     },
   };

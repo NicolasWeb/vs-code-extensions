@@ -8,6 +8,7 @@ const { operationForAction } = require("../src/actions");
 const {
   SHELL_SCRIPT,
   buildInvocation,
+  createTunnelClient,
   distroFromWorkspace,
   resolveDistro,
   runProcess,
@@ -59,6 +60,23 @@ assert.equal(operationForAction("showLogs"), "logs");
 assert.equal(operationForAction("connect"), "connect");
 assert.equal(operationForAction("renewAuthentication"), null);
 assert.throws(() => operationForAction("unknown"), /Unsupported/);
+const logInvocation = buildInvocation({
+  platform: "linux",
+  installPath: "/home/user/agents/ai4dev_tunnel",
+  action: "logs",
+  logLines: 125,
+});
+assert.equal(logInvocation.args.at(-1), "125");
+assert.throws(
+  () =>
+    buildInvocation({
+      platform: "linux",
+      installPath: "/home/user/agents/ai4dev_tunnel",
+      action: "logs",
+      logLines: 0,
+    }),
+  /Invalid logLines setting/
+);
 assert.equal(spawnSync("bash", ["-n", "-c", SHELL_SCRIPT]).status, 0);
 
 function fakeSpawn(complete) {
@@ -89,6 +107,16 @@ const successSpawn = () =>
 async function run() {
   const success = await runProcess("fake", [], { spawnImpl: successSpawn() });
   assert.equal(success.stdout, "result");
+  assert.throws(() => runProcess("fake", [], { timeoutMs: 0 }), /Invalid commandTimeoutSeconds setting/);
+  const invalidTimeoutClient = createTunnelClient({
+    installPath: "/home/user/agents/ai4dev_tunnel",
+    timeoutSeconds: 0,
+    spawnImpl: successSpawn(),
+  });
+  await assert.rejects(
+    invalidTimeoutClient.execute("status"),
+    (error) => error.kind === "configuration" && error.setting === "commandTimeoutSeconds"
+  );
 
   await assert.rejects(
     runProcess("fake", [], {
