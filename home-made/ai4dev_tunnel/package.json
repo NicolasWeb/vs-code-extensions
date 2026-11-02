@@ -29,7 +29,7 @@
       "properties": {
         "ai4devTunnel.installPath": {
           "type": "string",
-          "default": "~/agents/ai4dev_tunnel"
+          "default": "~/agents/ai4dev/ai4dev_tunnel"
         },
         "ai4devTunnel.wslDistro": {
           "type": "string",

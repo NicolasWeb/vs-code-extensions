@@ -11,7 +11,7 @@
 
 ## Configuration
 
-- `ai4devTunnel.installPath`: Linux path to the existing `ai4dev_tunnel` installation; defaults to `~/agents/ai4dev_tunnel`.
+- `ai4devTunnel.installPath`: Linux path to the existing `ai4dev_tunnel` installation; defaults to `~/agents/ai4dev/ai4dev_tunnel`.
 - `ai4devTunnel.wslDistro`: optional WSL distribution name. When empty, the extension derives it from a WSL workspace or uses the default distribution.
 - `ai4devTunnel.refreshIntervalSeconds`: status polling interval in seconds; defaults to `5` and cannot be less than `1`.
 - `ai4devTunnel.commandTimeoutSeconds`: maximum duration of a tunnel command; defaults to `60` seconds.

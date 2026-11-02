@@ -16,7 +16,7 @@ const terminals = [];
 const processInvocations = [];
 let selectedAction;
 const settings = {
-  installPath: "~/agents/ai4dev_tunnel",
+  installPath: "~/agents/ai4dev/ai4dev_tunnel",
   wslDistro: "",
   refreshIntervalSeconds: 30,
   commandTimeoutSeconds: 60,
