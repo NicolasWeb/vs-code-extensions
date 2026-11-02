@@ -15,8 +15,11 @@ const outputChannels = [];
 const terminals = [];
 const processInvocations = [];
 let selectedAction;
+let configurationChangeHandler;
+let authenticationPrefillEnabled = true;
 const settings = {
   installPath: "~/agents/ai4dev/ai4dev_tunnel",
+  authenticationPromptPrefill: true,
   wslDistro: "",
   refreshIntervalSeconds: 30,
   commandTimeoutSeconds: 60,
@@ -85,7 +88,8 @@ const fakeVscode = {
     getConfiguration() {
       return { get: (key, fallback) => settings[key] ?? fallback };
     },
-    onDidChangeConfiguration() {
+    onDidChangeConfiguration(handler) {
+      configurationChangeHandler = handler;
       return { dispose() {} };
     },
     onDidChangeWorkspaceFolders() {
@@ -114,10 +118,16 @@ childProcess.spawn = (command, args) => {
   child.stdout = new PassThrough();
   child.stderr = new PassThrough();
   child.kill = () => true;
-  const action = args.at(-2);
+  const action = args.at(-3);
   process.nextTick(() => {
     if (action === "status") {
-      child.stdout.end("AI4DEV_TUNNEL_STATUS\tsystemd\tinactive\t7000\t0\t1\t00:00\t6\t00:00\tEurope/Paris\n");
+      const prefillState = authenticationPrefillEnabled ? "true" : "false";
+      child.stdout.end(
+        `AI4DEV_TUNNEL_STATUS\tsystemd\tinactive\t7000\t0\t1\t00:00\t6\t00:00\tEurope/Paris\t${prefillState}\n`
+      );
+    } else if (action === "prefill-set") {
+      authenticationPrefillEnabled = args.at(-1) === "true";
+      child.stdout.end("Authentication prompt prefill updated.\n");
     } else if (action === "logs") {
       child.stdout.end("sample tunnel log\n");
     } else {
@@ -152,6 +162,7 @@ async function run() {
     assert.match(statusItems[0].text, /ai4dev : arrêté/, outputChannels[0].content);
     assert.equal(statusItems[0].color.id, "editorWarning.foreground");
     assert.match(statusItems[0].tooltip, /Horaires documentés du service.*lundi 00:00/);
+    assert.match(statusItems[0].tooltip, /Préremplissage de la commande d’authentification : Activé/);
     assert.equal(notifications.length, 1);
     assert.match(notifications[0].message, /ne fonctionne pas/);
     assert.equal(notifications[0].actions.length, 3);
@@ -163,14 +174,41 @@ async function run() {
     await registeredCommands.get("ai4devTunnel.showActions")();
     assert.equal(outputChannels[0].visible, true);
     assert.match(outputChannels[0].content, /sample tunnel log/);
-    const logsInvocation = processInvocations.find(({ args }) => args.at(-2) === "logs");
-    assert.equal(logsInvocation.args.at(-1), "25");
+    const logsInvocation = processInvocations.find(({ args }) => args.at(-3) === "logs");
+    assert.equal(logsInvocation.args.at(-2), "25");
+
+    settings.authenticationPromptPrefill = "invalid";
+    await configurationChangeHandler({
+      affectsConfiguration: (section) =>
+        section === "ai4devTunnel" ||
+        section === "ai4devTunnel.authenticationPromptPrefill",
+    });
+    assert.match(notifications.at(-1).message, /doit être une valeur booléenne/);
+    assert.doesNotMatch(notifications.at(-1).message, /entier positif/);
+
+    settings.authenticationPromptPrefill = false;
+    await configurationChangeHandler({
+      affectsConfiguration: (section) =>
+        section === "ai4devTunnel" ||
+        section === "ai4devTunnel.authenticationPromptPrefill",
+    });
+    const prefillInvocation = processInvocations.findLast(
+      ({ args }) => args.at(-3) === "prefill-set"
+    );
+    assert.equal(prefillInvocation.args.at(-1), "false");
+    assert.match(statusItems[0].tooltip, /Préremplissage de la commande d’authentification : Désactivé/);
 
     selectedAction = "renewAuthentication";
     await registeredCommands.get("ai4devTunnel.showActions")();
     assert.equal(terminals.length, 1);
     assert.equal(terminals[0].shown, true);
     assert.match(terminals[0].options.name, /Renouveler/);
+    assert.equal(terminals[0].options.shellArgs.at(-3), "renew");
+    assert.equal(terminals[0].options.shellArgs.at(-1), "false");
+    assert.equal(
+      processInvocations.findLast(({ args }) => args.at(-3) === "prefill-set").args.at(-1),
+      "false"
+    );
 
     console.log("ai4dev_tunnel_extension_test: PASS");
   } finally {

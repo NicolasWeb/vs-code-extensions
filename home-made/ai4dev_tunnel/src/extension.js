@@ -16,7 +16,12 @@ function activate(context) {
   );
   const text = (key, values) => translate(locale, key, values);
   let client;
-  let currentStatus = { state: "unavailable", supervisor: "unknown", port: 0 };
+  let currentStatus = {
+    state: "unavailable",
+    supervisor: "unknown",
+    port: 0,
+    authenticationPrefillEnabled: null,
+  };
   let refreshPromise;
   let refreshTimer;
   let failureNotified = Boolean(context.globalState.get(NOTIFICATION_KEY, false));
@@ -50,6 +55,7 @@ function activate(context) {
       remoteName: vscode.env.remoteName,
       distro,
       installPath: configuration.get("installPath", "~/agents/ai4dev/ai4dev_tunnel"),
+      authenticationPromptPrefill: configuration.get("authenticationPromptPrefill", true),
       timeoutSeconds: configuration.get("commandTimeoutSeconds", 60),
       logLines: configuration.get("logLines", 50),
     });
@@ -57,9 +63,14 @@ function activate(context) {
 
   function errorText(error) {
     if (error && error.kind === "configuration") {
-      return error.setting
-        ? text("errors.invalidSetting", { setting: error.setting })
-        : text("errors.invalidInstallPath");
+      if (!error.setting) {
+        return text("errors.invalidInstallPath");
+      }
+      const messageKey =
+        error.setting === "authenticationPromptPrefill"
+          ? "errors.invalidBooleanSetting"
+          : "errors.invalidSetting";
+      return text(messageKey, { setting: error.setting });
     }
     if (!error || error.kind === "spawn") {
       return text("errors.couldNotStart");
@@ -112,11 +123,20 @@ function activate(context) {
             value: formatServiceWindow(serviceWindow, locale),
           })
       : "";
+    const authenticationPrefillLine =
+      typeof currentStatus.authenticationPrefillEnabled === "boolean"
+        ? text("tooltip.authenticationPrefill", {
+            value: text(
+              currentStatus.authenticationPrefillEnabled ? "values.enabled" : "values.disabled"
+            ),
+          })
+        : "";
     statusItem.tooltip = [
       statusLabel,
       text("tooltip.supervisor", { value: supervisor }),
       text("tooltip.port", { value: port }),
       serviceWindowLine,
+      authenticationPrefillLine,
       text("tooltip.lastCheck", { value: checkedAt }),
       text("tooltip.clickHint"),
     ]
@@ -181,6 +201,7 @@ function activate(context) {
           state: "unavailable",
           supervisor: "unknown",
           port: 0,
+          authenticationPrefillEnabled: null,
           checkedAt: Date.now(),
         };
         output.appendLine(
@@ -199,7 +220,24 @@ function activate(context) {
     }
   }
 
-  function showRenewalTerminal() {
+  async function applyAuthenticationPrefill() {
+    try {
+      await client.execute("prefill-set");
+      await refreshStatus();
+      return true;
+    } catch (error) {
+      const reason =
+        error && error.exitCode === 69
+          ? text("errors.prefillUnsupported")
+          : errorText(error);
+      output.appendLine(text("output.prefillSyncFailed", { reason }));
+      await vscode.window.showErrorMessage(text("messages.prefillSyncFailed", { reason }));
+      return false;
+    }
+  }
+
+  async function showRenewalTerminal() {
+    await applyAuthenticationPrefill();
     const invocation = client.buildInvocation("renew");
     const terminal = vscode.window.createTerminal({
       name: text("actions.renewAuthentication"),
@@ -215,7 +253,7 @@ function activate(context) {
       return;
     }
     if (action === "renewAuthentication") {
-      showRenewalTerminal();
+      await showRenewalTerminal();
       return;
     }
     if (action === "showStatus") {
@@ -301,13 +339,17 @@ function activate(context) {
     vscode.commands.registerCommand("ai4devTunnel.openSettings", () =>
       performAction("openSettings")
     ),
-    vscode.workspace.onDidChangeConfiguration((event) => {
+    vscode.workspace.onDidChangeConfiguration(async (event) => {
       if (event.affectsConfiguration("ai4devTunnel")) {
         makeClient();
         if (event.affectsConfiguration("ai4devTunnel.refreshIntervalSeconds")) {
           scheduleRefresh();
         }
-        void refreshStatus();
+        if (event.affectsConfiguration("ai4devTunnel.authenticationPromptPrefill")) {
+          await applyAuthenticationPrefill();
+        } else {
+          await refreshStatus();
+        }
       }
     }),
     vscode.workspace.onDidChangeWorkspaceFolders(() => {

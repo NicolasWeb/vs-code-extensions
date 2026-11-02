@@ -7,11 +7,12 @@
 - The main status-bar item shows connection state, supervisor, local port, and last-check time in its tooltip. Click it to connect or disconnect.
 - The adjacent ellipsis opens the localized action list. The same list is available through the `ai4dev Tunnel` Command Palette entry.
 - When a tunnel failure is detected, VS Code shows one notification per failure episode with retry, authentication renewal, and log actions.
-- Authentication renewal opens a visible terminal because the existing flow may require interactive sign-in.
+- Authentication renewal opens a visible terminal because the existing flow may require interactive sign-in. The extension applies the configured authentication prompt-prefill preference before opening this terminal.
 
 ## Configuration
 
 - `ai4devTunnel.installPath`: Linux path to the existing `ai4dev_tunnel` installation; defaults to `~/agents/ai4dev/ai4dev_tunnel`.
+- `ai4devTunnel.authenticationPromptPrefill`: whether an outstanding authentication alert pre-fills `ai4dev_auth_renew` in the next interactive shell prompt; defaults to `true`, matching the tunnel default. Changing the setting synchronizes it through `ai4dev_prefill`; the extension also reapplies it before opening authentication renewal. Merely activating the extension does not overwrite an existing tunnel preference.
 - `ai4devTunnel.wslDistro`: optional WSL distribution name. When empty, the extension derives it from a WSL workspace or uses the default distribution.
 - `ai4devTunnel.refreshIntervalSeconds`: status polling interval in seconds; defaults to `5` and cannot be less than `1`.
 - `ai4devTunnel.commandTimeoutSeconds`: maximum duration of a tunnel command; defaults to `60` seconds.
@@ -23,7 +24,7 @@ The extension reuses `bashrc/ai4dev.bashrc` and its tunnel commands. The status 
 
 The status bar uses monochrome Codicons. Status colors use VS Code theme tokens, so they adapt to light and dark themes. Runtime labels and notifications support `fr-FR`, `en-US`, and `es-ES`; VS Code's display language takes priority, followed by the operating-system locale, then `en-US`.
 
-The status tooltip also shows the configured service window when enabled. Its days, times, and time zone come from `AI4DEV_SERVICE_WINDOW_*` in the tunnel configuration and are informational only; they never gate tunnel operations.
+The status tooltip also shows the configured service window when enabled. Its days, times, and time zone come from `AI4DEV_SERVICE_WINDOW_*` in the tunnel configuration and are informational only; they never gate tunnel operations. When supported by the installed tunnel, the tooltip also reports whether authentication prompt prefill is currently enabled.
 
 Diagnostics and explicitly requested tunnel logs are shown in the local `ai4dev Tunnel` Output channel. The extension does not collect telemetry or persist credentials.
 

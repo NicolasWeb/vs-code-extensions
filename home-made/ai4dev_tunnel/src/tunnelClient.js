@@ -6,7 +6,9 @@ const SHELL_SCRIPT = [
   'AI4DEV_HOME="$1"',
   'case "$AI4DEV_HOME" in',
   '  "~") AI4DEV_HOME="$HOME" ;;',
-  '  "~/"*) AI4DEV_HOME="$HOME/${AI4DEV_HOME#~/}" ;;',
+  // ${AI4DEV_HOME:2} drops the literal "~/" prefix; ${AI4DEV_HOME#~/} cannot be
+  // used here because bash applies tilde expansion to the # pattern word.
+  '  "~/"*) AI4DEV_HOME="$HOME/${AI4DEV_HOME:2}" ;;',
   "esac",
   'case "$AI4DEV_HOME" in /*) ;; *) printf "%s\\n" "Install path must be a Linux absolute path or start with ~/." >&2; exit 64 ;; esac',
   'export AI4DEV_HOME',
@@ -36,7 +38,11 @@ const SHELL_SCRIPT = [
   '    if [ "$AI4DEV_SERVICE_WINDOW_ENABLED" = "1" ]; then',
   '      service_window_fields=("$AI4DEV_SERVICE_WINDOW_START_DAY" "$AI4DEV_SERVICE_WINDOW_START_TIME" "$AI4DEV_SERVICE_WINDOW_END_DAY" "$AI4DEV_SERVICE_WINDOW_END_TIME" "$AI4DEV_SERVICE_WINDOW_TIMEZONE")',
   "    fi",
-  '    printf "AI4DEV_TUNNEL_STATUS\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n" "$supervisor" "$service_state" "$AI4DEV_PORT" "$listening" "${service_window_fields[@]}"',
+  '    prefill_state="unsupported"',
+  '    if declare -F ai4dev_prefill >/dev/null 2>&1 && declare -F ai4dev_is_truthy >/dev/null 2>&1; then',
+  '      if ai4dev_is_truthy "${AI4DEV_ALERT_PREFILL:-true}" true; then prefill_state="true"; else prefill_state="false"; fi',
+  "    fi",
+  '    printf "AI4DEV_TUNNEL_STATUS\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\t%s\\n" "$supervisor" "$service_state" "$AI4DEV_PORT" "$listening" "${service_window_fields[@]}" "$prefill_state"',
   "    ;;",
   "  connect) ai4dev_connect ;;",
   "  disconnect) stop_tunnel ;;",
@@ -48,6 +54,11 @@ const SHELL_SCRIPT = [
   "      stop_tunnel || exit $?",
   "      ai4dev_connect",
   "    fi",
+  "    ;;",
+  "  prefill-set)",
+  '    if [ "$4" != "true" ] && [ "$4" != "false" ]; then printf "%s\\n" "Invalid authentication prompt prefill setting." >&2; exit 64; fi',
+  '    if ! declare -F ai4dev_prefill >/dev/null 2>&1 || ! declare -F ai4dev_is_truthy >/dev/null 2>&1; then printf "%s\\n" "Authentication prompt prefill is not supported by this tunnel installation." >&2; exit 69; fi',
+  '    if [ "$4" = "true" ]; then ai4dev_prefill on; else ai4dev_prefill off; fi',
   "    ;;",
   '  logs) ai4dev_logs "${3:-50}" ;;',
   "  renew) ai4dev_auth_renew ;;",
@@ -119,15 +130,34 @@ function buildInvocation(options) {
     installPath,
     action,
     logLines = 50,
+    authenticationPromptPrefill = true,
   } = options;
-  const allowedActions = ["status", "connect", "disconnect", "restart", "logs", "renew"];
+  const allowedActions = ["status", "connect", "disconnect", "restart", "logs", "renew", "prefill-set"];
   if (!allowedActions.includes(action)) {
     throw new Error("Unsupported tunnel action.");
   }
 
   const home = validateInstallPath(installPath);
   const requestedLogLines = action === "logs" ? positiveInteger(logLines, "logLines") : 50;
-  const args = ["-lc", SHELL_SCRIPT, "ai4dev-tunnel", home, action, String(requestedLogLines)];
+  let prefillSetting = authenticationPromptPrefill;
+  if (action === "prefill-set") {
+    if (typeof prefillSetting !== "boolean") {
+      const error = new Error("Invalid authenticationPromptPrefill setting.");
+      error.kind = "configuration";
+      error.setting = "authenticationPromptPrefill";
+      throw error;
+    }
+    prefillSetting = String(prefillSetting);
+  }
+  const args = [
+    "-lc",
+    SHELL_SCRIPT,
+    "ai4dev-tunnel",
+    home,
+    action,
+    String(requestedLogLines),
+    String(prefillSetting),
+  ];
   if (platform === "win32" && remoteName !== "wsl") {
     const wslArgs = [];
     if (distro) {
@@ -215,6 +245,7 @@ function createTunnelClient(options) {
     distro: options.distro,
     installPath: options.installPath,
     logLines: options.logLines ?? 50,
+    authenticationPromptPrefill: options.authenticationPromptPrefill ?? true,
   };
   const timeoutSeconds = options.timeoutSeconds ?? 60;
   const spawnImpl = options.spawnImpl || spawn;

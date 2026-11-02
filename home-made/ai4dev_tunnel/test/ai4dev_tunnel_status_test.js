@@ -17,6 +17,7 @@ assert.deepEqual(
     listening: true,
     state: "connected",
     serviceWindow: null,
+    authenticationPrefillEnabled: null,
   }
 );
 const configuredStatus = parseStatusOutput(
@@ -29,9 +30,35 @@ assert.deepEqual(configuredStatus.serviceWindow, {
   endTime: "00:00",
   timeZone: "Europe/Paris",
 });
+assert.equal(configuredStatus.authenticationPrefillEnabled, null);
 assert.equal(
   formatServiceWindow(configuredStatus.serviceWindow, "fr-FR"),
   "lundi 00:00 – samedi 00:00 (Europe/Paris)"
+);
+assert.equal(
+  parseStatusOutput(
+    "AI4DEV_TUNNEL_STATUS\tsystemd\tactive\t8443\t1\t1\t00:00\t6\t00:00\tEurope/Paris\ttrue"
+  ).authenticationPrefillEnabled,
+  true
+);
+assert.equal(
+  parseStatusOutput(
+    "AI4DEV_TUNNEL_STATUS\tsystemd\tactive\t8443\t1\t1\t00:00\t6\t00:00\tEurope/Paris\tfalse"
+  ).authenticationPrefillEnabled,
+  false
+);
+assert.equal(
+  parseStatusOutput(
+    "AI4DEV_TUNNEL_STATUS\tsystemd\tactive\t8443\t1\t1\t00:00\t6\t00:00\tEurope/Paris\tunsupported"
+  ).authenticationPrefillEnabled,
+  null
+);
+assert.throws(
+  () =>
+    parseStatusOutput(
+      "AI4DEV_TUNNEL_STATUS\tsystemd\tactive\t8443\t1\t1\t00:00\t6\t00:00\tEurope/Paris\tunknown"
+    ),
+  /prefill status/
 );
 assert.deepEqual(
   parseStatusOutput("AI4DEV_TUNNEL_STATUS\tsystemd\tactive\t8443\t1\t1\t25:00\t6\t00:00\tEurope/Paris")

@@ -38,5 +38,25 @@ const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.
 assert.equal(manifest.main, "./src/extension.js");
 assert.equal(manifest.contributes.commands[0].command, "ai4devTunnel.showActions");
 assert.equal(manifest.engines.vscode, "^1.95.0");
+const prefillSetting =
+  manifest.contributes.configuration.properties["ai4devTunnel.authenticationPromptPrefill"];
+assert.equal(prefillSetting.type, "boolean");
+assert.equal(prefillSetting.default, true);
+assert.equal(
+  translate("fr-FR", "tooltip.authenticationPrefill", { value: "Activé" }),
+  "Préremplissage de la commande d’authentification : Activé"
+);
+assert.match(
+  translate("en-US", "errors.invalidBooleanSetting", { setting: "authenticationPromptPrefill" }),
+  /must be a boolean value/
+);
+assert.match(
+  translate("fr-FR", "errors.invalidBooleanSetting", { setting: "authenticationPromptPrefill" }),
+  /doit être une valeur booléenne/
+);
+assert.match(
+  translate("es-ES", "errors.invalidBooleanSetting", { setting: "authenticationPromptPrefill" }),
+  /debe ser un valor booleano/
+);
 
 console.log("ai4dev_tunnel_localization_test: PASS");

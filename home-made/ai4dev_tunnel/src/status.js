@@ -47,7 +47,14 @@ function parseStatusOutput(output) {
   }
 
   const fields = line.slice(STATUS_PREFIX.length).split("\t");
-  if (fields.length !== 4 && fields.length !== 4 + SERVICE_WINDOW_FIELDS) {
+  const legacyFieldCount = 4;
+  const serviceWindowFieldCount = legacyFieldCount + SERVICE_WINDOW_FIELDS;
+  const currentFieldCount = serviceWindowFieldCount + 1;
+  if (
+    fields.length !== legacyFieldCount &&
+    fields.length !== serviceWindowFieldCount &&
+    fields.length !== currentFieldCount
+  ) {
     throw new Error("Malformed tunnel status record.");
   }
 
@@ -64,13 +71,24 @@ function parseStatusOutput(output) {
     throw new Error("Invalid tunnel status values.");
   }
 
+  const prefillState =
+    fields.length === currentFieldCount ? fields[serviceWindowFieldCount] : "unsupported";
+  if (!["true", "false", "unsupported"].includes(prefillState)) {
+    throw new Error("Invalid authentication prefill status.");
+  }
+
   return {
     supervisor,
     serviceState,
     port,
     listening: rawListening === "1",
     state: classifyStatus(serviceState, rawListening === "1"),
-    serviceWindow: fields.length === 4 ? null : parseServiceWindow(fields.slice(4)),
+    serviceWindow:
+      fields.length === legacyFieldCount
+        ? null
+        : parseServiceWindow(fields.slice(legacyFieldCount, serviceWindowFieldCount)),
+    authenticationPrefillEnabled:
+      prefillState === "unsupported" ? null : prefillState === "true",
   };
 }
 
