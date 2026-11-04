@@ -59,4 +59,22 @@ assert.match(
   /debe ser un valor booleano/
 );
 
+// A string missing from the selected catalog falls back to the source language,
+// then to the key itself; it never throws.
+const localizationModule = require.resolve("../src/localization");
+const esCatalogPath = require.resolve("../l10n/es-ES.json");
+const esReduced = { ...require(esCatalogPath) };
+delete esReduced["actions.connect"];
+require.cache[esCatalogPath] = {
+  id: esCatalogPath,
+  filename: esCatalogPath,
+  loaded: true,
+  exports: esReduced
+};
+delete require.cache[localizationModule];
+const fallback = require("../src/localization");
+assert.equal(fallback.translate("es-ES", "actions.connect"), "Connect");
+assert.equal(fallback.translate("es-ES", "no.such.key.at.all"), "no.such.key.at.all");
+assert.equal(fallback.translate("fr-FR", "no.such.key.at.all"), "no.such.key.at.all");
+
 console.log("ai4dev_tunnel_localization_test: PASS");

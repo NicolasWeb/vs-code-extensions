@@ -49,12 +49,20 @@ function operatingSystemLocales(platform = process.platform, env = process.env, 
   return environmentLocales.filter((locale) => typeof locale === "string" && locale.length > 0);
 }
 
+// A string missing in the selected catalog is never an error: it falls back to
+// the source language (en-US), then to the key itself.
 function translate(locale, key, values = {}) {
   const catalog = CATALOGS[locale] || CATALOGS["en-US"];
-  if (!Object.prototype.hasOwnProperty.call(catalog, key)) {
-    throw new Error(`Missing localized string: ${key}`);
+  const source = CATALOGS["en-US"];
+  let template;
+  if (Object.prototype.hasOwnProperty.call(catalog, key)) {
+    template = catalog[key];
+  } else if (Object.prototype.hasOwnProperty.call(source, key)) {
+    template = source[key];
+  } else {
+    template = key;
   }
-  return catalog[key].replace(/\{(\w+)\}/g, (match, name) =>
+  return template.replace(/\{(\w+)\}/g, (match, name) =>
     Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : match
   );
 }
