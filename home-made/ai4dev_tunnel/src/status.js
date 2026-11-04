@@ -145,7 +145,13 @@ function classifyStatus(serviceState, listening, authenticationState) {
 // failed probes before it notifies; the status bar still reflects every poll.
 const UNAVAILABLE_NOTIFY_THRESHOLD = 2;
 
-function nextNotificationState(alreadyNotified, state, consecutiveUnavailable = 0, recoveryAnnounced = false) {
+function nextNotificationState(
+  alreadyNotified,
+  state,
+  consecutiveUnavailable = 0,
+  recoveryAnnounced = false,
+  lastProblemState = undefined
+) {
   if (state === "connected") {
     // An error toast already shown cannot be retracted through the API; on
     // recovery announce it once so the stale error no longer contradicts the
@@ -167,7 +173,11 @@ function nextNotificationState(alreadyNotified, state, consecutiveUnavailable = 
       announceRecovery: false,
     };
   }
-  return { notified: true, notify: !alreadyNotified, announceRecovery: false };
+  // A standing problem is announced once. A *different* problem state is a new situation with a
+  // different action offer, so it announces again; the caller keeps one signal at a time by
+  // refreshing the same state in place instead of stacking it.
+  const otherProblem = lastProblemState !== undefined && state !== lastProblemState;
+  return { notified: true, notify: !alreadyNotified || otherProblem, announceRecovery: false };
 }
 
 module.exports = {

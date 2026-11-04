@@ -3,10 +3,17 @@
 const vscode = require("vscode");
 const { ACTIONS, operationForAction } = require("./actions");
 const { detectLocale, operatingSystemLocales, translate } = require("./localization");
-const { formatServiceWindow, nextNotificationState, parseStatusOutput } = require("./status");
+const {
+  formatServiceWindow,
+  nextNotificationState,
+  parseStatusOutput,
+} = require("./status");
 const { createTunnelClient, resolveDistro } = require("./tunnelClient");
 
 const NOTIFICATION_KEY = "ai4devTunnel.failureNotified";
+
+// The states whose meaning the failure wording covers (first announcement and in-place refresh).
+const PROBLEM_STATES = ["stopped", "degraded", "down", "unavailable", "auth_required"];
 
 function activate(context) {
   const output = vscode.window.createOutputChannel("ai4dev Tunnel");
@@ -164,26 +171,151 @@ function activate(context) {
     }
   }
 
-  function showFailureNotification(state) {
-    recoveryAnnounced = false;
-    const choices = [
-      text("notification.retry"),
-      text("notification.renew"),
-      text("notification.logs"),
-    ];
-    // "unavailable" means the check itself failed; only stopped/degraded
-    // support asserting the tunnel "is not working".
+  // First attempt, and the only one that can carry real buttons: the updatable Notification class.
+  // It is probed, never assumed -- the installed 1.142 host does not define it (measured: zero
+  // `NotificationButton` in its bundle) and @types/vscode declares none through 1.144.
+  let statusNotification;
+
+  function showUpdatableNotification(message, buttonsFactory) {
+    if (typeof vscode.Notification !== "function" || typeof vscode.NotificationButton !== "function") {
+      return false;
+    }
+    try {
+      // The buttons are built here, inside the guard: constructing them outside would throw on a
+      // host without the API before the fallback could run.
+      const buttons = typeof buttonsFactory === "function" ? buttonsFactory() : [];
+      if (statusNotification) {
+        statusNotification.update({ message, buttons });
+      } else {
+        statusNotification = new vscode.Notification(message, { title: "ai4dev", buttons });
+        statusNotification.onDidDismiss(() => {
+          statusNotification = undefined;
+        });
+      }
+      return true;
+    } catch (error) {
+      output.appendLine(text("output.notificationFailed", { reason: errorText(error) }));
+      return false;
+    }
+  }
+
+  // Second surface, and the one the installed 1.142 host provides: a progress notification.
+  // `report()` replaces the text of the notification already shown, so the evolution of a standing
+  // problem refreshes one row instead of stacking a new notification per poll, and resolving the
+  // task closes it. It carries no buttons, which is why the FIRST announcement still goes through
+  // the buttoned message call: buttons are asked for, in-place refresh applies to what follows.
+  let statusProgress;
+  // The state the user is currently looking at, so that an evolution of the same problem refreshes in
+  // place while a *different* problem still gets its own buttoned message.
+  let announcedFailureState;
+
+  function reportStatusChannel(message) {
+    // The enumerator is checked with the function: an incomplete host surface must fall through to
+    // the message call, not throw out of the extension.
+    const location = vscode.ProgressLocation && vscode.ProgressLocation.Notification;
+    if (typeof vscode.window.withProgress !== "function" || location === undefined) {
+      return false;
+    }
+    if (statusProgress) {
+      statusProgress.reporter.report({ message });
+      return true;
+    }
+    let reporter;
+    let settle;
+    const task = new Promise((resolve) => {
+      settle = resolve;
+    });
+    const running = vscode.window.withProgress(
+      {
+        location: location,
+        title: "ai4dev",
+        cancellable: true,
+      },
+      (progress, token) => {
+        reporter = progress;
+        token.onCancellationRequested(() => {
+          // The user closed it: forget the channel so the next change may open a new one.
+          statusProgress = undefined;
+          settle();
+        });
+        return task;
+      }
+    );
+    if (!reporter) {
+      // A host that defers the task must not lose the message; the caller falls back.
+      settle();
+      void running;
+      return false;
+    }
+    reporter.report({ message });
+    statusProgress = { reporter, settle };
+    void running.then(() => undefined, () => undefined);
+    return true;
+  }
+
+  function closeStatusChannel() {
+    if (!statusProgress) {
+      return;
+    }
+    const { settle } = statusProgress;
+    statusProgress = undefined;
+    settle();
+  }
+
+  function notificationButton(label, action) {
+    return new vscode.NotificationButton(label, {
+      callback: () => {
+        void performAction(action).catch(() => undefined);
+      },
+    });
+  }
+
+  // The wording of a failing status is needed twice: by the first announcement (buttoned message)
+  // and by the in-place refresh of a standing failure. It is composed once here.
+  function failureMessage(state) {
+    // "unavailable" means the check itself failed; only stopped/degraded support asserting the
+    // tunnel "is not working".
     const messageKey =
       state === "unavailable" ? "notification.probeFailed" : "notification.notWorking";
+    return text(messageKey, { state: text(`states.${state}`) });
+  }
+
+  // One offer per problem state, composed once for every surface. A dead grant cannot be fixed by a
+  // renewal, so `auth_required` gets no renewal action anywhere.
+  function failureActions(state) {
+    const actions = [{ label: text("notification.retry"), action: "connect" }];
+    if (state !== "auth_required") {
+      actions.push({ label: text("notification.renew"), action: "renewAuthentication" });
+    }
+    actions.push({ label: text("notification.logs"), action: "showLogs" });
+    return actions;
+  }
+
+  // Built inside the class guard by its caller: constructing a NotificationButton on a host
+  // without the API would throw before any fallback could run.
+  function failureButtons(state) {
+    return failureActions(state).map((offered) => notificationButton(offered.label, offered.action));
+  }
+
+  function showFailureNotification(state) {
+    recoveryAnnounced = false;
+    announcedFailureState = state;
+    const offered = failureActions(state);
+    const message = failureMessage(state);
+    if (statusProgress) {
+      // A different problem replaces the standing row's text rather than leaving it behind: one row
+      // on screen, and the buttons below carry this problem's actions.
+      reportStatusChannel(message);
+    }
+    if (showUpdatableNotification(message, () => failureButtons(state))) {
+      return;
+    }
     void vscode.window
-      .showErrorMessage(text(messageKey, { state: text(`states.${state}`) }), ...choices)
+      .showErrorMessage(message, ...offered.map((choice) => choice.label))
       .then(async (choice) => {
-        if (choice === choices[0]) {
-          await performAction("connect");
-        } else if (choice === choices[1]) {
-          await performAction("renewAuthentication");
-        } else if (choice === choices[2]) {
-          await performAction("showLogs");
+        const picked = offered.find((candidate) => candidate.label === choice);
+        if (picked) {
+          await performAction(picked.action);
         }
       })
       .then(undefined, (error) => {
@@ -193,6 +325,12 @@ function activate(context) {
 
   function showRecoveryNotification() {
     recoveryAnnounced = true;
+    announcedFailureState = undefined;
+    // The channel carried the failure sequence; recovery ends it rather than adding another row.
+    closeStatusChannel();
+    if (showUpdatableNotification(text("notification.recovered"), [])) {
+      return;
+    }
     void vscode.window
       .showInformationMessage(text("notification.recovered"))
       .then(undefined, (error) => {
@@ -205,13 +343,25 @@ function activate(context) {
       failureNotified,
       state,
       consecutiveUnavailable,
-      recoveryAnnounced
+      recoveryAnnounced,
+      announcedFailureState
     );
     if (next.notified !== failureNotified) {
       await persistFailureFlag(next.notified);
     }
     if (next.notify) {
       showFailureNotification(state);
+      return;
+    }
+    if (state === announcedFailureState && PROBLEM_STATES.includes(state)) {
+      // The same problem evolved after its first announcement: what is on screen is refreshed rather
+      // than repeated. A live updatable row wins (it updates in place and keeps its buttons); the
+      // progress channel is the surface the 1.142 host has. Without either the only sign of the
+      // evolution would be the status bar.
+      const message = failureMessage(state);
+      if (!showUpdatableNotification(message, () => failureButtons(state))) {
+        reportStatusChannel(message);
+      }
     }
     if (next.announceRecovery) {
       showRecoveryNotification();
@@ -227,6 +377,7 @@ function activate(context) {
         const result = await client.execute("status");
         consecutiveUnavailable = 0;
         currentStatus = {
+          // The parser classifies: a dead grant outranks the record's service state.
           ...parseStatusOutput(result.stdout),
           checkedAt: Date.now(),
         };

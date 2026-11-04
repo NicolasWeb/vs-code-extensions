@@ -89,6 +89,10 @@ assert.deepEqual(nextNotificationState(false, "connected"), { notified: false, n
 assert.deepEqual(nextNotificationState(false, "unavailable", 1), { notified: false, notify: false, announceRecovery: false });
 assert.deepEqual(nextNotificationState(false, "unavailable", 2), { notified: true, notify: true, announceRecovery: false });
 assert.deepEqual(nextNotificationState(true, "unavailable", 5), { notified: true, notify: false, announceRecovery: false });
+// A standing problem is refreshed in place, a different problem must announce again.
+assert.deepEqual(nextNotificationState(true, "auth_required", 0, false, "auth_required"), { notified: true, notify: false, announceRecovery: false });
+assert.deepEqual(nextNotificationState(true, "auth_required", 0, false, "degraded"), { notified: true, notify: true, announceRecovery: false });
+assert.deepEqual(nextNotificationState(true, "degraded", 0, false), { notified: true, notify: false, announceRecovery: false });
 assert.equal(UNAVAILABLE_NOTIFY_THRESHOLD, 2);
 
 console.log("ai4dev_tunnel_status_test: PASS");
