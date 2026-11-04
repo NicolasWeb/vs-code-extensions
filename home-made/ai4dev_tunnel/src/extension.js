@@ -94,6 +94,7 @@ function activate(context) {
       transitioning: "sync~spin",
       stopped: "debug-disconnect",
       degraded: "warning",
+      auth_required: "log-in",
       unavailable: "error",
     }[state] || "question";
     const label = text(`states.${state}`);
@@ -103,6 +104,8 @@ function activate(context) {
       transitioning: "editorInfo.foreground",
       stopped: "editorWarning.foreground",
       degraded: "editorWarning.foreground",
+      auth_required: "editorError.foreground",
+      unavailable: "editorError.foreground",
       unavailable: "editorError.foreground",
     }[state];
 
@@ -133,12 +136,18 @@ function activate(context) {
             ),
           })
         : "";
+    const authenticationStateLine =
+      currentStatus.authenticationState === "reauth_required"
+        ? text("tooltip.authenticationReauthRequired")
+        : "";
+
     statusItem.tooltip = [
       statusLabel,
       text("tooltip.supervisor", { value: supervisor }),
       text("tooltip.port", { value: port }),
       serviceWindowLine,
       authenticationPrefillLine,
+      authenticationStateLine,
       text("tooltip.lastCheck", { value: checkedAt }),
       text("tooltip.clickHint"),
     ]

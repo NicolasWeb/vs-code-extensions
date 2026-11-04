@@ -2,6 +2,8 @@
 
 const STATUS_PREFIX = "AI4DEV_TUNNEL_STATUS\t";
 const SERVICE_WINDOW_FIELDS = 5;
+// The credential states the shell library answers; "unsupported" means an older emitter.
+const CREDENTIAL_STATES = ["valid", "renewable", "reauth_required", "unknown", "unsupported"];
 
 function parseServiceWindow(fields) {
   if (fields.every((field) => field === "")) {
@@ -50,10 +52,12 @@ function parseStatusOutput(output) {
   const legacyFieldCount = 4;
   const serviceWindowFieldCount = legacyFieldCount + SERVICE_WINDOW_FIELDS;
   const currentFieldCount = serviceWindowFieldCount + 1;
+  const credentialFieldCount = currentFieldCount + 1;
   if (
     fields.length !== legacyFieldCount &&
     fields.length !== serviceWindowFieldCount &&
-    fields.length !== currentFieldCount
+    fields.length !== currentFieldCount &&
+    fields.length !== credentialFieldCount
   ) {
     throw new Error("Malformed tunnel status record.");
   }
@@ -72,9 +76,14 @@ function parseStatusOutput(output) {
   }
 
   const prefillState =
-    fields.length === currentFieldCount ? fields[serviceWindowFieldCount] : "unsupported";
+    fields.length >= currentFieldCount ? fields[serviceWindowFieldCount] : "unsupported";
   if (!["true", "false", "unsupported"].includes(prefillState)) {
     throw new Error("Invalid authentication prefill status.");
+  }
+  const credentialState =
+    fields.length === credentialFieldCount ? fields[currentFieldCount] : "unsupported";
+  if (!CREDENTIAL_STATES.includes(credentialState)) {
+    throw new Error("Invalid credential authentication state.");
   }
 
   return {
@@ -82,13 +91,18 @@ function parseStatusOutput(output) {
     serviceState,
     port,
     listening: rawListening === "1",
-    state: classifyStatus(serviceState, rawListening === "1"),
+    state: classifyStatus(
+      serviceState,
+      rawListening === "1",
+      credentialState === "unsupported" ? null : credentialState
+    ),
     serviceWindow:
       fields.length === legacyFieldCount
         ? null
         : parseServiceWindow(fields.slice(legacyFieldCount, serviceWindowFieldCount)),
     authenticationPrefillEnabled:
       prefillState === "unsupported" ? null : prefillState === "true",
+    authenticationState: credentialState === "unsupported" ? null : credentialState,
   };
 }
 
@@ -104,7 +118,12 @@ function formatServiceWindow(serviceWindow, locale) {
   return `${formatDay(serviceWindow.startDay)} ${serviceWindow.startTime} – ${formatDay(serviceWindow.endDay)} ${serviceWindow.endTime} (${serviceWindow.timeZone})`;
 }
 
-function classifyStatus(serviceState, listening) {
+function classifyStatus(serviceState, listening, authenticationState) {
+  // A dead grant is a different request from a degraded link: a relaunch and
+  // `ai4dev_auth_renew` cannot fix it, only a fresh sign-in can.
+  if (authenticationState === "reauth_required") {
+    return "auth_required";
+  }
   if (serviceState === "activating") {
     return "connecting";
   }
@@ -152,6 +171,7 @@ function nextNotificationState(alreadyNotified, state, consecutiveUnavailable = 
 }
 
 module.exports = {
+  CREDENTIAL_STATES,
   classifyStatus,
   formatServiceWindow,
   nextNotificationState,

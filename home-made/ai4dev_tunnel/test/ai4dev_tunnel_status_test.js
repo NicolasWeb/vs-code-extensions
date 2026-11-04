@@ -19,6 +19,7 @@ assert.deepEqual(
     state: "connected",
     serviceWindow: null,
     authenticationPrefillEnabled: null,
+    authenticationState: null,
   }
 );
 const configuredStatus = parseStatusOutput(
@@ -91,3 +92,26 @@ assert.deepEqual(nextNotificationState(true, "unavailable", 5), { notified: true
 assert.equal(UNAVAILABLE_NOTIFY_THRESHOLD, 2);
 
 console.log("ai4dev_tunnel_status_test: PASS");
+
+// An eleventh field carries the credential state of the stored credential.
+const credentialRecord =
+  "AI4DEV_TUNNEL_STATUS\tsystemd\tactive\t8443\t1\t1\t00:00\t6\t00:00\tEurope/Paris\ttrue\trenewable";
+assert.equal(parseStatusOutput(credentialRecord).authenticationState, "renewable");
+assert.equal(parseStatusOutput(credentialRecord).state, "connected");
+assert.equal(configuredStatus.authenticationState, null);
+// A dead grant is not a link problem: the state changes even though the service is healthy.
+assert.equal(
+  parseStatusOutput(credentialRecord.replace("renewable", "reauth_required")).state,
+  "auth_required"
+);
+assert.equal(
+  classifyStatus("degraded", true, "reauth_required"),
+  "auth_required"
+);
+// A healthy credential never creates the alert on its own.
+assert.equal(classifyStatus("active", true, "valid"), "connected");
+assert.equal(classifyStatus("inactive", false, "valid"), "stopped");
+assert.throws(
+  () => parseStatusOutput(credentialRecord.replace("renewable", "expired")),
+  /credential authentication state/
+);
