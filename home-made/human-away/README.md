@@ -152,4 +152,4 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-[MIT](LICENSE) © Nicolas MANDIL.
+[MIT](LICENSE) © Nitro Nicola SOFT.

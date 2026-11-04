@@ -3,7 +3,7 @@
   "displayName": "Human Away",
   "description": "Status chip that tells your AI agent the human is away, so it keeps working unattended, stops asking questions, and raises its request budget until you return.",
   "version": "0.4.0",
-  "publisher": "nicolas-web-local",
+  "publisher": "nitronicolasoft",
   "license": "MIT",
   "engines": {
     "vscode": "^1.95.0"

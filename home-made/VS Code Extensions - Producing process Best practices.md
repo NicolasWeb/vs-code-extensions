@@ -8,10 +8,10 @@ This guide consolidates the packaging, Marketplace-readiness, and local-installa
 
 | Extension | Manifest ID | Version at reference check | Minimum VS Code | License declaration |
 |---|---|---|---|---|
-| `Human Away` | `nicolas-web-local.human-away` | `0.4.0` | `^1.95.0` | `MIT`, with a root `LICENSE` file |
-| `ai4dev Tunnel` | `nicolas-web-local.ai4dev-tunnel` | `0.1.0` | `^1.95.0` | `SEE LICENSE IN LICENSE` |
+| `Human Away` | `nitronicolasoft.human-away` | `0.4.0` | `^1.95.0` | `MIT`, with a root `LICENSE` file |
+| `ai4dev Tunnel` | `nitronicolasoft.a4d-watcher` | `0.1.2` | `^1.95.0` | `SEE LICENSE IN LICENSE` |
 
-- Both manifests use publisher `nicolas-web-local` and remain marked `preview`; versions and metadata above are the values measured on 2026-10-31.
+- Manifests are marked `preview`. The values above were rechecked on `2026-11-04` for `ai4dev Tunnel`, whose published id is renamed `nicolas-web-local.ai4dev-tunnel` → `nitronicolasoft.a4d-watcher` and whose folder is `vs-code-extensions/home-made/a4d-watcher/`; a renamed id is a different extension, so migrating means uninstalling the old id, as recorded in that extension's `README.md`. `Human Away` publishes the same lower-cased publisher `nitronicolasoft` with the values measured on 2026-10-31.
 - Publisher ownership and Marketplace publication access were not verified during distribution preparation; no Marketplace publication or release workflow was performed.
 - This guide lives beside the extension projects and is not included in either VSIX. Packaged READMEs should link to its canonical GitHub URL so the link remains valid outside the repository checkout.
 
