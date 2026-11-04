@@ -1,9 +1,9 @@
 {
-  "name": "ai4dev-tunnel",
+  "name": "a4d-watcher",
   "displayName": "ai4dev Tunnel",
   "description": "Monitor and control the ai4dev tunnel from VS Code.",
   "version": "0.1.2",
-  "publisher": "nicolas-web-local",
+  "publisher": "nitronicolasoft",
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "vscode": "^1.95.0"
@@ -62,12 +62,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/NicolasWeb/ai-agents-md.git",
-    "directory": "vs-code-extensions/home-made/ai4dev_tunnel"
+    "directory": "vs-code-extensions/home-made/a4d-watcher"
   },
   "bugs": {
     "url": "https://github.com/NicolasWeb/ai-agents-md/issues"
   },
-  "homepage": "https://github.com/NicolasWeb/ai-agents-md/tree/main/vs-code-extensions/home-made/ai4dev_tunnel",
+  "homepage": "https://github.com/NicolasWeb/ai-agents-md/tree/main/vs-code-extensions/home-made/a4d-watcher",
   "keywords": [
     "ai4dev",
     "tunnel",

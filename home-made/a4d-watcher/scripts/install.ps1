@@ -1,3 +1,11 @@
+# Identity rename (2026-11-04): this package publishes nitronicolasoft.a4d-watcher, the new identity of
+# the extension formerly published as nicolas-web-local.ai4dev-tunnel. A renamed identity is a
+# different extension id, and there is no in-place upgrade fallback: a machine that still holds the
+# old copy would run two extensions side by side, and the old one would receive no further updates.
+# Precondition: uninstall nicolas-web-local.ai4dev-tunnel from the Windows profile and from every
+# Remote WSL extension store before installing. This script checks that precondition below and
+# refuses with OLD_EXTENSION_INSTALLED while the old extension is still listed.
+
 [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
 param(
     [string]$WslDistro
@@ -107,7 +115,7 @@ if ($codeServers.Count -eq 0) {
     throw "No Remote WSL code-server binary was found in distribution '$WslDistro'."
 }
 
-$tempVsixPath = Join-Path $env:TEMP ("ai4dev-tunnel-{0}.vsix" -f [guid]::NewGuid().ToString('N'))
+$tempVsixPath = Join-Path $env:TEMP ("{0}-{1}.vsix" -f $manifest.name, [guid]::NewGuid().ToString('N'))
 $wslVsixOutput = & $wslExe -d $WslDistro --exec wslpath -u $tempVsixPath
 $exitCode = $LASTEXITCODE
 if ($exitCode -ne 0) {
@@ -123,6 +131,51 @@ $windowsExtensionsDir = Join-Path $env:USERPROFILE '.vscode\extensions'
 $windowsRegistryPath = Join-Path $windowsExtensionsDir 'extensions.json'
 $wslExtensionsDir = "$wslHome/.vscode-server/extensions"
 $wslRegistryPath = "$wslExtensionsDir/extensions.json"
+
+# Renamed-identity precheck: the copy formerly published as nicolas-web-local.ai4dev-tunnel cannot
+# be upgraded in place, so it has to be gone before this install runs on any host.
+$legacyExtensionId = 'nicolas-web-local.ai4dev-tunnel'
+$legacyHosts = @()
+
+$previousErrorActionPreference = $ErrorActionPreference
+try {
+    $ErrorActionPreference = 'Continue'
+    $legacyWindowsList = & $codeCli --list-extensions 2>&1
+    $exitCode = $LASTEXITCODE
+}
+finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+}
+if ($exitCode -ne 0) {
+    throw "Windows VS Code extension listing failed with exit code $exitCode during the renamed-identity precheck."
+}
+if (@($legacyWindowsList | ForEach-Object { ([string]$_).Trim() } | Where-Object { $_ -ieq $legacyExtensionId }).Count -gt 0) {
+    $legacyHosts += 'Windows profile'
+}
+
+foreach ($codeServer in $codeServers) {
+    $previousErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $legacyWslList = & $wslExe -d $WslDistro --exec $codeServer --extensions-dir $wslExtensionsDir --list-extensions 2>&1
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $previousErrorActionPreference
+    }
+    if ($exitCode -ne 0) {
+        throw "Remote WSL extension listing through '$codeServer' failed with exit code $exitCode during the renamed-identity precheck."
+    }
+    if (@($legacyWslList | ForEach-Object { ([string]$_).Trim() } | Where-Object { $_ -ieq $legacyExtensionId }).Count -gt 0) {
+        $legacyHosts += "Remote WSL ($WslDistro) through $codeServer"
+    }
+}
+
+if ($legacyHosts.Count -gt 0) {
+    Write-Output "OLD_EXTENSION_INSTALLED id=$legacyExtensionId hosts=$($legacyHosts -join '; ')"
+    throw "OLD_EXTENSION_INSTALLED: $legacyExtensionId is still installed on $($legacyHosts -join '; '). This package publishes the renamed identity $extensionId and there is no in-place upgrade fallback, so the old copy would keep running without updates. Uninstall $legacyExtensionId on every host listed, then run this script again."
+}
+
 $targetDescription = "Windows profile and Remote WSL distribution '$WslDistro'"
 if (-not $PSCmdlet.ShouldProcess($targetDescription, "Install $extensionId@$version")) {
     if ($WhatIfPreference) {

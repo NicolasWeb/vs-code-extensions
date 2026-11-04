@@ -31,3 +31,10 @@ Diagnostics and explicitly requested tunnel logs are shown in the local `ai4dev 
 ## Distribution
 
 The shared production, packaging, Marketplace, and installation process for both extensions is documented in [VS Code Extensions - Producing process Best practices](https://github.com/NicolasWeb/ai-agents-md/blob/main/vs-code-extensions/home-made/VS%20Code%20Extensions%20-%20Producing%20process%20Best%20practices.md).
+
+## Published identity and migration (added on 2026-11-04)
+
+- This extension is published as `nitronicolasoft.a4d-watcher`, the renamed identity of the package formerly published as `nicolas-web-local.ai4dev-tunnel`; the folder is `vs-code-extensions/home-made/a4d-watcher/`.
+- A renamed identity is, for VS Code, a different extension: there is no in-place upgrade path from the old id.
+- A machine that still holds `nicolas-web-local.ai4dev-tunnel` must uninstall it, from the Windows profile and from every Remote WSL extension store, before this package is installed; otherwise both copies stay active and the old one stops receiving updates.
+- `scripts/install.ps1` checks that precondition against `code --list-extensions` on both hosts and refuses with `OLD_EXTENSION_INSTALLED` while the old extension is still listed.

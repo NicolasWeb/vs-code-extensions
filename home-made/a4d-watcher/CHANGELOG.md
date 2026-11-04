@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Add distribution guidance and a verified local installer for Windows and Remote WSL extension hosts.
+- Publish the extension as `nitronicolasoft.a4d-watcher` (`publisher` `nitronicolasoft`, readable identity `Nitro Nicola SOFT`), the renamed identity of `nicolas-web-local.ai4dev-tunnel`, and move the project to `vs-code-extensions/home-made/a4d-watcher/`. The id change is visible in `package.json`; the extension id is what VS Code matches, so the renamed package does not replace the old one: `scripts/install.ps1` now checks for `nicolas-web-local.ai4dev-tunnel` on the Windows profile and every Remote WSL store and refuses with `OLD_EXTENSION_INSTALLED` until it is uninstalled. Settings keys and commands keep the existing `ai4devTunnel.` prefix.
 
 ## 0.1.2
 
