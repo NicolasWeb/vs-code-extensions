@@ -33,7 +33,9 @@
   "actions.renewAuthentication": "Renouveler l’authentification",
   "actions.showStatus": "Afficher le statut",
   "actions.openSettings": "Ouvrir les paramètres",
-  "notification.failed": "Le tunnel ai4dev ne fonctionne pas ({state}).",
+  "notification.notWorking": "Le tunnel ai4dev ne fonctionne pas ({state}).",
+  "notification.probeFailed": "Impossible de vérifier l'état du tunnel ai4dev ({state}) après plusieurs sondes consécutives.",
+  "notification.recovered": "Le tunnel ai4dev est de nouveau connecté.",
   "notification.retry": "Réessayer",
   "notification.renew": "Renouveler l’authentification",
   "notification.logs": "Voir les journaux",
@@ -57,5 +59,6 @@
   "output.actionFailed": "Échec de l’action — {action} : {reason}",
   "output.prefillSyncFailed": "Échec de la synchronisation du préremplissage de l’authentification : {reason}",
   "output.stateSaveFailed": "Impossible d’enregistrer l’état de notification : {reason}",
-  "output.notificationFailed": "Impossible d’afficher la notification d’échec : {reason}"
+  "output.notificationFailed": "Impossible d’afficher la notification d’échec : {reason}",
+  "output.recoveryAnnounceFailed": "Impossible d’annoncer le retour à la normale : {reason}"
 }

@@ -6,6 +6,7 @@ const {
   formatServiceWindow,
   nextNotificationState,
   parseStatusOutput,
+  UNAVAILABLE_NOTIFY_THRESHOLD,
 } = require("../src/status");
 
 assert.deepEqual(
@@ -76,10 +77,17 @@ assert.throws(
   /Invalid/
 );
 
-assert.deepEqual(nextNotificationState(false, "stopped"), { notified: true, notify: true });
-assert.deepEqual(nextNotificationState(true, "degraded"), { notified: true, notify: false });
-assert.deepEqual(nextNotificationState(true, "connecting"), { notified: true, notify: false });
-assert.deepEqual(nextNotificationState(true, "connected"), { notified: false, notify: false });
-assert.deepEqual(nextNotificationState(false, "unavailable"), { notified: true, notify: true });
+assert.deepEqual(nextNotificationState(false, "stopped"), { notified: true, notify: true, announceRecovery: false });
+assert.deepEqual(nextNotificationState(true, "degraded"), { notified: true, notify: false, announceRecovery: false });
+assert.deepEqual(nextNotificationState(true, "connecting"), { notified: true, notify: false, announceRecovery: false });
+assert.deepEqual(nextNotificationState(true, "connected"), { notified: false, notify: false, announceRecovery: true });
+assert.deepEqual(nextNotificationState(true, "connected", 0, true), { notified: false, notify: false, announceRecovery: false });
+assert.deepEqual(nextNotificationState(false, "connected"), { notified: false, notify: false, announceRecovery: false });
+// "unavailable" must be confirmed by UNAVAILABLE_NOTIFY_THRESHOLD consecutive
+// failed probes before the sticky failing toast is raised.
+assert.deepEqual(nextNotificationState(false, "unavailable", 1), { notified: false, notify: false, announceRecovery: false });
+assert.deepEqual(nextNotificationState(false, "unavailable", 2), { notified: true, notify: true, announceRecovery: false });
+assert.deepEqual(nextNotificationState(true, "unavailable", 5), { notified: true, notify: false, announceRecovery: false });
+assert.equal(UNAVAILABLE_NOTIFY_THRESHOLD, 2);
 
 console.log("ai4dev_tunnel_status_test: PASS");

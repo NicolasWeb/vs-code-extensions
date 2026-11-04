@@ -12,11 +12,14 @@ const registeredCommands = new Map();
 const statusItems = [];
 const notifications = [];
 const outputChannels = [];
+const infoMessages = [];
 const terminals = [];
 const processInvocations = [];
 let selectedAction;
 let configurationChangeHandler;
 let authenticationPrefillEnabled = true;
+let serviceState = "inactive";
+let failStatusProbe = false;
 const settings = {
   installPath: "~/agents/ai4dev/ai4dev_tunnel",
   authenticationPromptPrefill: true,
@@ -72,6 +75,7 @@ const fakeVscode = {
       return undefined;
     },
     async showInformationMessage(message) {
+      infoMessages.push(message);
       return message;
     },
     async showQuickPick(items) {
@@ -121,9 +125,15 @@ childProcess.spawn = (command, args) => {
   const action = args.at(-3);
   process.nextTick(() => {
     if (action === "status") {
+      if (failStatusProbe) {
+        child.stderr.end("simulated transport failure\n");
+        setImmediate(() => child.emit("close", 65));
+        return child;
+      }
+      const listening = serviceState === "active" ? "1" : "0";
       const prefillState = authenticationPrefillEnabled ? "true" : "false";
       child.stdout.end(
-        `AI4DEV_TUNNEL_STATUS\tsystemd\tinactive\t7000\t0\t1\t00:00\t6\t00:00\tEurope/Paris\t${prefillState}\n`
+        `AI4DEV_TUNNEL_STATUS\tsystemd\t${serviceState}\t7000\t${listening}\t1\t00:00\t6\t00:00\tEurope/Paris\t${prefillState}\n`
       );
     } else if (action === "prefill-set") {
       authenticationPrefillEnabled = args.at(-1) === "true";
@@ -209,6 +219,34 @@ async function run() {
       processInvocations.findLast(({ args }) => args.at(-3) === "prefill-set").args.at(-1),
       "false"
     );
+
+    // Coherence: the tunnel first recovers, which clears the failure flag.
+    serviceState = "active";
+    await registeredCommands.get("ai4devTunnel.showStatus")();
+    const errorCountBeforeUnreachable = notifications.length;
+    const infoCountBeforeUnreachable = infoMessages.length;
+
+    // One failed status probe (transient WSL hiccup) must not raise the
+    // sticky error toast; two consecutive failures do, with wording that
+    // the check itself failed, and the recovery is then announced once.
+    failStatusProbe = true;
+    await registeredCommands.get("ai4devTunnel.showStatus")();
+    assert.equal(notifications.length, errorCountBeforeUnreachable);
+    assert.match(statusItems[0].text, /ai4dev : indisponible/);
+    await registeredCommands.get("ai4devTunnel.showStatus")();
+    assert.equal(notifications.length, errorCountBeforeUnreachable + 1);
+    assert.match(notifications.at(-1).message, /Impossible de vérifier/);
+
+    failStatusProbe = false;
+    await registeredCommands.get("ai4devTunnel.showStatus")();
+    assert.match(statusItems[0].text, /ai4dev : connecté/);
+    const recoveryToasts = () =>
+      infoMessages
+        .slice(infoCountBeforeUnreachable)
+        .filter((message) => /de nouveau connecté/.test(message)).length;
+    assert.equal(recoveryToasts(), 1);
+    await registeredCommands.get("ai4devTunnel.showStatus")();
+    assert.equal(recoveryToasts(), 1);
 
     console.log("ai4dev_tunnel_extension_test: PASS");
   } finally {

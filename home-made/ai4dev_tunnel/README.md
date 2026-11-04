@@ -6,7 +6,7 @@
 
 - The main status-bar item shows connection state, supervisor, local port, and last-check time in its tooltip. Click it to connect or disconnect.
 - The adjacent ellipsis opens the localized action list. The same list is available through the `ai4dev Tunnel` Command Palette entry.
-- When a tunnel failure is detected, VS Code shows one notification per failure episode with retry, authentication renewal, and log actions.
+- When tunnel trouble is detected, VS Code shows one notification per failure episode with retry, authentication renewal, and log actions. A check failure (state `unavailable`, e.g. a transient WSL outage) must be confirmed by two consecutive failed probes before it is announced, and its message says the status check failed rather than asserting the tunnel is down. A single failed probe only recolors the status bar. When a healthy check follows an announced failure, one information notification reports the recovery.
 - Authentication renewal opens a visible terminal because the existing flow may require interactive sign-in. The extension applies the configured authentication prompt-prefill preference before opening this terminal.
 
 ## Configuration

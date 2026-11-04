@@ -9,7 +9,7 @@
 
 ## Failure notification
 
-An unhealthy tunnel state triggers one VS Code notification per failure episode. The notification offers retry, authentication renewal, and log viewing. A healthy status check re-arms the next notification. Authentication renewal runs in a visible terminal so interactive sign-in remains available.
+An unhealthy tunnel state triggers one VS Code notification per failure episode, offering retry, authentication renewal, and log viewing. A failed status check (state `unavailable`) is announced only after two consecutive failed probes, and its message reports the failed check instead of claiming the tunnel is down; one transient WSL or transport hiccup therefore never leaves an error toast behind a healthy status bar. A healthy status check re-arms the next notification and, when a failure had been announced, a single information notification reports that the tunnel is connected again. Authentication renewal runs in a visible terminal so interactive sign-in remains available.
 
 ## Settings
 

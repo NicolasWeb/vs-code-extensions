@@ -25,6 +25,8 @@ function activate(context) {
   let refreshPromise;
   let refreshTimer;
   let failureNotified = Boolean(context.globalState.get(NOTIFICATION_KEY, false));
+  let consecutiveUnavailable = 0;
+  let recoveryAnnounced = !failureNotified;
 
   const statusItem = vscode.window.createStatusBarItem(
     "ai4devTunnel.status",
@@ -154,13 +156,18 @@ function activate(context) {
   }
 
   function showFailureNotification(state) {
+    recoveryAnnounced = false;
     const choices = [
       text("notification.retry"),
       text("notification.renew"),
       text("notification.logs"),
     ];
+    // "unavailable" means the check itself failed; only stopped/degraded
+    // support asserting the tunnel "is not working".
+    const messageKey =
+      state === "unavailable" ? "notification.probeFailed" : "notification.notWorking";
     void vscode.window
-      .showErrorMessage(text("notification.failed", { state: text(`states.${state}`) }), ...choices)
+      .showErrorMessage(text(messageKey, { state: text(`states.${state}`) }), ...choices)
       .then(async (choice) => {
         if (choice === choices[0]) {
           await performAction("connect");
@@ -175,13 +182,30 @@ function activate(context) {
       });
   }
 
+  function showRecoveryNotification() {
+    recoveryAnnounced = true;
+    void vscode.window
+      .showInformationMessage(text("notification.recovered"))
+      .then(undefined, (error) => {
+        output.appendLine(text("output.recoveryAnnounceFailed", { reason: errorText(error) }));
+      });
+  }
+
   async function updateFailureNotification(state) {
-    const next = nextNotificationState(failureNotified, state);
-    if (!next.notified && failureNotified) {
-      await persistFailureFlag(false);
-    } else if (next.notify) {
-      await persistFailureFlag(true);
+    const next = nextNotificationState(
+      failureNotified,
+      state,
+      consecutiveUnavailable,
+      recoveryAnnounced
+    );
+    if (next.notified !== failureNotified) {
+      await persistFailureFlag(next.notified);
+    }
+    if (next.notify) {
       showFailureNotification(state);
+    }
+    if (next.announceRecovery) {
+      showRecoveryNotification();
     }
   }
 
@@ -192,11 +216,13 @@ function activate(context) {
     refreshPromise = (async () => {
       try {
         const result = await client.execute("status");
+        consecutiveUnavailable = 0;
         currentStatus = {
           ...parseStatusOutput(result.stdout),
           checkedAt: Date.now(),
         };
       } catch (error) {
+        consecutiveUnavailable += 1;
         currentStatus = {
           state: "unavailable",
           supervisor: "unknown",

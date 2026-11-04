@@ -4,6 +4,11 @@
 
 - Add distribution guidance and a verified local installer for Windows and Remote WSL extension hosts.
 
+## 0.1.2
+
+- Keep failure notifications coherent with the status bar: a single failed status probe (state `unavailable`) no longer raises the sticky error toast; two consecutive failed probes are required before announcing, and the announcement says the status check failed instead of asserting the tunnel is not working.
+- Announce recovery once with an information notification when a healthy check follows an announced failure, since an error toast cannot be retracted.
+
 ## 0.1.1
 
 - Add the `ai4devTunnel.authenticationPromptPrefill` setting, live-synced to the tunnel installation.

@@ -33,7 +33,9 @@
   "actions.renewAuthentication": "Renew Authentication",
   "actions.showStatus": "Show Status",
   "actions.openSettings": "Open Settings",
-  "notification.failed": "The ai4dev tunnel is not working ({state}).",
+  "notification.notWorking": "The ai4dev tunnel is not working ({state}).",
+  "notification.probeFailed": "The ai4dev tunnel status could not be checked ({state}) after several consecutive probes.",
+  "notification.recovered": "The ai4dev tunnel is connected again.",
   "notification.retry": "Retry",
   "notification.renew": "Renew Authentication",
   "notification.logs": "Show Logs",
@@ -57,5 +59,6 @@
   "output.actionFailed": "Action failed — {action}: {reason}",
   "output.prefillSyncFailed": "Authentication prompt-prefill synchronization failed: {reason}",
   "output.stateSaveFailed": "Could not save notification state: {reason}",
-  "output.notificationFailed": "Could not display the failure notification: {reason}"
+  "output.notificationFailed": "Could not display the failure notification: {reason}",
+  "output.recoveryAnnounceFailed": "Could not announce the recovery: {reason}"
 }

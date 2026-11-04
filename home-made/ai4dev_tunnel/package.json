@@ -2,7 +2,7 @@
   "name": "ai4dev-tunnel",
   "displayName": "ai4dev Tunnel",
   "description": "Monitor and control the ai4dev tunnel from VS Code.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "nicolas-web-local",
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

@@ -33,7 +33,9 @@
   "actions.renewAuthentication": "Renovar autenticación",
   "actions.showStatus": "Mostrar estado",
   "actions.openSettings": "Abrir configuración",
-  "notification.failed": "El túnel ai4dev no funciona ({state}).",
+  "notification.notWorking": "El túnel ai4dev no funciona ({state}).",
+  "notification.probeFailed": "No se pudo comprobar el estado del túnel ai4dev ({state}) tras varias sondas consecutivas.",
+  "notification.recovered": "El túnel ai4dev está de nuevo conectado.",
   "notification.retry": "Reintentar",
   "notification.renew": "Renovar autenticación",
   "notification.logs": "Ver registros",
@@ -57,5 +59,6 @@
   "output.actionFailed": "Error en la acción — {action}: {reason}",
   "output.prefillSyncFailed": "Error al sincronizar el prellenado de autenticación: {reason}",
   "output.stateSaveFailed": "No se pudo guardar el estado de la notificación: {reason}",
-  "output.notificationFailed": "No se pudo mostrar la notificación de error: {reason}"
+  "output.notificationFailed": "No se pudo mostrar la notificación de error: {reason}",
+  "output.recoveryAnnounceFailed": "No se pudo anunciar la recuperación: {reason}"
 }

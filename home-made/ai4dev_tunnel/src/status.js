@@ -120,14 +120,35 @@ function classifyStatus(serviceState, listening) {
   return "degraded";
 }
 
-function nextNotificationState(alreadyNotified, state) {
+// unavailableThreshold: one failed status probe means the CHECK failed (WSL
+// hiccup, slow call), not that the tunnel is down. A sticky error toast is a
+// strong claim, so "unavailable" must be confirmed by this many consecutive
+// failed probes before it notifies; the status bar still reflects every poll.
+const UNAVAILABLE_NOTIFY_THRESHOLD = 2;
+
+function nextNotificationState(alreadyNotified, state, consecutiveUnavailable = 0, recoveryAnnounced = false) {
   if (state === "connected") {
-    return { notified: false, notify: false };
+    // An error toast already shown cannot be retracted through the API; on
+    // recovery announce it once so the stale error no longer contradicts the
+    // status bar and the real tunnel state.
+    return {
+      notified: false,
+      notify: false,
+      announceRecovery: alreadyNotified && !recoveryAnnounced,
+    };
   }
   if (state === "connecting" || state === "transitioning") {
-    return { notified: alreadyNotified, notify: false };
+    return { notified: alreadyNotified, notify: false, announceRecovery: false };
   }
-  return { notified: true, notify: !alreadyNotified };
+  if (state === "unavailable") {
+    const confirmed = consecutiveUnavailable >= UNAVAILABLE_NOTIFY_THRESHOLD;
+    return {
+      notified: alreadyNotified || confirmed,
+      notify: confirmed && !alreadyNotified,
+      announceRecovery: false,
+    };
+  }
+  return { notified: true, notify: !alreadyNotified, announceRecovery: false };
 }
 
 module.exports = {
@@ -135,4 +156,5 @@ module.exports = {
   formatServiceWindow,
   nextNotificationState,
   parseStatusOutput,
+  UNAVAILABLE_NOTIFY_THRESHOLD,
 };
