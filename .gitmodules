@@ -1,0 +1,3 @@
+[submodule "home-made/ai4dev-monitor"]
+	path = home-made/ai4dev-monitor
+	url = https://github.com/NicolasWeb/vs-code-extension-ai4dev-gcloud.git
